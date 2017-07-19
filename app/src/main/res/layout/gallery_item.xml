@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:padding="0dp"
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_weight=".25"
+    android:elevation="30dp">
+
+    <!--android:layout_height="match_parent"-->
+
+    <WebView  xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/image_webview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:id="@+id/image_detail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/alpha_text_view"
+        android:padding="8dp"
+        android:layout_margin="8dp"
+        android:layout_gravity="top|left"
+        android:elevation="10dp"
+        android:focusableInTouchMode="false"
+        android:clickable="true">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:id="@+id/image_title"
+            android:text="Title"
+            android:textSize="14dp"
+            android:textColor="#000000"
+            android:lines="1"
+            android:maxLength="100"
+            android:textStyle="bold"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_gravity="top|left" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_alignBottom="@+id/image_title"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:id="@+id/image_description"
+            android:text="Here the description about this item"
+            android:textSize="8dp"
+            android:lines="2"
+            android:maxLength="100"
+            android:textStyle="italic"
+            android:layout_gravity="left|bottom" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:id="@+id/image_date"
+            android:text="1/1/2000"
+            android:textSize="8dp"
+            android:lines="2"
+            android:maxLength="100"
+            android:textStyle="italic"
+            android:layout_gravity="top|right" />
+
+    </LinearLayout>
+
+</RelativeLayout>

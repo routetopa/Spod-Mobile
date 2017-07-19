@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:clickable="false">
+
+    <WebView  xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/item_webview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="@drawable/alpha_text_view"
+        android:padding="8dp"
+        android:layout_margin="8dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:id="@+id/item_title"
+            android:textSize="14dp"
+            android:textColor="#000000"
+            android:text="Tile"
+            android:lines="1"
+            android:maxLength="100"
+            android:textStyle="bold"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="8dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_alignBottom="@+id/item_title"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:id="@+id/item_location"
+            android:text=""
+            android:textColor="#2196F3"
+            android:textSize="8dp"
+            android:maxLength="100"
+            android:textStyle="bold"
+            android:layout_gravity="top|right"
+            android:gravity="top|right" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_alignBottom="@+id/new_item_location"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:id="@+id/item_description"
+            android:text="Here the desciption about this item"
+            android:textSize="8dp"
+            android:lines="2"
+            android:maxLength="150"
+            android:textStyle="italic"
+            android:longClickable="false" />
+
+    </LinearLayout>
+
+</RelativeLayout>
