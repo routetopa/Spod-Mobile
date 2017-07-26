@@ -48,7 +48,7 @@ public class NetworkChannel extends Observable
     private static final String POST_USER_INFO                   = "/cocreation/ajax/get-user-info/";
     private static final String POST_ADD_NEW_ROW                 = "/ethersheet/mediaroom/addrow/";
     private static final String POST_COCREATION_CREATE_ROOM      = "/cocreation/ajax/create-media-room-from-mobile/";
-    private static final String GET_COCREATION_MEDIA_ROOMS_ADDR  = "/cocreation/ajax/get-media-rooms-by-user-id/?userId=1";
+    private static final String GET_COCREATION_MEDIA_ROOMS_ADDR  = "/cocreation/ajax/get-media-rooms-by-user-id/?userId=";
     private static final String GET_COCREATION_ROOMS_SHEET_DATA  = "/cocreation/ajax/get-sheet-data-by-room-id/?roomId=";
 
     private int IMAGE_SIZE_LIMIT = 1048576;
@@ -171,7 +171,7 @@ public class NetworkChannel extends Observable
             JSONArray jsonArray = new JSONArray();
             params.put("userId", User.getInstance().getId() );
             jsonArray.put(params);
-            JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.POST, SPOD_ENDPOINT + GET_COCREATION_MEDIA_ROOMS_ADDR, jsonArray, new Response.Listener<JSONArray>() {
+            JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.POST, SPOD_ENDPOINT + GET_COCREATION_MEDIA_ROOMS_ADDR + User.getInstance().getId(), jsonArray, new Response.Listener<JSONArray>() {
                 @Override
                 public void onResponse(JSONArray response) {
                     loading.dismiss();
