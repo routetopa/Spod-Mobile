@@ -11,9 +11,12 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
+import eu.spod.isislab.spodapp.services.SpodLocationServices;
+
 public class AddressSolver extends AsyncTask<Location, Void, String> {
     private Geocoder geocoder;
     private TextView targetView;
+    private Location currentLocation;
 
     public AddressSolver(TextView targetView, Context context) {
         geocoder  = new Geocoder(context, Locale.getDefault());
@@ -24,6 +27,7 @@ public class AddressSolver extends AsyncTask<Location, Void, String> {
     protected String doInBackground(Location... params)
     {
         Location pos=params[0];
+        currentLocation = pos;
         double latitude = pos.getLatitude();
         double longitude = pos.getLongitude();
 
@@ -40,7 +44,7 @@ public class AddressSolver extends AsyncTask<Location, Void, String> {
         {
             if (addresses.isEmpty())
             {
-                return null;
+                return SpodLocationServices.getCurrentLocation().getLatitude() + "," + SpodLocationServices.getCurrentLocation().getLongitude();
             }
             else {
                 if (addresses.size() > 0)
@@ -53,7 +57,7 @@ public class AddressSolver extends AsyncTask<Location, Void, String> {
                 }
             }
         }
-        return null;
+        return SpodLocationServices.getCurrentLocation().getLatitude() + "," + SpodLocationServices.getCurrentLocation().getLongitude();
     }
 
     @Override
@@ -62,7 +66,7 @@ public class AddressSolver extends AsyncTask<Location, Void, String> {
         if (result!=null)
             targetView.setText(result);
         else
-            targetView.setText("No address to show");
+            targetView.setText(currentLocation.getLatitude() + "," + currentLocation.getLongitude());
 
     }
 }

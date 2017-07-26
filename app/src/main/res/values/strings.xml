@@ -24,12 +24,16 @@
 
 
     <string-array name="spod_endpoints_array">
-        <item>172.16.15.77</item>
+        <!--<item>172.16.15.77</item>-->
         <item>spod.routetopa.eu</item>
-        <item>prato-spod.routetopa.eu</item>
-        <item>nl.routetopa.eu</item>
-        <item>issy.routetopa.eu</item>
         <item>spod.databenc.it</item>
+        <item>prato.routetopa.eu</item>
+        <item>issy.routetopa.eu</item>
+        <item>groningen.routetopa.eu</item>
+        <item>denhaag.routetopa.eu</item>
+        <item>dublin-spod.routetopa.eu</item>
+        <item>opendata-crc.di.unisa.it</item>
+        <item>ddac-spod.routetopa.eu</item>
     </string-array>
 
 

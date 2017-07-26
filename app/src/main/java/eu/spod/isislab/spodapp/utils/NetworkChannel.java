@@ -1,14 +1,16 @@
-package eu.spod.isislab.spodapp.utils;
+ package eu.spod.isislab.spodapp.utils;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.design.widget.Snackbar;
+import android.support.v4.graphics.BitmapCompat;
 import android.util.Base64;
 
 import com.android.volley.AuthFailureError;
@@ -41,13 +43,15 @@ public class NetworkChannel extends Observable
     public static final String SERVICE_LOGIN                 = "SERVICE_LOGIN";
     public static final String SERVICE_GET_USER_INFO         = "SERVICE_GET_USER_INFO";
 
-    private static String SPOD_ENDPOINT                          =  "http://";
-    private static final String POST_LOGIN_HANDLER               = "/base/user/ajax-sign-in/";
+    private static String SPOD_ENDPOINT                          =  "";
+    private static final String POST_LOGIN_HANDLER               = "/openid/ajax.php";//"/base/user/ajax-sign-in/";
     private static final String POST_USER_INFO                   = "/cocreation/ajax/get-user-info/";
-    private static final String POST_ADD_NEW_ROW                 = "/ethersheet/mediaroom/addrow";
+    private static final String POST_ADD_NEW_ROW                 = "/ethersheet/mediaroom/addrow/";
     private static final String POST_COCREATION_CREATE_ROOM      = "/cocreation/ajax/create-media-room-from-mobile/";
     private static final String GET_COCREATION_MEDIA_ROOMS_ADDR  = "/cocreation/ajax/get-media-rooms-by-user-id/?userId=1";
     private static final String GET_COCREATION_ROOMS_SHEET_DATA  = "/cocreation/ajax/get-sheet-data-by-room-id/?roomId=";
+
+    private int IMAGE_SIZE_LIMIT = 1048576;
 
     private static NetworkChannel ourInstance = new NetworkChannel();
 
@@ -66,7 +70,7 @@ public class NetworkChannel extends Observable
         this.mainActivity = mainActivity;
         mRequestQueue= Volley.newRequestQueue(this.mainActivity);
         SharedPreferences spodPref = mainActivity.getSharedPreferences(LoginFragment.SPOD_MOBILE_PREFERENCES, Context.MODE_PRIVATE);
-        SPOD_ENDPOINT += spodPref.getString(LoginFragment.SPOD_ENDPOINT_PREFERENCES, "");
+        SPOD_ENDPOINT = "http://" +  spodPref.getString(LoginFragment.SPOD_ENDPOINT_PREFERENCES, "");
     }
 
     public String getCurrentService(){
@@ -100,6 +104,9 @@ public class NetworkChannel extends Observable
                     public void onErrorResponse(VolleyError error) {
                         loading.dismiss();
                         unavailableNetworkMessage(error);
+                        Snackbar.make(mainActivity.findViewById(R.id.container), "There are some problem with server connection!!!", Snackbar.LENGTH_LONG)
+                                .setAction("Action", null).show();
+
                     }
                 }){
                 @Override
@@ -269,17 +276,35 @@ public class NetworkChannel extends Observable
 
     }
 
-    public String getStringImage(Bitmap bmp){
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        byte[] imageBytes = baos.toByteArray();
-        String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
-        return encodedImage;
-    }
-
     public byte[] getByteImage(Bitmap bmp){
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        return baos.toByteArray();
+    }
+
+    public ByteArrayOutputStream compressPass(Bitmap bitmap, int sampleSize,int quality){
+        ByteArrayOutputStream baos    = new ByteArrayOutputStream();
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inSampleSize = sampleSize;
+        bitmap.compress(Bitmap.CompressFormat.JPEG, quality, baos);
+        return baos;
+    }
+
+    public byte[] compressBitmap(Bitmap bitmap, int sampleSize, int quality) {
+        ByteArrayOutputStream baos = null;
+        try {
+            baos = compressPass(bitmap, sampleSize, quality);
+            long lengthInByte = baos.toByteArray().length;
+            while (lengthInByte > IMAGE_SIZE_LIMIT) {
+                sampleSize *= 2;
+                quality /= 4;
+                baos = compressPass(bitmap, sampleSize, quality);
+                lengthInByte = baos.toByteArray().length;
+            }
+            bitmap.recycle();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return baos.toByteArray();
     }
 
@@ -287,7 +312,7 @@ public class NetworkChannel extends Observable
     {
         final ProgressDialog loading = ProgressDialog.show(mainActivity,"SPOD Mobile","Please wait...",false,false);
 
-        VolleyMultipartRequest multipartRequest = new VolleyMultipartRequest(Request.Method.POST, SPOD_ENDPOINT + POST_ADD_NEW_ROW, new Response.Listener<NetworkResponse>() {
+        VolleyMultipartRequest multipartRequest = new VolleyMultipartRequest(Request.Method.POST, SPOD_ENDPOINT + POST_ADD_NEW_ROW + sheetId, new Response.Listener<NetworkResponse>() {
             @Override
             public void onResponse(NetworkResponse response) {
                 String resultResponse = new String(response.data);
@@ -319,7 +344,8 @@ public class NetworkChannel extends Observable
             @Override
             protected Map<String, DataPart> getByteData() {
                 Map<String, DataPart> params = new HashMap<>();
-                params.put("image_file", new DataPart(title + ".jpg",  getByteImage(bitmap) , "image/jpeg"));
+                byte[] imageBytes = compressBitmap(bitmap, 1, 100);
+                params.put("image_file", new DataPart(title + ".jpg",  imageBytes , "image/jpeg"));
                 return params;
             }
         };

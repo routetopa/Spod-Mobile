@@ -1,5 +1,6 @@
 package eu.spod.isislab.spodapp.fragments;
 
+import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -54,7 +55,9 @@ public class MediaGalleryScreenSliderFragment extends Fragment implements Bottom
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.bottom_bar_room_list_add:
-                if(SpodLocationServices.isAvailable()) {
+                boolean ls_available = SpodLocationServices.isAvailable();
+                Location currentL = SpodLocationServices.getCurrentLocation();
+                if(ls_available || currentL == null) {
 
                     GalleryAddItemFragment addItemFragment = new GalleryAddItemFragment();
                     addItemFragment.setSheetId(sheetId);
@@ -65,7 +68,7 @@ public class MediaGalleryScreenSliderFragment extends Fragment implements Bottom
                             .commit();
 
                 }else{
-                    Snackbar.make(getActivity().findViewById(R.id.container), "Please make GPS available to add new geolocalized item", Snackbar.LENGTH_LONG)
+                    Snackbar.make(getActivity().findViewById(R.id.container), "Unable to get position, please check gps!!!", Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
                 }
                 break;

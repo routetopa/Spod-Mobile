@@ -67,7 +67,6 @@
         android:inputType="text"
         android:textColor="#2196F3"
         android:id="@+id/new_item_position"
-        android:hint="No address!!!"
         android:layout_gravity="center_vertical"
         android:padding="16dp"
         android:textAlignment="center"

@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -14,6 +16,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import java.util.List;
 
 import eu.spod.isislab.spodapp.fragments.LoginFragment;
 import eu.spod.isislab.spodapp.services.SpodLocationServices;
@@ -45,10 +49,27 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        ActivityCompat.requestPermissions(this,
-                new String[]{Manifest.permission.INTERNET}, INTERNET_PERMISSION);
-        ActivityCompat.requestPermissions(this,
-                new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, ACCESS_COARSE_LOCATION_PERMISSION);
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+            ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED )
+        {
+
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
+                startService(new Intent(this, SpodLocationServices.class));
+            }else{
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, ACCESS_COARSE_LOCATION_PERMISSION);
+            }
+
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.INTERNET)) {
+                getSupportFragmentManager().beginTransaction().add(R.id.container, new LoginFragment()).addToBackStack("login").commit();
+            }else{
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.INTERNET}, INTERNET_PERMISSION);
+            }
+        }else{
+            startService(new Intent(this, SpodLocationServices.class));
+            getSupportFragmentManager().beginTransaction().add(R.id.container, new LoginFragment()).addToBackStack("login").commit();
+        }
 
     }
 
@@ -64,7 +85,11 @@ public class MainActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
+                getSupportFragmentManager().popBackStack();
+            } else {
+                this.finish();
+            }
         }
     }
 
@@ -117,8 +142,7 @@ public class MainActivity extends AppCompatActivity
             case INTERNET_PERMISSION: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // permission concessa
-                    getSupportFragmentManager().beginTransaction().add(R.id.container, new LoginFragment()).addToBackStack("login").commit();
-                    //getSupportFragmentManager().beginTransaction().add(R.id.container, new CocreationRoomsListFragment()).addToBackStack("cocreation_rooms_list").commit();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.container, new LoginFragment()).addToBackStack("login").commit();
 
                 } else {
                     // permission negata

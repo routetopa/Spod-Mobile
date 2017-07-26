@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 
 import android.widget.TextView;
@@ -35,15 +36,18 @@ public class GalleryItemFragment extends Fragment implements View.OnClickListene
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         asView = inflater.inflate(R.layout.gallery_item_fragment, container, false);
 
-       /* DisplayMetrics displayMetrics = getActivity().getResources().getDisplayMetrics();
+        /*DisplayMetrics displayMetrics = getActivity().getResources().getDisplayMetrics();
         float dpHeight = displayMetrics.heightPixels / displayMetrics.density;
-        float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
+        float dpWidth = displayMetrics.widthPixels / displayMetrics.density;*/
 
         WebView iwv = (WebView) asView.findViewById(R.id.item_webview);
-
+        iwv.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
+        iwv.getSettings().setJavaScriptEnabled(true);
         iwv.getSettings().setLoadWithOverviewMode(true);
         iwv.getSettings().setUseWideViewPort(true);
-        iwv.setLayoutParams(new LinearLayout.LayoutParams( (int)dpWidth , (int)dpHeight - 100 ));*/
+        iwv.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
+        iwv.setScrollbarFadingEnabled(false);
+        //iwv.setLayoutParams(new LinearLayout.LayoutParams( (int)dpWidth , (int)dpHeight - 100 ));
 
         ((WebView) asView.findViewById(R.id.item_webview)).loadUrl(image);
         ((TextView) asView.findViewById(R.id.item_title)).setText(title);

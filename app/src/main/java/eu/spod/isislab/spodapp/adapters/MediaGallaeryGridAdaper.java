@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.BaseAdapter;
 import android.widget.RelativeLayout;
@@ -60,12 +61,13 @@ public class MediaGallaeryGridAdaper extends BaseAdapter {
         RelativeLayout itemView = (RelativeLayout) inflater.inflate(R.layout.gallery_item, null);
 
         DisplayMetrics displayMetrics = mContext.getResources().getDisplayMetrics();
-        float dpHeight = displayMetrics.heightPixels / displayMetrics.density;
-        float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
+        //float dpHeight = displayMetrics.heightPixels / displayMetrics.density;
+        float dpHeight = (parent.getMeasuredHeight() -  140)/ 2;
+        //float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
 
         try {
             holder.image_webview = (WebView) itemView.findViewById(R.id.image_webview);
-            holder.image_webview.setLayoutParams(new RelativeLayout.LayoutParams( (int)dpWidth , (int)dpHeight / 2 ));
+            holder.image_webview.setLayoutParams(new RelativeLayout.LayoutParams( ViewGroup.LayoutParams.WRAP_CONTENT, (int)dpHeight  ));
             holder.image_title   = (TextView) itemView.findViewById(R.id.image_title);
             holder.image_description = (TextView) itemView.findViewById(R.id.image_description);
             holder.image_date = (TextView) itemView.findViewById(R.id.image_date);
@@ -81,6 +83,14 @@ public class MediaGallaeryGridAdaper extends BaseAdapter {
                     return true;
                 }
             });
+
+            holder.image_webview.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
+            holder.image_webview.setInitialScale(1);
+            holder.image_webview.getSettings().setJavaScriptEnabled(true);
+            holder.image_webview.getSettings().setLoadWithOverviewMode(true);
+            holder.image_webview.getSettings().setUseWideViewPort(true);
+            holder.image_webview.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
+            holder.image_webview.setScrollbarFadingEnabled(false);
 
         }catch (Exception e){
             e.printStackTrace();

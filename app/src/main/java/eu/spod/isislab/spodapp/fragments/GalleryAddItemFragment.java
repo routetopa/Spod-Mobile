@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -130,7 +131,7 @@ public class GalleryAddItemFragment extends Fragment implements View.OnClickList
     private File createTemporaryFile(String part, String ext) throws Exception
     {
         File tempDir= Environment.getExternalStorageDirectory();
-        tempDir=new File(tempDir.getAbsolutePath()+"/.temp/");
+        tempDir=new File(tempDir.getAbsolutePath() + "/.temp/");
         if(!tempDir.exists())
         {
             tempDir.mkdirs();
@@ -151,24 +152,16 @@ public class GalleryAddItemFragment extends Fragment implements View.OnClickList
                 Location location  = SpodLocationServices.getCurrentLocation();
 
                 if(title.isEmpty() || description.isEmpty() || location == null){
-                    Snackbar.make(getActivity().findViewById(R.id.container), "Please fill form correctly!!!", Snackbar.LENGTH_LONG)
+                    Snackbar.make(getActivity().findViewById(R.id.container), "Please fill form correctly, maybe the location is not accessible, check it!!!", Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
 
                 }else{
+                    Calendar c = Calendar.getInstance();
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+                    String strDate = sdf.format(c.getTime());
 
-                    int imageSize = BitmapCompat.getAllocationByteCount(bp);
-
-                    if(bp != null && BitmapCompat.getAllocationByteCount(bp) < (3145728 * 2) /*3Mb*/ ) {
-                        Calendar c = Calendar.getInstance();
-                        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-                        String strDate = sdf.format(c.getTime());
-
-                        NetworkChannel.getInstance().addObserver(this);
-                        NetworkChannel.getInstance().addRowToSheet(sheetId, title, description, strDate, bp);
-                    }else{
-                        Snackbar.make(getActivity().findViewById(R.id.container), "Please check image size, it must be less than 3 Mb!", Snackbar.LENGTH_LONG)
-                                .setAction("Action", null).show();
-                    }
+                    NetworkChannel.getInstance().addObserver(this);
+                    NetworkChannel.getInstance().addRowToSheet(sheetId, title, description, strDate, bp);
                 }
 
                 break;

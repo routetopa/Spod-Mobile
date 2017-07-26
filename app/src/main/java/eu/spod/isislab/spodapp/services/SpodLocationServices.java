@@ -59,8 +59,10 @@ public class SpodLocationServices extends IntentService implements LocationListe
                 }
             }
 
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_PERIOD, MIN_DIST, this);
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_PERIOD, MIN_DIST, this);
+            if (locationManager.getAllProviders().contains(LocationManager.GPS_PROVIDER))
+               locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_PERIOD, MIN_DIST, this);
+            if (locationManager.getAllProviders().contains(LocationManager.NETWORK_PROVIDER))
+               locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_PERIOD, MIN_DIST, this);
         }
 
     }
