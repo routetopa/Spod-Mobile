@@ -1,11 +1,16 @@
 package eu.spod.isislab.spodapp.fragments;
 
+import android.app.ActivityManager;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Debug;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -25,6 +30,8 @@ import android.widget.TextView;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -118,8 +125,29 @@ public class GalleryAddItemFragment extends Fragment implements View.OnClickList
         ContentResolver cr = getActivity().getContentResolver();
         try
         {
-            bp = android.provider.MediaStore.Images.Media.getBitmap(cr, mImageUri);
-            imageView.setImageBitmap(bp);
+            ActivityManager.MemoryInfo mi = new ActivityManager.MemoryInfo();
+            ActivityManager activityManager = (ActivityManager)getActivity(). getSystemService(Context.ACTIVITY_SERVICE);
+            activityManager.getMemoryInfo(mi);
+
+            //bp = android.provider.MediaStore.Images.Media.getBitmap(cr, mImageUri);
+            String x = mImageUri.getPath();
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inSampleSize = 4;
+            bp = BitmapFactory.decodeFile(mImageUri.getPath(), options);
+
+            if(bp.getByteCount() > mi.availMem){
+                options = new BitmapFactory.Options();
+                options.inSampleSize = 8;
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                bp.compress(Bitmap.CompressFormat.JPEG, 0 /*ignored for PNG*/, bos);
+                byte[] bitmapdata = bos.toByteArray();
+                ByteArrayInputStream bs = new ByteArrayInputStream(bitmapdata);
+                Bitmap preview_bitmap = BitmapFactory.decodeStream(bs, null, options);
+
+                imageView.setImageBitmap(preview_bitmap);
+            }else {
+                imageView.setImageBitmap(bp);
+            }
         }
         catch (Exception e)
         {
