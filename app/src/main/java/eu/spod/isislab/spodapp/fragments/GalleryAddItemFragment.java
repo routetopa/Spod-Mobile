@@ -101,7 +101,7 @@ public class GalleryAddItemFragment extends Fragment implements View.OnClickList
     @Override
     public void onClick(View v) {
         Intent photoIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        File photo = new File("");
+        File photo;
         try
         {
             // place where to store camera taken picture

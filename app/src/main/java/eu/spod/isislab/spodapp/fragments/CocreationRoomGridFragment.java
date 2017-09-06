@@ -5,31 +5,35 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.support.v4.app.Fragment;
 import android.widget.GridView;
+import java.util.Observable;
 
-import java.util.ArrayList;
-
-import eu.spod.isislab.spodapp.adapters.MediaGalleryGridAdaper;
-import eu.spod.isislab.spodapp.services.SpodLocationServices;
-import eu.spod.isislab.spodapp.utils.MediaGalleryItem;
+import eu.spod.isislab.spodapp.MainActivity;
 import eu.spod.isislab.spodapp.R;
+import eu.spod.isislab.spodapp.adapters.ImageAdapter;
+import eu.spod.isislab.spodapp.services.SpodLocationServices;
+import eu.spod.isislab.spodapp.utils.NetworkChannel;
 
-public class MediaGalleryScreenSliderFragment extends Fragment implements BottomNavigationView.OnNavigationItemSelectedListener
-{
+public class CocreationRoomGridFragment extends CocreationRoomFragment implements BottomNavigationView.OnNavigationItemSelectedListener {
 
-    private MediaGalleryGridAdaper gridAdapter;
-    private String sheetId;
+    private ImageAdapter gridAdapter;
 
-    public void setItems(ArrayList<MediaGalleryItem> items) {
-        this.items = items;
+    String roomName;
+    String roomId;
+    String sheetId;
+    GridView grid;
+
+    public void setRoom(String roomName, String roomId, String sheetId){
+
+        this.roomName = roomName;
+        this.roomId   = roomId;
+        this.sheetId  = sheetId;
     }
-
-    ArrayList<MediaGalleryItem> items;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -41,14 +45,34 @@ public class MediaGalleryScreenSliderFragment extends Fragment implements Bottom
                 rootView.findViewById(R.id.room_list_bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
 
-        gridAdapter = new MediaGalleryGridAdaper(getActivity());
-        gridAdapter.setItems(items);
-
-        GridView grid = (GridView)rootView.findViewById(R.id.image_gridview);
-        grid.setNumColumns(2);
-        grid.setAdapter(this.gridAdapter);
+        gridAdapter = new ImageAdapter(getActivity());
+        grid = (GridView)rootView.findViewById(R.id.image_gridview);
+        grid.setNumColumns(GridView.AUTO_FIT);
 
         return rootView;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+
+        NetworkChannel.getInstance().addObserver(this);
+        NetworkChannel.getInstance().getSheetData(roomId);
+
+        ((MainActivity)getActivity()).setToolbarTitle(this.roomName);
+
+        super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        super.update(o,arg);
+        try {
+            gridAdapter.setData(response);
+            grid.setAdapter(gridAdapter);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        NetworkChannel.getInstance().deleteObserver(this);
     }
 
     @Override
@@ -72,12 +96,7 @@ public class MediaGalleryScreenSliderFragment extends Fragment implements Bottom
                             .setAction("Action", null).show();
                 }
                 break;
-
         }
         return true;
-    }
-
-    public void setSheetId(String sheetId) {
-        this.sheetId = sheetId;
     }
 }

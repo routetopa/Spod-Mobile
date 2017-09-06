@@ -21,7 +21,7 @@ import eu.spod.isislab.spodapp.utils.AddressSolver;
 import eu.spod.isislab.spodapp.utils.MediaGalleryItem;
 import eu.spod.isislab.spodapp.R;
 
-public class MediaGallaeryGridAdaper extends BaseAdapter {
+public class MediaGalleryGridAdaper extends BaseAdapter {
 
     public static final int NUM_IMAGES_PER_PAGE = 4;
 
@@ -30,7 +30,7 @@ public class MediaGallaeryGridAdaper extends BaseAdapter {
     private Context mContext;
     private ArrayList<MediaGalleryItem> items = new ArrayList<>();
 
-    public MediaGallaeryGridAdaper(Context mContext) {
+    public MediaGalleryGridAdaper(Context mContext) {
         this.mContext = mContext;
         inflater      = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }

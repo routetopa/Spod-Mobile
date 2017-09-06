@@ -13,20 +13,22 @@ import java.util.Observable;
 import java.util.Observer;
 
 import eu.spod.isislab.spodapp.MainActivity;
+import eu.spod.isislab.spodapp.R;
 import eu.spod.isislab.spodapp.adapters.MediaGalleryScreenSlidePagerAdapter;
 import eu.spod.isislab.spodapp.utils.NetworkChannel;
-import eu.spod.isislab.spodapp.R;
 import eu.spod.isislab.spodapp.utils.ZoomOutPageTransformer;
 
-public class CocreationRoomFragment extends Fragment implements Observer {
+public class CocreationRoomPagedFragment extends CocreationRoomFragment {
+
+    private View asView = null;
+    private ViewPager mPager;
+    private MediaGalleryScreenSlidePagerAdapter mPagerAdapter;
 
     String roomName;
     String roomId;
     String sheetId;
 
-    JSONArray response;
-
-    public CocreationRoomFragment(){}
+    public CocreationRoomPagedFragment(){}
 
     public void setRoom(String roomName, String roomId, String sheetId){
 
@@ -35,6 +37,27 @@ public class CocreationRoomFragment extends Fragment implements Observer {
         this.sheetId  = sheetId;
     }
 
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        asView = inflater.inflate(R.layout.cocreation_room_fragment, container, false);
+
+        mPager = (ViewPager) asView.findViewById(R.id.pager);
+        mPager.setPageTransformer(true, new ZoomOutPageTransformer());
+
+        return asView;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+
+        NetworkChannel.getInstance().addObserver(this);
+        NetworkChannel.getInstance().getSheetData(roomId);
+
+        ((MainActivity)getActivity()).setToolbarTitle(this.roomName);
+        mPagerAdapter = new MediaGalleryScreenSlidePagerAdapter(getActivity().getSupportFragmentManager());
+
+        super.onActivityCreated(savedInstanceState);
+    }
 
     public void refreshData(){
         NetworkChannel.getInstance().addObserver(this);
@@ -55,8 +78,10 @@ public class CocreationRoomFragment extends Fragment implements Observer {
 
     @Override
     public void update(Observable o, Object arg) {
+        super.update(o,arg);
         try {
-            response = (JSONArray) arg;
+            mPagerAdapter.setData(response, sheetId);
+            mPager.setAdapter(mPagerAdapter);
         }catch (Exception e){
             e.printStackTrace();
         }

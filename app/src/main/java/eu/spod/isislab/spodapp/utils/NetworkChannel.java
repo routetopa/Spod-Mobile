@@ -51,8 +51,6 @@ public class NetworkChannel extends Observable
     private static final String GET_COCREATION_MEDIA_ROOMS_ADDR  = "/cocreation/ajax/get-media-rooms-by-user-id/?userId=";
     private static final String GET_COCREATION_ROOMS_SHEET_DATA  = "/cocreation/ajax/get-sheet-data-by-room-id/?roomId=";
 
-    private int IMAGE_SIZE_LIMIT = 1048576;
-
     private static NetworkChannel ourInstance = new NetworkChannel();
 
     private Activity mainActivity      = null;
@@ -276,38 +274,6 @@ public class NetworkChannel extends Observable
 
     }
 
-    public byte[] getByteImage(Bitmap bmp){
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        return baos.toByteArray();
-    }
-
-    public ByteArrayOutputStream compressPass(Bitmap bitmap, int sampleSize,int quality){
-        ByteArrayOutputStream baos    = new ByteArrayOutputStream();
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inSampleSize = sampleSize;
-        bitmap.compress(Bitmap.CompressFormat.JPEG, quality, baos);
-        return baos;
-    }
-
-    public byte[] compressBitmap(Bitmap bitmap, int sampleSize, int quality) {
-        ByteArrayOutputStream baos = null;
-        try {
-            baos = compressPass(bitmap, sampleSize, quality);
-            long lengthInByte = baos.toByteArray().length;
-            while (lengthInByte > IMAGE_SIZE_LIMIT) {
-                sampleSize *= 2;
-                quality /= 4;
-                baos = compressPass(bitmap, sampleSize, quality);
-                lengthInByte = baos.toByteArray().length;
-            }
-            bitmap.recycle();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return baos.toByteArray();
-    }
-
     public void addRowToSheet(final String sheetId, final String title, final String description, final String date, final Bitmap bitmap)
     {
         final ProgressDialog loading = ProgressDialog.show(mainActivity,"SPOD Mobile","Please wait...",false,false);
@@ -344,7 +310,7 @@ public class NetworkChannel extends Observable
             @Override
             protected Map<String, DataPart> getByteData() {
                 Map<String, DataPart> params = new HashMap<>();
-                byte[] imageBytes = compressBitmap(bitmap, 1, 100);
+                byte[] imageBytes = ImageUtils.getInstance().compressBitmap(bitmap, 1, 100);
                 params.put("image_file", new DataPart(title + ".jpg",  imageBytes , "image/jpeg"));
                 return params;
             }

@@ -10,8 +10,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.concurrent.Exchanger;
 
 import eu.spod.isislab.spodapp.utils.MediaGalleryItem;
 import eu.spod.isislab.spodapp.fragments.MediaGalleryScreenSliderFragment;
@@ -33,8 +31,8 @@ public class MediaGalleryScreenSlidePagerAdapter extends FragmentStatePagerAdapt
         }catch (JSONException e){ e. printStackTrace(); }
 
         this.data = newJsonArray;
-        this.num_pages = (this.data.length() / MediaGallaeryGridAdaper.NUM_IMAGES_PER_PAGE)
-                       + ((this.data.length() % MediaGallaeryGridAdaper.NUM_IMAGES_PER_PAGE != 0) ? 1 : 0);
+        this.num_pages = (this.data.length() / MediaGalleryGridAdaper.NUM_IMAGES_PER_PAGE)
+                       + ((this.data.length() % MediaGalleryGridAdaper.NUM_IMAGES_PER_PAGE != 0) ? 1 : 0);
 
         if(this.data.length() == 0) {
             this.num_pages = 1;
@@ -72,10 +70,10 @@ public class MediaGalleryScreenSlidePagerAdapter extends FragmentStatePagerAdapt
                             row.getString("Date"))
                     );
 
-                    if ((i + 1) % MediaGallaeryGridAdaper.NUM_IMAGES_PER_PAGE == 0) {
-                        this.pages[i / MediaGallaeryGridAdaper.NUM_IMAGES_PER_PAGE] = new MediaGalleryScreenSliderFragment();
-                        this.pages[i / MediaGallaeryGridAdaper.NUM_IMAGES_PER_PAGE].setSheetId(sheetId);
-                        this.pages[i / MediaGallaeryGridAdaper.NUM_IMAGES_PER_PAGE].setItems(items);
+                    if ((i + 1) % MediaGalleryGridAdaper.NUM_IMAGES_PER_PAGE == 0) {
+                        this.pages[i / MediaGalleryGridAdaper.NUM_IMAGES_PER_PAGE] = new MediaGalleryScreenSliderFragment();
+                        this.pages[i / MediaGalleryGridAdaper.NUM_IMAGES_PER_PAGE].setSheetId(sheetId);
+                        this.pages[i / MediaGalleryGridAdaper.NUM_IMAGES_PER_PAGE].setItems(items);
                         items = new ArrayList<>();
                     }
                 }catch (Exception e){
@@ -85,7 +83,7 @@ public class MediaGalleryScreenSlidePagerAdapter extends FragmentStatePagerAdapt
             }
 
             //last page if not empty
-            if(this.data.length() % MediaGallaeryGridAdaper.NUM_IMAGES_PER_PAGE != 0 || this.data.length() == 0) {
+            if(this.data.length() % MediaGalleryGridAdaper.NUM_IMAGES_PER_PAGE != 0 || this.data.length() == 0) {
                 this.pages[num_pages - 1] = new MediaGalleryScreenSliderFragment();
                 this.pages[num_pages - 1].setSheetId(sheetId);
                 this.pages[num_pages - 1].setItems(items);

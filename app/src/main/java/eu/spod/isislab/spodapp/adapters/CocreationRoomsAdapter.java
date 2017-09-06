@@ -13,6 +13,8 @@ import android.widget.TextView;
 import eu.spod.isislab.spodapp.MainActivity;
 import eu.spod.isislab.spodapp.R;
 import eu.spod.isislab.spodapp.fragments.CocreationRoomFragment;
+import eu.spod.isislab.spodapp.fragments.CocreationRoomGridFragment;
+import eu.spod.isislab.spodapp.fragments.CocreationRoomPagedFragment;
 import eu.spod.isislab.spodapp.utils.DownloadImageTask;
 
 /**
@@ -61,13 +63,12 @@ public class CocreationRoomsAdapter extends BaseAdapter{
         new DownloadImageTask(holder.ownerImage)
                 .execute(rooms[position][5]);
 
-
-
         rowView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //Toast.makeText(context, "You Clicked "+ rooms[position][1], Toast.LENGTH_LONG).show();
-                CocreationRoomFragment roomFragment = new CocreationRoomFragment();
+                CocreationRoomPagedFragment roomFragment = new CocreationRoomPagedFragment();
+                //CocreationRoomGridFragment roomFragment = new CocreationRoomGridFragment();
                 roomFragment.setRoom(rooms[position][0], rooms[position][2], rooms[position][3]);
                 ((MainActivity)context).getSupportFragmentManager().beginTransaction()
                         .replace(R.id.container, roomFragment, "cocreation_room" )
