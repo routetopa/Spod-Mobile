@@ -1,9 +1,13 @@
 package eu.spod.isislab.spodapp.adapters;
 
 import android.content.Context;
+import android.graphics.Point;
 import android.location.Location;
+import android.util.DisplayMetrics;
+import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.BaseAdapter;
@@ -11,12 +15,17 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import eu.spod.isislab.spodapp.MainActivity;
+import eu.spod.isislab.spodapp.R;
+import eu.spod.isislab.spodapp.fragments.GalleryItemFragment;
 import eu.spod.isislab.spodapp.fragments.MediaGalleryScreenSliderFragment;
 import eu.spod.isislab.spodapp.utils.DownloadImageTask;
 import eu.spod.isislab.spodapp.utils.MediaGalleryItem;
@@ -25,12 +34,16 @@ public class ImageAdapter extends BaseAdapter
 {
     private Context mContext;
     private ArrayList<MediaGalleryItem> items = new ArrayList<>();
+    int tileWidth;
 
     public ImageAdapter(Context c) {
         mContext = c;
+        WindowManager wm = (WindowManager)mContext.getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        tileWidth = size.x / 2;
     }
-
-
 
     public void setData(JSONArray data){
 
@@ -47,7 +60,8 @@ public class ImageAdapter extends BaseAdapter
                         row.getString("Description"),
                         row.getString("Image"),
                         loc,
-                        row.getString("Date"))
+                        row.getString("Date"),
+                        row.getString("User"))
                 );
             }catch (Exception e){
                 e.printStackTrace();
@@ -69,29 +83,39 @@ public class ImageAdapter extends BaseAdapter
     }
 
     // create a new ImageView for each item referenced by the Adapter
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         ItemHolder holder = new ItemHolder();
         if (convertView == null) {
-            // if it's not recycled, initialize some attributes
-            /*holder.webView = new WebView(mContext);
-            holder.webView.setLayoutParams(new GridView.LayoutParams(200, 200));
-            //webView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            holder.webView.setPadding(8, 8, 8, 8);
-            holder.webView.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
-            holder.webView.setInitialScale(1);
-            holder.webView.getSettings().setJavaScriptEnabled(true);
-            holder.webView.getSettings().setLoadWithOverviewMode(true);
-            holder.webView.getSettings().setUseWideViewPort(true);
-            holder.webView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
-            holder.webView.setScrollbarFadingEnabled(false);*/
             holder.imageView = new ImageView(mContext);
+            holder.imageView.setLayoutParams(new GridView.LayoutParams(tileWidth, tileWidth));
             holder.imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            new DownloadImageTask(holder.imageView)
-                    .execute(items.get(position).getImage());
-
         } else {
             holder.imageView = (ImageView) convertView;
         }
+
+        Glide.with(mContext)
+                .load(items.get(position).getImage())
+                .into(holder.imageView);
+
+        holder.imageView.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                GalleryItemFragment galleryItemFragment = new GalleryItemFragment();
+                galleryItemFragment.setData(items.get(position).getTitle(),
+                                            items.get(position).getDescription(),
+                                            items.get(position).getImage(),
+                                            items.get(position).getLocation(),
+                                            items.get(position).getDate(),
+                                            items.get(position).getUsername());
+                ((MainActivity)mContext).getSupportFragmentManager().beginTransaction()
+                        .setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right,android.R.anim.slide_out_right, android.R.anim.slide_in_left)
+                        .add(R.id.container, galleryItemFragment)
+                        .addToBackStack("gallery_item_fragment")
+                        .commit();
+            }
+        });
 
         return holder.imageView;
     }

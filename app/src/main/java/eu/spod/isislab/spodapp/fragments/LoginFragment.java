@@ -97,7 +97,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Obs
                 case NetworkChannel.SERVICE_LOGIN:
                     Boolean result = res.getBoolean("result");
                     if(result){
-                        NetworkChannel.getInstance().getUserInfo(((TextView)asView.findViewById(R.id.username)).getText().toString());
+                        NetworkChannel.getInstance().getUserInfo(((TextView)asView.findViewById(R.id.username)).getText().toString(), "");
 
                     }else{
                         Snackbar.make(asView, res.getString("message"), Snackbar.LENGTH_LONG)
@@ -110,7 +110,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Obs
                     Boolean status = res.getBoolean("status");
                     if(status) {
                         JSONObject user = new JSONObject(res.getString("user"));
-                        User.getInstance().init(user.getString("id"), user.getString("username"), user.getString("image"));
+                        User.getInstance().init(user.getString("id"), user.getString("username"), user.getString("image"), user.getString("name"));
 
                         SharedPreferences.Editor editor = spodPref.edit();
                         editor.putString(USERNAME_PREFERENCES, ((TextView)asView.findViewById(R.id.username)).getText().toString());

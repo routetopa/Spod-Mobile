@@ -102,7 +102,12 @@ public class MediaGalleryGridAdaper extends BaseAdapter {
             public void onClick(View v) {
                 // TODO Auto-generated method stub
                 GalleryItemFragment galleryItemFragment = new GalleryItemFragment();
-                galleryItemFragment.setData(items.get(position).getTitle(), items.get(position).getDescription(), items.get(position).getImage(), items.get(position).getLocation());
+                galleryItemFragment.setData(items.get(position).getTitle(),
+                                            items.get(position).getDescription(),
+                                            items.get(position).getImage(),
+                                            items.get(position).getLocation(),
+                                            items.get(position).getDate(),
+                                            items.get(position).getUsername());
                 ((MainActivity)mContext).getSupportFragmentManager().beginTransaction()
                         .setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right,android.R.anim.slide_out_right, android.R.anim.slide_in_left)
                         .add(R.id.container, galleryItemFragment)

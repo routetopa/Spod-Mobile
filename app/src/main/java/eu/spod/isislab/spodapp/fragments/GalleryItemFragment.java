@@ -1,31 +1,52 @@
 package eu.spod.isislab.spodapp.fragments;
 
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.DrawerLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
+import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.android.volley.Network;
+import com.bumptech.glide.Glide;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Observable;
+import java.util.Observer;
+
+import eu.spod.isislab.spodapp.MainActivity;
 import eu.spod.isislab.spodapp.R;
 import eu.spod.isislab.spodapp.utils.AddressSolver;
+import eu.spod.isislab.spodapp.utils.NetworkChannel;
+import eu.spod.isislab.spodapp.utils.User;
 
-public class GalleryItemFragment extends Fragment implements View.OnClickListener{
+public class GalleryItemFragment extends Fragment implements View.OnClickListener, Observer{
 
     private String title;
     private String description;
     private String image;
     private Location location;
+    private String date;
+    private String username;
 
-    public void setData(String title, String description, String image,Location location) {
+    public void setData(String title, String description, String image, Location location, String date, String username) {
         this.title       = title;
         this.description = description;
         this.image       = image;
         this.location    = location;
+        this.date        = date;
+        this.username    = username;
     }
 
     View asView = null;
@@ -40,23 +61,24 @@ public class GalleryItemFragment extends Fragment implements View.OnClickListene
         float dpHeight = displayMetrics.heightPixels / displayMetrics.density;
         float dpWidth = displayMetrics.widthPixels / displayMetrics.density;*/
 
-        WebView iwv = (WebView) asView.findViewById(R.id.item_webview);
-        iwv.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
-        iwv.getSettings().setJavaScriptEnabled(true);
-        iwv.getSettings().setLoadWithOverviewMode(true);
-        iwv.getSettings().setUseWideViewPort(true);
-        iwv.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
-        iwv.setScrollbarFadingEnabled(false);
-        //iwv.setLayoutParams(new LinearLayout.LayoutParams( (int)dpWidth , (int)dpHeight - 100 ));
+        ImageView imageView = (ImageView) asView.findViewById(R.id.item_image);
+        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        Glide.with(getActivity())
+                .load(image)
+                .into(imageView);
 
-        ((WebView) asView.findViewById(R.id.item_webview)).loadUrl(image);
         ((TextView) asView.findViewById(R.id.item_title)).setText(title);
         ((TextView) asView.findViewById(R.id.item_description)).setText(description);
+        ((TextView) asView.findViewById(R.id.item_username)).setText(username);
+        ((TextView) asView.findViewById(R.id.item_date)).setText(date);
+        ((ImageView) asView.findViewById(R.id.item_location)).setOnClickListener(this);
+         NetworkChannel.getInstance().addObserver(this);
+         NetworkChannel.getInstance().getUserInfo("", User.getInstance().getUsername());
 
-        TextView address = (TextView) asView.findViewById(R.id.item_location);
+        /*TextView address = (TextView) asView.findViewById(R.id.item_location);
         address.setOnClickListener(this);
 
-        new AddressSolver(address, getActivity()).execute(location);
+        new AddressSolver(address, getActivity()).execute(location);*/
 
         return asView;
     }
@@ -75,7 +97,25 @@ public class GalleryItemFragment extends Fragment implements View.OnClickListene
                 .add(R.id.container, mapFragment)
                 .addToBackStack("map_fragment")
                 .commit();
+    }
 
+    @Override
+    public void update(Observable o, Object response) {
+        try {
+            JSONObject res = new JSONObject((String) response);
+            Boolean status = res.getBoolean("status");
+            if (status) {
+                JSONObject user = new JSONObject(res.getString("user"));
+
+                Glide.with(getActivity())
+                        .load(user.getString("image"))
+                        .into((ImageView) asView.findViewById(R.id.item_avatar));
+
+            }
+            NetworkChannel.getInstance().deleteObserver(this);
+        }catch(JSONException e){
+            e.printStackTrace();
+        }
 
     }
 }

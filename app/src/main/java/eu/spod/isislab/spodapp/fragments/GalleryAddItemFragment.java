@@ -63,9 +63,9 @@ public class GalleryAddItemFragment extends Fragment implements View.OnClickList
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
         rootView = (ViewGroup) inflater.inflate(R.layout.gallery_add_item_fragment, container, false);
-        TextView location = (TextView)rootView.findViewById(R.id.new_item_position);
+        /*TextView location = (TextView)rootView.findViewById(R.id.new_item_position);
         if(SpodLocationServices.getCurrentLocation() != null)
-           new AddressSolver(location, getActivity()).execute(SpodLocationServices.getCurrentLocation());
+           new AddressSolver(location, getActivity()).execute(SpodLocationServices.getCurrentLocation());*/
 
         BottomNavigationView bottomNavigationView = (BottomNavigationView)
                 rootView.findViewById(R.id.add_item_bottom_navigation);
@@ -78,6 +78,12 @@ public class GalleryAddItemFragment extends Fragment implements View.OnClickList
         image.setOnClickListener(this);
 
         return rootView;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        getPhoto();
     }
 
     @Override
@@ -100,23 +106,7 @@ public class GalleryAddItemFragment extends Fragment implements View.OnClickList
 
     @Override
     public void onClick(View v) {
-        Intent photoIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        File photo;
-        try
-        {
-            // place where to store camera taken picture
-            photo = this.createTemporaryFile("picture", ".jpg");
-            photo.delete();
-
-            mImageUri = Uri.fromFile(photo);
-            photoIntent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
-            startActivityForResult(photoIntent, PHOTO_REQUEST_CODE);
-        }
-        catch(Exception e)
-        {
-            Snackbar.make(rootView, "Please check SD card!", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show();
-        }
+        getPhoto();
     }
 
     public void grabImage(ImageView imageView)
@@ -154,6 +144,28 @@ public class GalleryAddItemFragment extends Fragment implements View.OnClickList
             Snackbar.make(rootView, "Failed to load the image!", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show();
         }
+    }
+
+    private void getPhoto()
+    {
+        Intent photoIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        File photo;
+        try
+        {
+            // place where to store camera taken picture
+            photo = this.createTemporaryFile("picture", ".jpg");
+            photo.delete();
+
+            mImageUri = Uri.fromFile(photo);
+            photoIntent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
+            startActivityForResult(photoIntent, PHOTO_REQUEST_CODE);
+        }
+        catch(Exception e)
+        {
+            Snackbar.make(rootView, "Please check SD card!", Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show();
+        }
+
     }
 
     private File createTemporaryFile(String part, String ext) throws Exception

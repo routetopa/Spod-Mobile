@@ -58,7 +58,7 @@ public class CocreationRoomGridFragment extends CocreationRoomFragment implement
         NetworkChannel.getInstance().addObserver(this);
         NetworkChannel.getInstance().getSheetData(roomId);
 
-        ((MainActivity)getActivity()).setToolbarTitle(this.roomName);
+        ((MainActivity)getActivity()).setToolbarTitle(roomName);
 
         super.onActivityCreated(savedInstanceState);
     }

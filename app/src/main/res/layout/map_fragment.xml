@@ -20,33 +20,41 @@
         android:padding="8dp"
         android:layout_margin="8dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:id="@+id/map_title"
-            android:textSize="14dp"
-            android:textColor="#000000"
-            android:text="Tile"
-            android:lines="1"
-            android:maxLength="100"
-            android:textStyle="bold"
-            android:layout_marginTop="8dp"
-            android:layout_marginLeft="8dp" />
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:id="@+id/map_title"
+                android:textSize="14dp"
+                android:textColor="#000000"
+                android:text="Tile"
+                android:lines="1"
+                android:maxLength="100"
+                android:textStyle="bold"
+                android:layout_marginTop="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_weight="50" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="20dp"
-            android:layout_alignBottom="@+id/item_title"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:id="@+id/map_location"
-            android:text=""
-            android:textColor="#2196F3"
-            android:textSize="8dp"
-            android:maxLength="100"
-            android:textStyle="bold"
-            android:layout_gravity="top|right"
-            android:gravity="top|right" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="20dp"
+                android:layout_alignBottom="@+id/item_title"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:id="@+id/map_location"
+                android:text="000000000,000000000"
+                android:textColor="#2196F3"
+                android:textSize="8dp"
+                android:maxLength="100"
+                android:textStyle="bold"
+                android:gravity="top|right"
+                android:layout_weight="50"
+                android:layout_gravity="center_vertical" />
+        </LinearLayout>
 
         <TextView
             android:layout_width="wrap_content"
@@ -59,7 +67,9 @@
             android:lines="2"
             android:maxLength="150"
             android:textStyle="italic"
-            android:longClickable="false" />
+            android:longClickable="false"
+            android:layout_gravity="center_vertical"
+            android:paddingLeft="18dp" />
 
     </LinearLayout>
 

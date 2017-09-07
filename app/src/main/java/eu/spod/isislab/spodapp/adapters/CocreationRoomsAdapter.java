@@ -10,6 +10,8 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
 import eu.spod.isislab.spodapp.MainActivity;
 import eu.spod.isislab.spodapp.R;
 import eu.spod.isislab.spodapp.fragments.CocreationRoomFragment;
@@ -60,15 +62,19 @@ public class CocreationRoomsAdapter extends BaseAdapter{
         holder.description.setText(rooms[position][1]);
         holder.ownerName.setText(rooms[position][4]);
 
-        new DownloadImageTask(holder.ownerImage)
-                .execute(rooms[position][5]);
+        Glide.with(context)
+                .load(rooms[position][5])
+                .into(holder.ownerImage);
+
+       /* new DownloadImageTask(holder.ownerImage)
+                .execute(rooms[position][5]);*/
 
         rowView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //Toast.makeText(context, "You Clicked "+ rooms[position][1], Toast.LENGTH_LONG).show();
-                CocreationRoomPagedFragment roomFragment = new CocreationRoomPagedFragment();
-                //CocreationRoomGridFragment roomFragment = new CocreationRoomGridFragment();
+                //CocreationRoomPagedFragment roomFragment = new CocreationRoomPagedFragment();
+                CocreationRoomGridFragment roomFragment = new CocreationRoomGridFragment();
                 roomFragment.setRoom(rooms[position][0], rooms[position][2], rooms[position][3]);
                 ((MainActivity)context).getSupportFragmentManager().beginTransaction()
                         .replace(R.id.container, roomFragment, "cocreation_room" )

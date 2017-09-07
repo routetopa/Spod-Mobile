@@ -24,7 +24,7 @@
 
 
     <string-array name="spod_endpoints_array">
-        <!--<item>172.16.15.77</item>-->
+        <item>172.16.15.77</item>
         <item>spod.routetopa.eu</item>
         <item>spod.databenc.it</item>
         <item>prato.routetopa.eu</item>

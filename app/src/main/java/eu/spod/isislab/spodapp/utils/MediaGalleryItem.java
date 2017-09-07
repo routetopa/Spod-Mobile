@@ -12,13 +12,15 @@ public class MediaGalleryItem {
     private String image;
     private String date;
     private Location location;
+    private String username;
 
-    public MediaGalleryItem(String title, String description, String image, Location location, String date) {
+    public MediaGalleryItem(String title, String description, String image, Location location, String date, String username) {
         this.title = title;
         this.description = description;
-        this.image = image;
-        this.location = location;
-        this.date = date;
+        this.image       = image;
+        this.location    = location;
+        this.date        = date;
+        this.username    = username;
     }
 
     public String getDate() {
@@ -60,4 +62,8 @@ public class MediaGalleryItem {
     public void setLocation(Location location) {
         this.location = location;
     }
+
+    public String getUsername() { return username; }
+
+    public void setUsername(String username) { this.username = username; }
 }

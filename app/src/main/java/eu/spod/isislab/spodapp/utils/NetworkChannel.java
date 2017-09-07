@@ -44,7 +44,7 @@ public class NetworkChannel extends Observable
     public static final String SERVICE_GET_USER_INFO         = "SERVICE_GET_USER_INFO";
 
     private static String SPOD_ENDPOINT                          =  "";
-    private static final String POST_LOGIN_HANDLER               = "/openid/ajax.php";//"/base/user/ajax-sign-in/";
+    private static final String POST_LOGIN_HANDLER               = "/base/user/ajax-sign-in/";//"/openid/ajax.php";
     private static final String POST_USER_INFO                   = "/cocreation/ajax/get-user-info/";
     private static final String POST_ADD_NEW_ROW                 = "/ethersheet/mediaroom/addrow/";
     private static final String POST_COCREATION_CREATE_ROOM      = "/cocreation/ajax/create-media-room-from-mobile/";
@@ -126,7 +126,7 @@ public class NetworkChannel extends Observable
         mRequestQueue.add(postRequest);
     }
 
-    public void getUserInfo(final String email){
+    public void getUserInfo(final String email, final String username){
         currentService = SERVICE_GET_USER_INFO;
         final ProgressDialog loading = ProgressDialog.show(mainActivity,"SPOD Mobile","Please wait...",false,false);
         StringRequest postRequest = new StringRequest(Request.Method.POST, SPOD_ENDPOINT + POST_USER_INFO,
@@ -155,7 +155,10 @@ public class NetworkChannel extends Observable
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
-                params.put("email", email);
+                if(!email.isEmpty())
+                   params.put("email", email);
+                else
+                   params.put("username", username);
                 return params;
             }
         };
@@ -302,8 +305,9 @@ public class NetworkChannel extends Observable
                 params.put("sheetId",     sheetId);
                 params.put("title",       title);
                 params.put("description", description);
-                params.put("location", location.getLatitude() + "," + location.getLongitude());
+                params.put("location",    location.getLatitude() + "," + location.getLongitude());
                 params.put("date",        date);
+                params.put("user",        User.getInstance().getUsername());
                 return params;
             }
 

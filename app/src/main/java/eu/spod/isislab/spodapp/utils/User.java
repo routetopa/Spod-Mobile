@@ -8,6 +8,7 @@ public class User {
     private String id;
     private String username;
     private String avatarImage;
+    private String name;
 
     private static User ourInstance = new User();
 
@@ -25,7 +26,7 @@ public class User {
         return username;
     }
 
-    public void init(String id, String username, String avatarImage){
+    public void init(String id, String username, String avatarImage, String name){
         this.id          = id;
         this.username    = username;
         this.avatarImage = avatarImage;
@@ -35,4 +36,11 @@ public class User {
         return avatarImage;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }
