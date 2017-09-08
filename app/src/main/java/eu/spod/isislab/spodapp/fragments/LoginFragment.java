@@ -103,7 +103,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Obs
                         Snackbar.make(asView, res.getString("message"), Snackbar.LENGTH_LONG)
                                 .setAction("Action", null).show();
                     }
-
                     break;
                 case NetworkChannel.SERVICE_GET_USER_INFO:
 

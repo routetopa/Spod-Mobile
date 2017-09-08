@@ -44,7 +44,7 @@ public class CocreationRoomsListFragment extends Fragment implements Observer, V
         NetworkChannel.getInstance().addObserver(this);
         NetworkChannel.getInstance().getCocreationMediaRooms();
 
-        ((MainActivity)getActivity()).setToolbarTitle("Cocreation rooms");
+        ((MainActivity)getActivity()).setToolbarTitle(getString(R.string.cocreation_room_list_message));
 
         super.onActivityCreated(savedInstanceState);
     }

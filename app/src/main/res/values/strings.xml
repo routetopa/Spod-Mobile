@@ -8,12 +8,31 @@
 
     <string name="bar_title">Spod</string>
     <!-- Login activity strings definitions -->
-
     <string name="login_activity_login">Login</string>
     <string name="login_activity_cancel">Reset</string>
-    <!-- Main activity strings definitions -->
     <string name="login_fragment_head_message">SPOD</string>
+    <string name="login_fragment_username_hint">email</string>
+    <string name="login_fragment_password_hint">password</string>
+    <string name="login_fragment_forgot_password_string">Forgot your password</string>
+    <string name="login_fragment_create_account_string">Create an Account</string>
+
+    <!-- Cocreation section  -->
+    <!--Create new room-->
+    <string name="cocreation_room_head_message">New room</string>
     <string name="cocreation_room_list_message">Cocreation rooms</string>
+    <string name="cocreation_room_new_room_name_string">Name</string>
+    <string name="cocreation_room_new_room_subject_string">Subject</string>
+    <string name="cocreation_room_new_room_goal_string">Goal</string>
+    <string name="cocreation_room_new_room_invitation_text_string">Invitation text</string>
+    <string name="cocreation_room_new_room_description_string">Description</string>
+    <string name="cocreation_room_new_room_add_button">Add new room</string>
+    <!--Gallery-->
+    <string name="cocreation_room_gallery_add_item_button">Add an item</string>
+    <!--New item in a gallery-->
+    <string name="cocreation_room_gallery_add_item_title_string">Title</string>
+    <string name="cocreation_room_gallery_add_item_description_string">Here the description for the new item</string>
+    <string name="cocreation_room_gallery_add_item_upload_button">Upload</string>
+
 
     <!-- Geoservice  -->
     <string name="service_not_available">Geoservice not available</string>
@@ -21,6 +40,17 @@
     <string name="no_address_found">No address found</string>
     <string name="address_found">Address found</string>
     <string name="google_maps_api_key">AIzaSyCyx35Mv7TJQZuMsIVyLK_n--HinmfphI0</string>
+
+    <!-- DrawOnTopApp message  -->
+    <!-- Main Activity -->
+    <string name="main_activity_notwork_connection_off">Network connection off</string>
+    <string name="main_activity_gps_off">GPS off</string>
+    <string name="main_activity_storage_permission_off">Without sdcard permission you cannot create new item in the cocreation room</string>
+    <!-- Cocreation -->
+    <string name="cocreation_gps_not_available">Unable to get position, please check gps!!!</string>
+    <string name="cocreation_fill_form_correctly">Please fill form correctly!!!</string>
+    <string name="cocreation_room_created">Room created</string>
+
 
 
     <string-array name="spod_endpoints_array">

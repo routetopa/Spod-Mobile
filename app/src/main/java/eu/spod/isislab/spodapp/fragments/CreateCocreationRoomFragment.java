@@ -47,7 +47,7 @@ public class CreateCocreationRoomFragment extends Fragment implements Observer, 
     public void onActivityCreated(Bundle savedInstanceState) {
 
         NetworkChannel.getInstance().addObserver(this);
-        ((MainActivity)getActivity()).setToolbarTitle("New room");
+        ((MainActivity)getActivity()).setToolbarTitle(getString(R.string.cocreation_room_head_message));
         super.onActivityCreated(savedInstanceState);
     }
 
@@ -68,7 +68,7 @@ public class CreateCocreationRoomFragment extends Fragment implements Observer, 
                 String invitation_text = ((TextView)asView.findViewById(R.id.new_room_invitation_text)).getText().toString();
 
                 if(name.isEmpty() || subject.isEmpty() || description.isEmpty() || goal.isEmpty() || invitation_text.isEmpty()){
-                    Snackbar.make(getActivity().findViewById(R.id.container), "Please fill form correctly!!!", Snackbar.LENGTH_LONG)
+                    Snackbar.make(getActivity().findViewById(R.id.container), getString(R.string.cocreation_fill_form_correctly), Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
                 }else{
                     NetworkChannel.getInstance().createCocreationRoom(name, subject, description, goal, invitation_text);
@@ -84,7 +84,7 @@ public class CreateCocreationRoomFragment extends Fragment implements Observer, 
         try{
             JSONObject res = new JSONObject((String)response);
             if(res.getBoolean("status")){
-                Snackbar.make(asView, "Room created", Snackbar.LENGTH_LONG)
+                Snackbar.make(asView, getString(R.string.cocreation_room_created), Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
                 this.getActivity().getSupportFragmentManager().popBackStack();
 

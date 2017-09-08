@@ -34,11 +34,11 @@ public class AddressSolver extends AsyncTask<Location, Void, String> {
         List<Address> addresses = null;
         try
         {
-            addresses = geocoder.getFromLocation(latitude, longitude, 1);
+            addresses = geocoder.getFromLocation(latitude, longitude, 5);
         }
         catch (IOException e)
         {
-
+            e.printStackTrace();
         }
         if (addresses!=null)
         {

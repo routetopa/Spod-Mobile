@@ -161,7 +161,7 @@ public class MainActivity extends AppCompatActivity
                     internetPermissionOk = true;
                 } else {
                     // permission negata
-                    Snackbar.make(this.findViewById(R.id.container), "Network connection off", Snackbar.LENGTH_LONG)
+                    Snackbar.make(this.findViewById(R.id.container), getString(R.string.main_activity_notwork_connection_off), Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
                 }
                 return;
@@ -171,21 +171,21 @@ public class MainActivity extends AppCompatActivity
                     startService(new Intent(this, SpodLocationServices.class));
 
                 } else {
-                    Snackbar.make(this.findViewById(R.id.container), "GPS off", Snackbar.LENGTH_LONG)
+                    Snackbar.make(this.findViewById(R.id.container), getString(R.string.main_activity_gps_off), Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
                 }
             }
             case WRITE_EXTERNAL_STORAGE_PERMISSION:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 } else {
-                    Snackbar.make(this.findViewById(R.id.container), "Without sdcard permission you cannot create new item in the cocreation room", Snackbar.LENGTH_LONG)
+                    Snackbar.make(this.findViewById(R.id.container), getString(R.string.main_activity_storage_permission_off), Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
                 }
                 break;
             case READ_EXTERNAL_STORAGE_PERMISSION:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 } else {
-                    Snackbar.make(this.findViewById(R.id.container), "Without sdcard permission you cannot create new item in the cocreation room", Snackbar.LENGTH_LONG)
+                    Snackbar.make(this.findViewById(R.id.container), getString(R.string.main_activity_storage_permission_off), Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
                 }
 

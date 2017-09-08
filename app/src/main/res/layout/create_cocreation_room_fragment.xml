@@ -23,7 +23,7 @@
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="Name"
+            android:text="@string/cocreation_room_new_room_name_string"
             android:textColor="#7b7b7b"
             android:textStyle="bold"
             android:textSize="16dp"
@@ -59,7 +59,7 @@
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="Subject"
+            android:text="@string/cocreation_room_new_room_subject_string"
             android:textColor="#7b7b7b"
             android:textStyle="bold"
             android:textSize="16dp"
@@ -100,7 +100,7 @@
             <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="Goal"
+                android:text="@string/cocreation_room_new_room_goal_string"
                 android:textColor="#7b7b7b"
                 android:textStyle="bold"
                 android:textSize="16dp"
@@ -141,7 +141,7 @@
             <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="Invitation text"
+                android:text="@string/cocreation_room_new_room_invitation_text_string"
                 android:textColor="#7b7b7b"
                 android:textStyle="bold"
                 android:textSize="16dp"
@@ -184,7 +184,7 @@
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="Description"
+            android:text="@string/cocreation_room_new_room_description_string"
             android:textColor="#7b7b7b"
             android:textStyle="bold"
             android:textSize="16dp"

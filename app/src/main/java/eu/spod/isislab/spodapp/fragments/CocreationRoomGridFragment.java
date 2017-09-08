@@ -92,7 +92,7 @@ public class CocreationRoomGridFragment extends CocreationRoomFragment implement
                             .commit();
 
                 }else{
-                    Snackbar.make(getActivity().findViewById(R.id.container), "Unable to get position, please check gps!!!", Snackbar.LENGTH_LONG)
+                    Snackbar.make(getActivity().findViewById(R.id.container), getString(R.string.cocreation_gps_not_available), Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
                 }
                 break;

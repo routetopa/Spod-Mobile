@@ -1,100 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_height="match_parent"
-    android:layout_width="match_parent">
-
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:orientation="vertical" android:layout_width="match_parent"
-        android:background="#c8c8c8FF"
-        android:layout_height="match_parent"
-        android:clickable="true">
-
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:orientation="horizontal" android:layout_width="match_parent"
-            android:background="#c8c8c8BB"
-            android:layout_height="wrap_content">
-
-            <eu.spod.isislab.spodapp.utils.CustomImageViewCircularShape
-                android:id="@+id/new_item_avatar"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:src="@drawable/avatar5"
-                android:background="@drawable/circle"
-                android:layout_margin="8dp"
-                android:scaleType="centerCrop"/>
-
-            <EditText
-                android:layout_width="fill_parent"
-                android:layout_height="50dp"
-                android:background="@drawable/round_text_edit"
-                android:inputType="text|textNoSuggestions"
-                android:id="@+id/new_item_title"
-                android:hint="Title "
-                android:layout_gravity="left|center_vertical"
-                android:padding="16dp"
-                android:textStyle="bold" />
-            &lt;!&ndash;android:textAlignment="textStart"&ndash;&gt;
-        </LinearLayout>
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight=".40"
-            android:id="@+id/new_item_image"
-            android:src="@drawable/camera"
-            android:adjustViewBounds="true"
-            android:background="@android:color/transparent"
-            android:padding="4dp" />
-
-        <EditText
-            android:layout_width="fill_parent"
-            android:layout_height="70dp"
-            android:background="@drawable/round_text_edit"
-            android:inputType="textMultiLine|textNoSuggestions"
-            android:id="@+id/new_item_description"
-            android:hint="Here the description for the new item"
-            android:padding="8dp"
-            android:textAlignment="center"
-            android:textStyle="normal"
-            android:textSize="16dp"
-            android:gravity="left"
-            android:maxLines="4"
-            android:singleLine="false"
-            android:isScrollContainer="true"
-            android:focusableInTouchMode="true" />
-
-        <EditText
-            android:layout_width="fill_parent"
-            android:layout_height="50dp"
-            android:background="@drawable/round_text_edit"
-            android:inputType="text"
-            android:textColor="#2196F3"
-            android:id="@+id/new_item_position"
-            android:layout_gravity="center_vertical"
-            android:padding="8dp"
-            android:textAlignment="center"
-            android:textStyle="italic"
-            android:enabled="false"
-            android:textSize="12dp"
-            android:textIsSelectable="false" />
-
-        <android.support.design.widget.BottomNavigationView
-            android:id="@+id/add_item_bottom_navigation"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/colorPrimary"
-            app:menu="@menu/bottom_bar_add_item"
-            app:itemIconTint="#FFFFFF"
-            app:itemTextColor="#FFFFFF" />
-
-    </LinearLayout>
-
-</ScrollView>-->
-
-
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="fill_parent"
@@ -127,7 +31,7 @@
                 android:layout_height="50dp"
                 android:inputType="text|textNoSuggestions"
                 android:id="@+id/new_item_title"
-                android:hint="Title "
+                android:hint="@string/cocreation_room_gallery_add_item_title_string"
                 android:layout_gravity="left|center_vertical"
                 android:padding="16dp"
                 android:textStyle="bold"
@@ -156,7 +60,7 @@
                 android:layout_height="fill_parent"
                 android:inputType="textMultiLine|textNoSuggestions"
                 android:id="@+id/new_item_description"
-                android:hint="Here the description for the new item"
+                android:hint="@string/cocreation_room_gallery_add_item_description_string"
                 android:padding="8dp"
                 android:textAlignment="center"
                 android:textStyle="normal"
