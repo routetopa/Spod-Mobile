@@ -1,23 +1,20 @@
 package eu.spod.isislab.spodapp.fragments;
 
-import android.content.SharedPreferences;
-import android.content.res.Configuration;
+import android.graphics.Bitmap;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.DrawerLayout;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
 
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.android.volley.Network;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,11 +22,9 @@ import org.json.JSONObject;
 import java.util.Observable;
 import java.util.Observer;
 
-import eu.spod.isislab.spodapp.MainActivity;
 import eu.spod.isislab.spodapp.R;
-import eu.spod.isislab.spodapp.utils.AddressSolver;
 import eu.spod.isislab.spodapp.utils.NetworkChannel;
-import eu.spod.isislab.spodapp.utils.User;
+import eu.spod.isislab.spodapp.entities.User;
 
 public class GalleryItemFragment extends Fragment implements View.OnClickListener, Observer{
 
@@ -61,8 +56,9 @@ public class GalleryItemFragment extends Fragment implements View.OnClickListene
         float dpHeight = displayMetrics.heightPixels / displayMetrics.density;
         float dpWidth = displayMetrics.widthPixels / displayMetrics.density;*/
 
-        ImageView imageView = (ImageView) asView.findViewById(R.id.item_image);
+        final ImageView imageView = (ImageView) asView.findViewById(R.id.item_image);
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+
         Glide.with(getActivity())
                 .load(image)
                 .into(imageView);
@@ -107,9 +103,21 @@ public class GalleryItemFragment extends Fragment implements View.OnClickListene
             if (status) {
                 JSONObject user = new JSONObject(res.getString("user"));
 
+                final ImageView imageView = (ImageView) asView.findViewById(R.id.item_avatar);
+
                 Glide.with(getActivity())
                         .load(user.getString("image"))
-                        .into((ImageView) asView.findViewById(R.id.item_avatar));
+                        .asBitmap()
+                        .centerCrop()
+                        .into(new BitmapImageViewTarget(imageView) {
+                            @Override
+                            protected void setResource(Bitmap resource) {
+                                RoundedBitmapDrawable circularBitmapDrawable =
+                                        RoundedBitmapDrawableFactory.create(getActivity().getResources(), resource);
+                                circularBitmapDrawable.setCircular(true);
+                                imageView.setImageDrawable(circularBitmapDrawable);
+                            }
+                        });
 
             }
             NetworkChannel.getInstance().deleteObserver(this);

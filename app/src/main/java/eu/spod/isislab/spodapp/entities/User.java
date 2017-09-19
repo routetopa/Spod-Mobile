@@ -1,4 +1,4 @@
-package eu.spod.isislab.spodapp.utils;
+package eu.spod.isislab.spodapp.entities;
 
 /**
  * Created by Utente on 14/07/2017.

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
+
+    <ListView
+        android:id="@+id/room_comment_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.82"
+        android:background="#FFFFFF"
+        android:dividerHeight="10dp"
+        android:divider="#FFFFFF"
+        android:layoutAnimation="@anim/row_animation"
+        android:padding="5dip" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.18"
+        android:background="#FFFFFF"
+        android:divider="#000000"
+        android:padding="4dp">
+
+        <EditText
+            android:id="@+id/agora_comment_add_new"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_margin="4dp"
+            android:layout_weight="0.88"
+            android:ems="10"
+            android:hint="@string/agora_comment_add_hint"
+            android:maxHeight="80dp" />
+
+        <ImageButton
+            android:id="@+id/agora_comment_send"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.12"
+            android:background="@drawable/agora_send_button"
+            android:text="d" />
+
+    </LinearLayout>
+
+</LinearLayout>

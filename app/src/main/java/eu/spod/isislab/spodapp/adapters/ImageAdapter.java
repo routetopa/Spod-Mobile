@@ -3,22 +3,17 @@ package eu.spod.isislab.spodapp.adapters;
 import android.content.Context;
 import android.graphics.Point;
 import android.location.Location;
-import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -26,9 +21,7 @@ import java.util.ArrayList;
 import eu.spod.isislab.spodapp.MainActivity;
 import eu.spod.isislab.spodapp.R;
 import eu.spod.isislab.spodapp.fragments.GalleryItemFragment;
-import eu.spod.isislab.spodapp.fragments.MediaGalleryScreenSliderFragment;
-import eu.spod.isislab.spodapp.utils.DownloadImageTask;
-import eu.spod.isislab.spodapp.utils.MediaGalleryItem;
+import eu.spod.isislab.spodapp.entities.MediaGalleryItem;
 
 public class ImageAdapter extends BaseAdapter
 {
@@ -47,7 +40,7 @@ public class ImageAdapter extends BaseAdapter
 
     public void setData(JSONArray data){
 
-        items = new ArrayList<>();
+        items.clear();
         int length = data.length();
         for (int i = 0; i < length; i++) {
             try {

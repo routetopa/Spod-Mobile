@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="8dp"
+    android:background="@drawable/round_list_view_row"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="15"
+        android:background="#ff9800">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="16dp"
+            android:src="@drawable/agora" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="85"
+        android:orientation="vertical"
+        android:padding="4dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.60"
+                android:gravity="bottom"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/agora_row_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="00/00/0000"
+                    android:textColor="#9E9E9E"
+                    android:textIsSelectable="true"
+                    android:textSize="14dp" />
+
+                <TextView
+                    android:id="@+id/agora_row_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="First room"
+                    android:textColor="#000000"
+                    android:textIsSelectable="true"
+                    android:textSize="16dp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.40"
+                android:orientation="vertical">
+
+                <!--barre-->
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <ProgressBar
+                        android:id="@+id/agora_row_views"
+                        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="4dp"
+                        android:max="20"
+                        android:progress="0"
+                        android:progressDrawable="@drawable/custom_progress_bar_horizontal" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_alignBottom="@id/agora_row_views"
+                        android:layout_alignLeft="@id/agora_row_views"
+                        android:layout_alignRight="@id/agora_row_views"
+                        android:layout_alignTop="@id/agora_row_views"
+                        android:background="#00000000"
+                        android:gravity="center_vertical|center_horizontal"
+                        android:text="@string/agora_room_list_views_label"
+                        android:textSize="12dp"
+                        android:textStyle="bold" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <ProgressBar
+                        android:id="@+id/agora_row_comments"
+                        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="4dp"
+                        android:max="100"
+                        android:progress="60"
+                        android:progressDrawable="@drawable/custom_progress_bar_horizontal" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_alignBottom="@id/agora_row_comments"
+                        android:layout_alignLeft="@id/agora_row_comments"
+                        android:layout_alignRight="@id/agora_row_comments"
+                        android:layout_alignTop="@id/agora_row_comments"
+                        android:background="#00000000"
+                        android:gravity="center_vertical|center_horizontal"
+                        android:text="@string/agora_room_list_comments_label"
+                        android:textSize="12dp"
+                        android:textStyle="bold" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <ProgressBar
+                        android:id="@+id/agora_row_opendata"
+                        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="4dp"
+                        android:max="100"
+                        android:progress="40"
+                        android:progressDrawable="@drawable/custom_progress_bar_horizontal" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_alignBottom="@id/agora_row_opendata"
+                        android:layout_alignLeft="@id/agora_row_opendata"
+                        android:layout_alignRight="@id/agora_row_opendata"
+                        android:layout_alignTop="@id/agora_row_opendata"
+                        android:background="#00000000"
+                        android:gravity="center_vertical|center_horizontal"
+                        android:text="@string/agora_room_list_opendata_label"
+                        android:textSize="12dp"
+                        android:textStyle="bold" />
+                </RelativeLayout>
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/agora_row_body"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="4dp"
+                android:text="Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</LinearLayout>

@@ -16,6 +16,7 @@ import java.util.Observable;
 import eu.spod.isislab.spodapp.MainActivity;
 import eu.spod.isislab.spodapp.R;
 import eu.spod.isislab.spodapp.adapters.ImageAdapter;
+import eu.spod.isislab.spodapp.entities.CocreationRoom;
 import eu.spod.isislab.spodapp.services.SpodLocationServices;
 import eu.spod.isislab.spodapp.utils.NetworkChannel;
 
@@ -23,16 +24,11 @@ public class CocreationRoomGridFragment extends CocreationRoomFragment implement
 
     private ImageAdapter gridAdapter;
 
-    String roomName;
-    String roomId;
-    String sheetId;
+    CocreationRoom room;
     GridView grid;
 
-    public void setRoom(String roomName, String roomId, String sheetId){
-
-        this.roomName = roomName;
-        this.roomId   = roomId;
-        this.sheetId  = sheetId;
+    public void setRoom(CocreationRoom room){
+        this.room = room;
     }
 
     @Override
@@ -56,11 +52,17 @@ public class CocreationRoomGridFragment extends CocreationRoomFragment implement
     public void onActivityCreated(Bundle savedInstanceState) {
 
         NetworkChannel.getInstance().addObserver(this);
-        NetworkChannel.getInstance().getSheetData(roomId);
+        NetworkChannel.getInstance().getSheetData(room.getId());
 
-        ((MainActivity)getActivity()).setToolbarTitle(roomName);
+        ((MainActivity)getActivity()).setToolbarTitle(room.getName());
 
         super.onActivityCreated(savedInstanceState);
+    }
+
+
+    public void refreshData() {
+        NetworkChannel.getInstance().addObserver(this);
+        NetworkChannel.getInstance().getSheetData(this.room.getId());
     }
 
     @Override
@@ -69,6 +71,7 @@ public class CocreationRoomGridFragment extends CocreationRoomFragment implement
         try {
             gridAdapter.setData(response);
             grid.setAdapter(gridAdapter);
+            gridAdapter.notifyDataSetChanged();
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -84,7 +87,10 @@ public class CocreationRoomGridFragment extends CocreationRoomFragment implement
                 if(ls_available || currentL == null) {
 
                     GalleryAddItemFragment addItemFragment = new GalleryAddItemFragment();
-                    addItemFragment.setSheetId(sheetId);
+                    addItemFragment.setSheetId(room.getSheetId());
+                    addItemFragment.setCocreationRoomGridFragment(this);
+
+                    NetworkChannel.getInstance().addObserver(this);
 
                     getActivity().getSupportFragmentManager().beginTransaction()
                             .add(R.id.container, addItemFragment)

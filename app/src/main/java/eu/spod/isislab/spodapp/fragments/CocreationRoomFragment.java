@@ -5,41 +5,29 @@ import org.json.JSONArray;
 import java.util.Observable;
 import java.util.Observer;
 
+import eu.spod.isislab.spodapp.entities.CocreationRoom;
 import eu.spod.isislab.spodapp.utils.NetworkChannel;
 
 public class CocreationRoomFragment extends Fragment implements Observer {
 
-    String roomName;
-    String roomId;
-    String sheetId;
-
+    CocreationRoom room;
     JSONArray response;
 
-    public CocreationRoomFragment(){}
+    public CocreationRoomFragment(){ }
 
-    public void setRoom(String roomName, String roomId, String sheetId){
-
-        this.roomName = roomName;
-        this.roomId   = roomId;
-        this.sheetId  = sheetId;
+    public void setRoom(CocreationRoom room){
+        this.room = room;
     }
-
 
     public void refreshData(){
         NetworkChannel.getInstance().addObserver(this);
-        NetworkChannel.getInstance().getSheetData(roomId);
+        NetworkChannel.getInstance().getSheetData(this.room.getId());
     }
 
     @Override
     public void onPause() {
         NetworkChannel.getInstance().deleteObserver(this);
         super.onPause();
-    }
-
-    @Override
-    public void onResume() {
-        NetworkChannel.getInstance().getSheetData(roomId);
-        super.onResume();
     }
 
     @Override

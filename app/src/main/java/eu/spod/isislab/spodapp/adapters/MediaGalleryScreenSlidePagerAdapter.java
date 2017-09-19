@@ -11,7 +11,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import eu.spod.isislab.spodapp.utils.MediaGalleryItem;
+import eu.spod.isislab.spodapp.entities.MediaGalleryItem;
 import eu.spod.isislab.spodapp.fragments.MediaGalleryScreenSliderFragment;
 
 

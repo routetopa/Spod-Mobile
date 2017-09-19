@@ -1,4 +1,4 @@
-package eu.spod.isislab.spodapp.utils;
+package eu.spod.isislab.spodapp.entities;
 
 import android.location.Location;
 

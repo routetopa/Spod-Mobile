@@ -3,6 +3,7 @@ package eu.spod.isislab.spodapp.fragments;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,24 +17,27 @@ import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
-import eu.spod.isislab.spodapp.adapters.CocreationRoomsAdapter;
 import eu.spod.isislab.spodapp.MainActivity;
-import eu.spod.isislab.spodapp.entities.CocreationRoom;
-import eu.spod.isislab.spodapp.utils.NetworkChannel;
 import eu.spod.isislab.spodapp.R;
+import eu.spod.isislab.spodapp.adapters.AgoraRoomsAdapter;
+import eu.spod.isislab.spodapp.entities.AgoraRoom;
+import eu.spod.isislab.spodapp.utils.NetworkChannel;
 
-public class CocreationRoomsListFragment extends Fragment implements Observer, View.OnClickListener{
+/**
+ * Created by Utente on 08/09/2017.
+ */
+public class AgoraRoomsListFragment extends Fragment implements Observer, View.OnClickListener {
 
     View asView = null;
 
-    public CocreationRoomsListFragment(){
+    public AgoraRoomsListFragment(){
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        asView = inflater.inflate(R.layout.cocreation_rooms_list_fragment, container, false);
+        asView = inflater.inflate(R.layout.agora_rooms_list_fragment, container, false);
 
-        FloatingActionButton fab = (FloatingActionButton) asView.findViewById(R.id.cocoreation_add_room);
+        FloatingActionButton fab = (FloatingActionButton) asView.findViewById(R.id.agora_add_room);
         fab.setOnClickListener(this);
 
         return asView;
@@ -43,9 +47,9 @@ public class CocreationRoomsListFragment extends Fragment implements Observer, V
     public void onActivityCreated(Bundle savedInstanceState) {
 
         NetworkChannel.getInstance().addObserver(this);
-        NetworkChannel.getInstance().getCocreationMediaRooms();
+        NetworkChannel.getInstance().getAgoraRooms();
 
-        ((MainActivity)getActivity()).setToolbarTitle(getString(R.string.cocreation_room_list_message));
+        ((MainActivity)getActivity()).setToolbarTitle(getString(R.string.agora_room_list_message));
 
         super.onActivityCreated(savedInstanceState);
     }
@@ -64,39 +68,46 @@ public class CocreationRoomsListFragment extends Fragment implements Observer, V
 
     @Override
     public void update(Observable o, Object arg) {
-        ListView listView = (ListView) asView.findViewById(R.id.cocoreation_rooms_list);
+
+        ListView listView = (ListView) asView.findViewById(R.id.agora_rooms_list);
 
         JSONArray response = (JSONArray) arg;
-        ArrayList<CocreationRoom> rooms = new ArrayList<>();
+        ArrayList<AgoraRoom> rooms = new ArrayList<>();
 
         for (int i=0; i< response.length(); i++)
         {
             try {
                 JSONObject j = response.getJSONObject(i);
-                rooms.add(new CocreationRoom(
-                        j.getString("name"),
-                        j.getString("description"),
+                Log.e("", j.toString());
+                rooms.add(new AgoraRoom(
+                        j.getString("ownerId"),
+                        j.getString("subject"),
+                        j.getString("body"),
+                        j.getString("views"),
+                        j.getString("comments"),
+                        j.getString("opendata"),
+                        j.getString("timestamp"),
+                        j.getString("post"),
                         j.getString("id"),
-                        j.getString("sheetId"),
-                        j.getString("ownerName"),
-                        j.getString("ownerImage"),
-                        j.getString("timestamp")));
+                        j.getString("datalet_graph")));
             }
             catch (JSONException e) {
                 e.printStackTrace();
             }
         }
 
-        listView.setAdapter(new CocreationRoomsAdapter(this.getActivity(), rooms));
+        listView.setAdapter(new AgoraRoomsAdapter(this.getActivity(), rooms));
+
     }
 
     @Override
-    public void onClick(View view) {
+    public void onClick(View v) {
 
         this.getActivity().getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.container, new CreateCocreationRoomFragment())
+                .replace(R.id.container, new CreateAgoraRoomFragment())
                 .addToBackStack("create_cocoreation_room_fragment")
                 .commit();
+
     }
 }

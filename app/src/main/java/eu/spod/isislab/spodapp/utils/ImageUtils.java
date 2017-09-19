@@ -25,7 +25,8 @@ public class ImageUtils
         ByteArrayOutputStream baos    = new ByteArrayOutputStream();
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inSampleSize = sampleSize;
-        bitmap.compress(Bitmap.CompressFormat.JPEG, quality, baos);
+        Bitmap bm = bitmap.copy(Bitmap.Config.ARGB_8888, false);
+        bm.compress(Bitmap.CompressFormat.JPEG, quality, baos);
         return baos;
     }
 
@@ -40,7 +41,7 @@ public class ImageUtils
                 baos = compressPass(bitmap, sampleSize, quality);
                 lengthInByte = baos.toByteArray().length;
             }
-            bitmap.recycle();
+            //bitmap.recycle();
         } catch (Exception e) {
             e.printStackTrace();
         }

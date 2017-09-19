@@ -6,11 +6,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Debug;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -18,12 +16,10 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.graphics.BitmapCompat;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -40,10 +36,10 @@ import java.util.Observer;
 
 import eu.spod.isislab.spodapp.R;
 import eu.spod.isislab.spodapp.services.SpodLocationServices;
-import eu.spod.isislab.spodapp.utils.AddressSolver;
 import eu.spod.isislab.spodapp.utils.DownloadImageTask;
+import eu.spod.isislab.spodapp.utils.ImageUtils;
 import eu.spod.isislab.spodapp.utils.NetworkChannel;
-import eu.spod.isislab.spodapp.utils.User;
+import eu.spod.isislab.spodapp.entities.User;
 
 /**
  * Created by Utente on 07/07/2017.
@@ -52,11 +48,13 @@ public class GalleryAddItemFragment extends Fragment implements View.OnClickList
 
     private static final int PHOTO_REQUEST_CODE = 1;
     private ImageView image;
-    ViewGroup rootView;
-    Bitmap bp = null;
     private Uri mImageUri;
 
+    ViewGroup rootView;
+    Bitmap bp = null;
     String sheetId;
+
+    CocreationRoomGridFragment cocreationRoomGridFragment;
 
     @Nullable
     @Override
@@ -109,6 +107,10 @@ public class GalleryAddItemFragment extends Fragment implements View.OnClickList
         getPhoto();
     }
 
+    public void setCocreationRoomGridFragment(CocreationRoomGridFragment cocreationRoomGridFragment) {
+        this.cocreationRoomGridFragment = cocreationRoomGridFragment;
+    }
+
     public void grabImage(ImageView imageView)
     {
         getActivity().getContentResolver().notifyChange(mImageUri, null);
@@ -129,12 +131,15 @@ public class GalleryAddItemFragment extends Fragment implements View.OnClickList
                 options = new BitmapFactory.Options();
                 options.inSampleSize = 8;
                 ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                bp.compress(Bitmap.CompressFormat.JPEG, 0 /*ignored for PNG*/, bos);
+                bp.compress(Bitmap.CompressFormat.JPEG, 0, bos);
                 byte[] bitmapdata = bos.toByteArray();
                 ByteArrayInputStream bs = new ByteArrayInputStream(bitmapdata);
                 Bitmap preview_bitmap = BitmapFactory.decodeStream(bs, null, options);
 
-                imageView.setImageBitmap(preview_bitmap);
+               /* byte[] baos = ImageUtils.getInstance().compressBitmap(bp, 1, 100);
+                Bitmap preview_bitmap = BitmapFactory.decodeByteArray(baos, 0, baos.length);
+                imageView.setImageBitmap(preview_bitmap);*/
+
             }else {
                 imageView.setImageBitmap(bp);
             }
@@ -222,16 +227,13 @@ public class GalleryAddItemFragment extends Fragment implements View.OnClickList
                         .setAction("Action", null).show();
 
                 NetworkChannel.getInstance().deleteObserver(this);
-                CocreationRoomFragment roomFragment = (CocreationRoomFragment)getActivity().getSupportFragmentManager().findFragmentByTag("cocreation_room");
-                roomFragment.refreshData();
-
+                cocreationRoomGridFragment.refreshData();
                 this.getActivity().getSupportFragmentManager().popBackStack();
 
             }else{
                 Snackbar.make(rootView, message, Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
-
         } catch (JSONException e) {
             e.printStackTrace();
         }

@@ -33,6 +33,15 @@
     <string name="cocreation_room_gallery_add_item_description_string">Here the description for the new item</string>
     <string name="cocreation_room_gallery_add_item_upload_button">Upload</string>
 
+    <!--Agora-->
+    <string name="agora_room_list_message">Agora rooms</string>
+    <string name="agora_room_list_views_label">Views</string>
+    <string name="agora_room_list_comments_label">Comments</string>
+    <string name="agora_room_list_opendata_label">Opendata</string>
+    <string name="agora_comment_replay_label">reply</string>
+    <string name="agora_comment_add_hint">Add a comment</string>
+    <string name="agora_comment_add_empty_comment_warning">The comment cannot be empty</string>
+
 
     <!-- Geoservice  -->
     <string name="service_not_available">Geoservice not available</string>
@@ -54,7 +63,7 @@
 
 
     <string-array name="spod_endpoints_array">
-        <item>172.16.15.77</item>
+        <!--<item>172.16.15.77</item>-->
         <item>spod.routetopa.eu</item>
         <item>spod.databenc.it</item>
         <item>prato.routetopa.eu</item>

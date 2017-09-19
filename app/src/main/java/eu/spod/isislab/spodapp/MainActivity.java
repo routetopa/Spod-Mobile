@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.design.widget.NavigationView;
@@ -14,11 +15,14 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import java.util.List;
 
+import eu.spod.isislab.spodapp.fragments.AgoraRoomsListFragment;
+import eu.spod.isislab.spodapp.fragments.CocreationRoomsListFragment;
 import eu.spod.isislab.spodapp.fragments.LoginFragment;
 import eu.spod.isislab.spodapp.services.SpodLocationServices;
 import eu.spod.isislab.spodapp.utils.NetworkChannel;
@@ -52,6 +56,9 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
             ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED ||
@@ -124,8 +131,16 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id){
+            case android.R.id.home:
+                if(drawer.isDrawerOpen(Gravity.LEFT)) {
+                    drawer.closeDrawer(Gravity.LEFT);
+                }else{
+                    drawer.openDrawer(Gravity.LEFT);
+                }
+                break;
+            case R.id.action_settings:
+                break;
         }
 
         return super.onOptionsItemSelected(item);
@@ -137,14 +152,25 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_share) {
-
+        switch(id){
+            case R.id.nav_whatsnew:
+                break;
+            case R.id.nav_agora:
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.container, new AgoraRoomsListFragment())
+                        .addToBackStack("agora_room_list")
+                        .commit();
+                break;
+            case R.id.nav_cocreation:
+                getSupportFragmentManager()
+                   .beginTransaction()
+                   .replace(R.id.container, new CocreationRoomsListFragment())
+                   .addToBackStack("cocoreation_room_list")
+                   .commit();
+                break;
+            case R.id.nav_share:
+                break;
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

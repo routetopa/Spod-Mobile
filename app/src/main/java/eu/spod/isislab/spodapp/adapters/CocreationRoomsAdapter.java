@@ -1,8 +1,10 @@
 package eu.spod.isislab.spodapp.adapters;
 
 import android.app.Activity;
-import android.app.FragmentTransaction;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,24 +13,24 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
+
+import java.util.ArrayList;
 
 import eu.spod.isislab.spodapp.MainActivity;
 import eu.spod.isislab.spodapp.R;
-import eu.spod.isislab.spodapp.fragments.CocreationRoomFragment;
 import eu.spod.isislab.spodapp.fragments.CocreationRoomGridFragment;
-import eu.spod.isislab.spodapp.fragments.CocreationRoomPagedFragment;
-import eu.spod.isislab.spodapp.utils.DownloadImageTask;
+import eu.spod.isislab.spodapp.entities.CocreationRoom;
 
 /**
  * Created by Utente on 28/06/2017.
  */
 public class CocreationRoomsAdapter extends BaseAdapter{
-
-    String[][] rooms;
+    ArrayList<CocreationRoom> rooms;
     Context context;
     private static LayoutInflater inflater = null;
 
-    public CocreationRoomsAdapter(Activity mainActivity, String[][] rooms){
+    public CocreationRoomsAdapter(Activity mainActivity, ArrayList<CocreationRoom> rooms){
         this.rooms    = rooms;
         this.context  = mainActivity;
         inflater      = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -36,7 +38,7 @@ public class CocreationRoomsAdapter extends BaseAdapter{
 
     @Override
     public int getCount() {
-        return rooms.length;
+        return rooms.size();
     }
 
     @Override
@@ -51,20 +53,33 @@ public class CocreationRoomsAdapter extends BaseAdapter{
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        Holder holder = new Holder();
+        final Holder holder = new Holder();
         View rowView  = inflater.inflate(R.layout.cocreation_room_row, null);
-        holder.name        = (TextView)  rowView.findViewById(R.id.room_name);
-        holder.description  = (TextView) rowView.findViewById(R.id.room_description);
-        holder.ownerName   = (TextView)  rowView.findViewById(R.id.room_owner_name);
-        holder.ownerImage = (ImageView)  rowView.findViewById(R.id.room_owner_image);
+        holder.name        = (TextView) rowView.findViewById(R.id.cocreation_room_row_name);
+        holder.description = (TextView) rowView.findViewById(R.id.cocreation_room_row_description);
+        holder.ownerName   = (TextView) rowView.findViewById(R.id.cocreation_room_owner_name);
+        holder.ownerImage  = (ImageView)rowView.findViewById(R.id.cocreation_room_owner_image);
+        holder.date        = (TextView) rowView.findViewById(R.id.cocreation_room_row_date);
 
-        holder.name.setText(rooms[position][0]);
-        holder.description.setText(rooms[position][1]);
-        holder.ownerName.setText(rooms[position][4]);
+        holder.name.setText(rooms.get(position).getName());
+        holder.description.setText(rooms.get(position).getDescription());
+        holder.ownerName.setText(rooms.get(position).getOwnerName());
+        holder.date.setText(rooms.get(position).getTimestamp());
 
         Glide.with(context)
-                .load(rooms[position][5])
-                .into(holder.ownerImage);
+                .load(rooms.get(position).getOwnerImage())
+                .asBitmap()
+                .centerCrop()
+                .into(new BitmapImageViewTarget(holder.ownerImage) {
+                          @Override
+                          protected void setResource(Bitmap resource) {
+                              RoundedBitmapDrawable circularBitmapDrawable =
+                                      RoundedBitmapDrawableFactory.create(context.getResources(), resource);
+                              circularBitmapDrawable.setCircular(true);
+                              holder.ownerImage.setImageDrawable(circularBitmapDrawable);
+                          }
+                      });
+
 
        /* new DownloadImageTask(holder.ownerImage)
                 .execute(rooms[position][5]);*/
@@ -75,7 +90,7 @@ public class CocreationRoomsAdapter extends BaseAdapter{
                 //Toast.makeText(context, "You Clicked "+ rooms[position][1], Toast.LENGTH_LONG).show();
                 //CocreationRoomPagedFragment roomFragment = new CocreationRoomPagedFragment();
                 CocreationRoomGridFragment roomFragment = new CocreationRoomGridFragment();
-                roomFragment.setRoom(rooms[position][0], rooms[position][2], rooms[position][3]);
+                roomFragment.setRoom(rooms.get(position));
                 ((MainActivity)context).getSupportFragmentManager().beginTransaction()
                         .replace(R.id.container, roomFragment, "cocreation_room" )
                         .addToBackStack("cocreation_room")
@@ -86,11 +101,12 @@ public class CocreationRoomsAdapter extends BaseAdapter{
         return rowView;
     }
 
-    public class Holder{
+    private class Holder{
         TextView  name;
         TextView  description;
         TextView  ownerName;
         ImageView ownerImage;
+        TextView  date;
     }
 
 

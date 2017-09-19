@@ -5,13 +5,10 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.design.widget.Snackbar;
-import android.support.v4.graphics.BitmapCompat;
-import android.util.Base64;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
@@ -27,7 +24,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -35,21 +31,31 @@ import java.util.Map;
 import java.util.Observable;
 
 import eu.spod.isislab.spodapp.R;
+import eu.spod.isislab.spodapp.entities.User;
 import eu.spod.isislab.spodapp.fragments.LoginFragment;
 import eu.spod.isislab.spodapp.services.SpodLocationServices;
 
 public class NetworkChannel extends Observable
 {
-    public static final String SERVICE_LOGIN                 = "SERVICE_LOGIN";
-    public static final String SERVICE_GET_USER_INFO         = "SERVICE_GET_USER_INFO";
+    public static final String SERVICE_LOGIN              = "SERVICE_LOGIN";
+    public static final String SERVICE_GET_USER_INFO      = "SERVICE_GET_USER_INFO";
+    public static final String SERVICE_AGORA_GET_COMMENTS = "SERVICE_AGORA_GET_COMMENTS";
+    public static final String SERVICE_AGORA_ADD_COMMENT  = "SERVICE_AGORA_ADD_COMMENT";
 
-    private static String SPOD_ENDPOINT                          =  "";
-    private static final String POST_LOGIN_HANDLER               = "/base/user/ajax-sign-in/";//"/openid/ajax.php";
-    private static final String POST_USER_INFO                   = "/cocreation/ajax/get-user-info/";
-    private static final String POST_ADD_NEW_ROW                 = "/ethersheet/mediaroom/addrow/";
-    private static final String POST_COCREATION_CREATE_ROOM      = "/cocreation/ajax/create-media-room-from-mobile/";
-    private static final String GET_COCREATION_MEDIA_ROOMS_ADDR  = "/cocreation/ajax/get-media-rooms-by-user-id/?userId=";
-    private static final String GET_COCREATION_ROOMS_SHEET_DATA  = "/cocreation/ajax/get-sheet-data-by-room-id/?roomId=";
+    private static String SPOD_ENDPOINT                             = "";
+    private static final String POST_LOGIN_HANDLER                  = "/openid/ajax.php";//"/base/user/ajax-sign-in/";
+    private static final String POST_USER_INFO                      = "/cocreation/ajax/get-user-info/";
+    private static final String POST_ADD_NEW_ROW                    = "/ethersheet/mediaroom/addrow/";
+    private static final String POST_COCREATION_CREATE_ROOM         = "/cocreation/ajax/create-media-room-from-mobile/";
+    private static final String GET_COCREATION_MEDIA_ROOMS_ADDR     = "/cocreation/ajax/get-media-rooms-by-user-id/?userId=";
+    private static final String GET_COCREATION_ROOMS_SHEET_DATA     = "/cocreation/ajax/get-sheet-data-by-room-id/?roomId=";
+    private static final String GET_AGORA_ROOMS                     = "/agora/ajax/get-rooms";
+    private static final String POST_AGORA_ADD_ROOM                 = "/agora/ajax/add-agora-room";
+    private static final String GET_AGORA_ROOM_COMMENTS             = "/agora/ajax/get-comments-page/?roomId=";
+    private static final String POST_AGORA_ROOM_ADD_COMMENTS        = "/agora/ajax/add-comment/";
+    private static final String POST_AGORA_ROOM_GET_NESTED_COMMENTS = "/agora/ajax/get-nested-comment-json/";
+    private static final String DATALET_STATIC_IMAGE_URL            = "/ow_plugins/ode/datalet_images/datalet_#.png";
+    private static final String DATALET_STATIC_URL                  = "/share_datalet/#";
 
     private static NetworkChannel ourInstance = new NetworkChannel();
 
@@ -82,6 +88,14 @@ public class NetworkChannel extends Observable
         if (info == null) return false;
         NetworkInfo.State network = info.getState();
         return (network == NetworkInfo.State.CONNECTED || network == NetworkInfo.State.CONNECTING);
+    }
+
+    public String getDataletStaticUrl(String dataletId){
+        return (SPOD_ENDPOINT + DATALET_STATIC_URL).replace("#", dataletId);
+    }
+
+    public String getDataletImageStaticUrl(String dataletId){
+        return (SPOD_ENDPOINT + DATALET_STATIC_IMAGE_URL).replace("#", dataletId);
     }
 
     public void login(final String username, final String password)
@@ -165,6 +179,7 @@ public class NetworkChannel extends Observable
         mRequestQueue.add(postRequest);
     }
 
+    //COCREATION
     public void getCocreationMediaRooms(){
         final ProgressDialog loading = ProgressDialog.show(mainActivity,"SPOD Mobile","Please wait...",false,false);
         try {
@@ -324,6 +339,28 @@ public class NetworkChannel extends Observable
 
     }
 
+    //AGORA
+    public void getAgoraRooms(){
+        final ProgressDialog loading = ProgressDialog.show(mainActivity,"SPOD Mobile","Please wait...",false,false);
+
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.POST , SPOD_ENDPOINT + GET_AGORA_ROOMS, null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                loading.dismiss();
+                setChanged();
+                notifyObservers(response);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                loading.dismiss();
+                unavailableNetworkMessage(error);
+            }
+        });
+
+        mRequestQueue.add(jsonArrayRequest);
+    }
+
     private void  unavailableNetworkMessage(VolleyError err){
         if(!isNetworkConnectionAvailable()){
             Snackbar.make(mainActivity.findViewById(R.id.container), "Network is not available!!!", Snackbar.LENGTH_LONG)
@@ -331,6 +368,189 @@ public class NetworkChannel extends Observable
         }
         err.printStackTrace();
 
+    }
+
+    public void getAgoraRoomComments(final String roomId){
+        currentService = SERVICE_AGORA_GET_COMMENTS;
+
+        final ProgressDialog loading = ProgressDialog.show(mainActivity,"SPOD Mobile","Please wait...",false,false);
+
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.POST , SPOD_ENDPOINT + GET_AGORA_ROOM_COMMENTS + roomId, null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                loading.dismiss();
+                setChanged();
+                notifyObservers(response);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                loading.dismiss();
+                unavailableNetworkMessage(error);
+            }
+        });
+
+        mRequestQueue.add(jsonArrayRequest);
+    }
+
+    public void getAgoraRoomComments(final String roomId, final String lastCommentId){
+        //final ProgressDialog loading = ProgressDialog.show(mainActivity,"SPOD Mobile","Please wait...",false,false);
+        currentService = SERVICE_AGORA_GET_COMMENTS;
+
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.POST , SPOD_ENDPOINT + GET_AGORA_ROOM_COMMENTS + roomId + "&last_id=" + lastCommentId, null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                //loading.dismiss();
+                setChanged();
+                notifyObservers(response);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                //loading.dismiss();
+                unavailableNetworkMessage(error);
+            }
+        });
+
+        mRequestQueue.add(jsonArrayRequest);
+
+    }
+
+    public void getAgoraNestedComments(final String entityId, final String parentId, final String level)
+    {
+        currentService = SERVICE_AGORA_GET_COMMENTS;
+
+        final ProgressDialog loading = ProgressDialog.show(mainActivity,"SPOD Mobile","Please wait...",false,false);
+        StringRequest postRequest = new StringRequest(Request.Method.POST, SPOD_ENDPOINT + POST_AGORA_ROOM_GET_NESTED_COMMENTS,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        loading.dismiss();
+                        setChanged();
+                        setChanged();
+                        try {
+                            notifyObservers(new JSONArray(response));
+                        }catch (JSONException e){e.printStackTrace();}
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        loading.dismiss();
+                        unavailableNetworkMessage(error);
+
+                    }
+                }){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<>();
+                headers.put("X-Requested-With", "XMLHttpRequest");
+                return headers;
+            }
+
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+
+                Calendar c = Calendar.getInstance();
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                String strDate = sdf.format(c.getTime());
+
+                params.put("entityId",  entityId);
+                params.put("parentId",  parentId);
+                params.put("level",     level);
+                params.put("userId",    User.getInstance().getId());
+
+                return params;
+            }
+        };
+        mRequestQueue.add(postRequest);
+    }
+
+    public void addAgoraComment(final String entityId, final String parentId, final String comment, final String level, final String sentiment)
+    {
+        currentService = SERVICE_AGORA_ADD_COMMENT;
+
+        final ProgressDialog loading = ProgressDialog.show(mainActivity,"SPOD Mobile","Please wait...",false,false);
+        StringRequest postRequest = new StringRequest(Request.Method.POST, SPOD_ENDPOINT + POST_AGORA_ROOM_ADD_COMMENTS,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        loading.dismiss();
+                        setChanged();
+                        notifyObservers(response);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        loading.dismiss();
+                        unavailableNetworkMessage(error);
+
+                    }
+                }){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<>();
+                headers.put("X-Requested-With", "XMLHttpRequest");
+                return headers;
+            }
+
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+
+                params.put("entityId",        entityId);
+                params.put("parentId",        parentId);
+                params.put("comment",         comment);
+                params.put("level",           level);
+                params.put("sentiment",       sentiment);
+                params.put("userId",          User.getInstance().getId());
+
+                return params;
+            }
+        };
+        mRequestQueue.add(postRequest);
+    }
+
+    public void addAgoraRoom(final String title, final String description)
+    {
+        final ProgressDialog loading = ProgressDialog.show(mainActivity,"SPOD Mobile","Please wait...",false,false);
+        StringRequest postRequest = new StringRequest(Request.Method.POST, SPOD_ENDPOINT + POST_AGORA_ADD_ROOM,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        loading.dismiss();
+                        setChanged();
+                        notifyObservers(response);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        loading.dismiss();
+                        unavailableNetworkMessage(error);
+                    }
+                }){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<>();
+                headers.put("X-Requested-With", "XMLHttpRequest");
+                return headers;
+            }
+
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+
+                params.put("subject", title);
+                params.put("body",    description);
+                params.put("userId",  User.getInstance().getId());
+
+                return params;
+            }
+        };
+        mRequestQueue.add(postRequest);
     }
 
 }

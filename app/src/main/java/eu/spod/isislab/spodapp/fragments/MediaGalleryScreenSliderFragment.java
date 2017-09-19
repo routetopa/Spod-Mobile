@@ -16,7 +16,7 @@ import java.util.ArrayList;
 
 import eu.spod.isislab.spodapp.adapters.MediaGalleryGridAdaper;
 import eu.spod.isislab.spodapp.services.SpodLocationServices;
-import eu.spod.isislab.spodapp.utils.MediaGalleryItem;
+import eu.spod.isislab.spodapp.entities.MediaGalleryItem;
 import eu.spod.isislab.spodapp.R;
 
 public class MediaGalleryScreenSliderFragment extends Fragment implements BottomNavigationView.OnNavigationItemSelectedListener

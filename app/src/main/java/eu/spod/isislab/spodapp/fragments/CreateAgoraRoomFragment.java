@@ -22,14 +22,17 @@ import eu.spod.isislab.spodapp.MainActivity;
 import eu.spod.isislab.spodapp.R;
 import eu.spod.isislab.spodapp.utils.NetworkChannel;
 
-public class CreateCocreationRoomFragment extends Fragment implements Observer, OnNavigationItemSelectedListener {
-    private View asView = null;
+public class CreateAgoraRoomFragment extends Fragment implements Observer, OnNavigationItemSelectedListener {
+
+    View asView = null;
+
+    public CreateAgoraRoomFragment(){ }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        asView = inflater.inflate(R.layout.create_cocreation_room_fragment, container, false);
+        asView = inflater.inflate(R.layout.create_agora_room_fragment, container, false);
 
-        BottomNavigationView bottomNavigationView = (BottomNavigationView) asView.findViewById(R.id.new_room_bottom_navigation);
+        BottomNavigationView bottomNavigationView = (BottomNavigationView) asView.findViewById(R.id.agora_new_room_bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
 
         return asView;
@@ -44,26 +47,17 @@ public class CreateCocreationRoomFragment extends Fragment implements Observer, 
     }
 
     @Override
-    public void onDestroy() {
-        NetworkChannel.getInstance().deleteObserver(this);
-        super.onDestroy();
-    }
-
-    @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.bottom_bar_create_new_room:
-                String name            = ((TextView)asView.findViewById(R.id.new_room_name)).getText().toString();
-                String subject         = ((TextView)asView.findViewById(R.id.new_room_subject)).getText().toString();
-                String description     = ((TextView)asView.findViewById(R.id.new_room_description)).getText().toString();
-                String goal            = ((TextView)asView.findViewById(R.id.new_room_goal)).getText().toString();
-                String invitation_text = ((TextView)asView.findViewById(R.id.new_room_invitation_text)).getText().toString();
+                String title       = ((TextView)asView.findViewById(R.id.agora_new_room_name)).getText().toString();
+                String description = ((TextView)asView.findViewById(R.id.agora_new_room_description)).getText().toString();
 
-                if(name.isEmpty() || subject.isEmpty() || description.isEmpty() || goal.isEmpty() || invitation_text.isEmpty()){
+                if(title.isEmpty() || description.isEmpty()){
                     Snackbar.make(getActivity().findViewById(R.id.container), getString(R.string.cocreation_fill_form_correctly), Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
                 }else{
-                    NetworkChannel.getInstance().createCocreationRoom(name, subject, description, goal, invitation_text);
+                    NetworkChannel.getInstance().addAgoraRoom(title, description);
                 }
                 break;
         }
@@ -75,7 +69,7 @@ public class CreateCocreationRoomFragment extends Fragment implements Observer, 
         NetworkChannel.getInstance().deleteObserver(this);
         try{
             JSONObject res = new JSONObject((String)response);
-            if(res.getBoolean("status")){
+            if(res.getString("status").equals("ok")){
                 Snackbar.make(asView, getString(R.string.cocreation_room_created), Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
                 this.getActivity().getSupportFragmentManager().popBackStack();
@@ -87,5 +81,6 @@ public class CreateCocreationRoomFragment extends Fragment implements Observer, 
         }catch(JSONException e){
             e.printStackTrace();
         }
+
     }
 }

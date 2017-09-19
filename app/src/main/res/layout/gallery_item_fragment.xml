@@ -16,7 +16,7 @@
             android:orientation="horizontal" android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <eu.spod.isislab.spodapp.utils.CustomImageViewCircularShape
+            <ImageView
                 android:id="@+id/item_avatar"
                 android:layout_width="36dp"
                 android:layout_height="36dp"

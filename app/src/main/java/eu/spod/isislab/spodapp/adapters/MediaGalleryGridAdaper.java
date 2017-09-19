@@ -1,7 +1,6 @@
 package eu.spod.isislab.spodapp.adapters;
 
 import android.content.Context;
-import android.location.Location;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -17,8 +16,7 @@ import java.util.ArrayList;
 
 import eu.spod.isislab.spodapp.MainActivity;
 import eu.spod.isislab.spodapp.fragments.GalleryItemFragment;
-import eu.spod.isislab.spodapp.utils.AddressSolver;
-import eu.spod.isislab.spodapp.utils.MediaGalleryItem;
+import eu.spod.isislab.spodapp.entities.MediaGalleryItem;
 import eu.spod.isislab.spodapp.R;
 
 public class MediaGalleryGridAdaper extends BaseAdapter {
