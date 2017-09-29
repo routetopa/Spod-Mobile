@@ -51,9 +51,9 @@ public class CocreationRoomsListFragment extends Fragment implements Observer, V
     }
 
     @Override
-    public void onPause() {
+    public void onDestroy() {
         NetworkChannel.getInstance().deleteObserver(this);
-        super.onPause();
+        super.onDestroy();
     }
 
     @Override
@@ -88,6 +88,8 @@ public class CocreationRoomsListFragment extends Fragment implements Observer, V
         }
 
         listView.setAdapter(new CocreationRoomsAdapter(this.getActivity(), rooms));
+
+        NetworkChannel.getInstance().deleteObserver(this);
     }
 
     @Override

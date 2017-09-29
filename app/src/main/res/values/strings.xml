@@ -4,7 +4,13 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="action_settings">Settings</string>
+    <string name="action_info">Info</string>
+    <string name="action_sign_out">Sign out</string>
+
+    <!-- Messages -->
+    <string name="wait_network_message">Please wait...</string>
+    <string name="unavailable_network_message">Network is not available!!!</string>
+
 
     <string name="bar_title">Spod</string>
     <!-- Login activity strings definitions -->
@@ -63,7 +69,7 @@
 
 
     <string-array name="spod_endpoints_array">
-        <!--<item>172.16.15.77</item>-->
+        <item>172.16.15.77</item>
         <item>spod.routetopa.eu</item>
         <item>spod.databenc.it</item>
         <item>prato.routetopa.eu</item>

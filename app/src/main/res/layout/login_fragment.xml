@@ -17,30 +17,32 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/userImage"
-            android:layout_width="84dp"
-            android:layout_height="84dp"
-            android:src="@drawable/logo"
-            android:layout_alignParentTop="true"/>
+            <ImageView
+                android:id="@+id/userImage"
+                android:layout_width="84dp"
+                android:layout_height="84dp"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="16dp"
+                android:src="@drawable/logo" />
         </TableRow>
 
         <TableRow
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="SPOD"
-            android:id="@+id/logo_name"
-            android:layout_below="@+id/logo_name"
-            android:gravity="center_horizontal"
-            android:layout_marginLeft="7sp"
-            android:layout_marginBottom="16dp"
-            android:textSize="18dp"
-            android:textColor="#FFFFFF"
-            android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/logo_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/logo_name"
+                android:layout_marginBottom="4dp"
+                android:layout_marginLeft="7sp"
+                android:gravity="center_horizontal"
+                android:text="SPOD"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="#FFFFFF"
+                android:textSize="18dp"
+                android:textStyle="bold" />
         </TableRow>
 
         <TableRow
@@ -59,39 +61,6 @@
 
         </TableRow>
 
-        <TableRow
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <EditText
-                android:layout_width="fill_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/round_text_edit"
-                android:inputType="text|textNoSuggestions"
-                android:id="@+id/username"
-                android:hint="@string/login_fragment_username_hint"
-                android:layout_gravity="center_vertical"
-                android:layout_margin="16dp"
-                android:padding="16dp"
-                android:textAlignment="center"
-                android:focusable="true"
-                android:focusableInTouchMode="true"/>
-        </TableRow>
-        <TableRow
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <EditText
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/round_text_edit"
-                android:inputType="textPassword|textNoSuggestions"
-                android:id="@+id/password"
-                android:hint="@string/login_fragment_password_hint"
-                android:layout_margin="16dp"
-                android:padding="16dp"
-                android:textAlignment="center"
-                android:focusable="true"
-                android:focusableInTouchMode="true"/>
-        </TableRow>
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="wrap_content">

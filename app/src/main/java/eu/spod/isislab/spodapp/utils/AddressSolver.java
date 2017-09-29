@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
-import eu.spod.isislab.spodapp.services.SpodLocationServices;
+import eu.spod.isislab.spodapp.services.SpodLocationService;
 
 public class AddressSolver extends AsyncTask<Location, Void, String> {
     private Geocoder geocoder;
@@ -44,7 +44,7 @@ public class AddressSolver extends AsyncTask<Location, Void, String> {
         {
             if (addresses.isEmpty())
             {
-                return SpodLocationServices.getCurrentLocation().getLatitude() + "," + SpodLocationServices.getCurrentLocation().getLongitude();
+                return SpodLocationService.getCurrentLocation().getLatitude() + "," + SpodLocationService.getCurrentLocation().getLongitude();
             }
             else {
                 if (addresses.size() > 0)
@@ -57,7 +57,7 @@ public class AddressSolver extends AsyncTask<Location, Void, String> {
                 }
             }
         }
-        return SpodLocationServices.getCurrentLocation().getLatitude() + "," + SpodLocationServices.getCurrentLocation().getLongitude();
+        return SpodLocationService.getCurrentLocation().getLatitude() + "," + SpodLocationService.getCurrentLocation().getLongitude();
     }
 
     @Override

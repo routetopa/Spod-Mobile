@@ -39,6 +39,12 @@ public class CreateAgoraRoomFragment extends Fragment implements Observer, OnNav
     }
 
     @Override
+    public void onDestroy() {
+        NetworkChannel.getInstance().deleteObserver(this);
+        super.onDestroy();
+    }
+
+    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
 
         NetworkChannel.getInstance().addObserver(this);

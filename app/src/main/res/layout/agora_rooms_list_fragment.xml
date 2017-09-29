@@ -21,6 +21,6 @@
         android:layout_marginRight="16dp"
         android:layout_marginTop="-80dp"
         android:src="@android:drawable/ic_input_add"
-        app:backgroundTint="?attr/actionModeSplitBackground" />
+        app:backgroundTint="#185263" />
 
 </LinearLayout>

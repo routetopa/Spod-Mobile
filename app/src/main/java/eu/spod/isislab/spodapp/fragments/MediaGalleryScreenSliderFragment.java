@@ -15,7 +15,7 @@ import android.widget.GridView;
 import java.util.ArrayList;
 
 import eu.spod.isislab.spodapp.adapters.MediaGalleryGridAdaper;
-import eu.spod.isislab.spodapp.services.SpodLocationServices;
+import eu.spod.isislab.spodapp.services.SpodLocationService;
 import eu.spod.isislab.spodapp.entities.MediaGalleryItem;
 import eu.spod.isislab.spodapp.R;
 
@@ -55,8 +55,8 @@ public class MediaGalleryScreenSliderFragment extends Fragment implements Bottom
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.bottom_bar_room_list_add:
-                boolean ls_available = SpodLocationServices.isAvailable();
-                Location currentL = SpodLocationServices.getCurrentLocation();
+                boolean ls_available = SpodLocationService.isAvailable();
+                Location currentL = SpodLocationService.getCurrentLocation();
                 if(ls_available || currentL == null) {
 
                     GalleryAddItemFragment addItemFragment = new GalleryAddItemFragment();

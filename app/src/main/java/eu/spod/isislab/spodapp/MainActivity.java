@@ -3,12 +3,14 @@ package eu.spod.isislab.spodapp;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.provider.Settings;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -19,12 +21,12 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import java.util.List;
-
+import eu.spod.isislab.spodapp.fragments.LoginFragment;
+import eu.spod.isislab.spodapp.services.AuthorizationService;
 import eu.spod.isislab.spodapp.fragments.AgoraRoomsListFragment;
 import eu.spod.isislab.spodapp.fragments.CocreationRoomsListFragment;
-import eu.spod.isislab.spodapp.fragments.LoginFragment;
-import eu.spod.isislab.spodapp.services.SpodLocationServices;
+import eu.spod.isislab.spodapp.services.SpodLocationService;
+import eu.spod.isislab.spodapp.utils.CustomDialog;
 import eu.spod.isislab.spodapp.utils.NetworkChannel;
 
 public class MainActivity extends AppCompatActivity
@@ -38,7 +40,7 @@ public class MainActivity extends AppCompatActivity
     public DrawerLayout drawer;
     public Toolbar toolbar;
 
-    private boolean internetPermissionOk = false;
+    //private boolean internetPermissionOk = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,21 +62,26 @@ public class MainActivity extends AppCompatActivity
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
 
+        this.checkPermissions();
+    }
+
+    public void checkPermissions(){
+
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
-            ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED ||
+            ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET)               != PackageManager.PERMISSION_GRANTED ||
             ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
-            ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+            ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)  != PackageManager.PERMISSION_GRANTED)
         {
             //GPS PERMISSION
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
-                startService(new Intent(this, SpodLocationServices.class));
+                startService(new Intent(this, SpodLocationService.class));
             }else{
                 ActivityCompat.requestPermissions(this,
                         new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, ACCESS_COARSE_LOCATION_PERMISSION);
             }
             //INTERNET PERMISSION
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.INTERNET)) {
-                getSupportFragmentManager().beginTransaction().add(R.id.container, new LoginFragment()).addToBackStack("login").commit();
+                NetworkChannel.getInstance().init(this);
             }else{
                 ActivityCompat.requestPermissions(this,
                         new String[]{Manifest.permission.INTERNET}, INTERNET_PERMISSION);
@@ -90,8 +97,9 @@ public class MainActivity extends AppCompatActivity
                         new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, READ_EXTERNAL_STORAGE_PERMISSION);
             }
         }else{
-            startService(new Intent(this, SpodLocationServices.class));
-            getSupportFragmentManager().beginTransaction().add(R.id.container, new LoginFragment()).addToBackStack("login").commit();
+            NetworkChannel.getInstance().init(this);
+            startService(new Intent(this, SpodLocationService.class));
+            getSupportFragmentManager().beginTransaction().replace(R.id.container, new LoginFragment()).addToBackStack("login").commit();
         }
 
     }
@@ -125,9 +133,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
@@ -139,7 +144,17 @@ public class MainActivity extends AppCompatActivity
                     drawer.openDrawer(Gravity.LEFT);
                 }
                 break;
-            case R.id.action_settings:
+            case R.id.action_info:
+
+                CustomDialog dialog = new CustomDialog();
+                dialog.setTitle("Version");
+                dialog.setBody("Current version " + BuildConfig.VERSION_NAME);
+                dialog.show(getSupportFragmentManager(), "custom_dialog_fragment");
+
+                break;
+            case R.id.sign_out:
+                AuthorizationService.getInstance().signOut();
+                finish();
                 break;
         }
 
@@ -178,27 +193,38 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    public void openPermissions(){
+        Intent intent = new Intent();
+        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        Uri uri = Uri.fromParts("package", getPackageName(), null);
+        intent.setData(uri);
+        startActivity(intent);
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
             case INTERNET_PERMISSION: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // permission concessa
-                    internetPermissionOk = true;
+                    //internetPermissionOk = true;
+                    NetworkChannel.getInstance().init(this);
                 } else {
                     // permission negata
                     Snackbar.make(this.findViewById(R.id.container), getString(R.string.main_activity_notwork_connection_off), Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
+                    openPermissions();
                 }
                 return;
             }
             case ACCESS_COARSE_LOCATION_PERMISSION:{
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    startService(new Intent(this, SpodLocationServices.class));
+                    startService(new Intent(this, SpodLocationService.class));
 
                 } else {
                     Snackbar.make(this.findViewById(R.id.container), getString(R.string.main_activity_gps_off), Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
+                    startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
                 }
             }
             case WRITE_EXTERNAL_STORAGE_PERMISSION:
@@ -206,6 +232,7 @@ public class MainActivity extends AppCompatActivity
                 } else {
                     Snackbar.make(this.findViewById(R.id.container), getString(R.string.main_activity_storage_permission_off), Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
+                    openPermissions();
                 }
                 break;
             case READ_EXTERNAL_STORAGE_PERMISSION:
@@ -213,18 +240,19 @@ public class MainActivity extends AppCompatActivity
                 } else {
                     Snackbar.make(this.findViewById(R.id.container), getString(R.string.main_activity_storage_permission_off), Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
+                    openPermissions();
                 }
-
                 break;
         }
     }
 
-    @Override
+  /*  @Override
     protected void onResume() {
         super.onResume();
         if(internetPermissionOk){
-            getSupportFragmentManager().beginTransaction().replace(R.id.container, new LoginFragment()).addToBackStack("login").commit();
+            //checkAuth();
             internetPermissionOk = false;
         }
-    }
+    }*/
+
 }

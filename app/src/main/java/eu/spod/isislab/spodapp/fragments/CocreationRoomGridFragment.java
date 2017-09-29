@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,7 +17,7 @@ import eu.spod.isislab.spodapp.MainActivity;
 import eu.spod.isislab.spodapp.R;
 import eu.spod.isislab.spodapp.adapters.ImageAdapter;
 import eu.spod.isislab.spodapp.entities.CocreationRoom;
-import eu.spod.isislab.spodapp.services.SpodLocationServices;
+import eu.spod.isislab.spodapp.services.SpodLocationService;
 import eu.spod.isislab.spodapp.utils.NetworkChannel;
 
 public class CocreationRoomGridFragment extends CocreationRoomFragment implements BottomNavigationView.OnNavigationItemSelectedListener {
@@ -53,6 +53,7 @@ public class CocreationRoomGridFragment extends CocreationRoomFragment implement
 
         NetworkChannel.getInstance().addObserver(this);
         NetworkChannel.getInstance().getSheetData(room.getId());
+        //NetworkChannel.getInstance().connectCocreationWebSocket(room.getId());
 
         ((MainActivity)getActivity()).setToolbarTitle(room.getName());
 
@@ -68,29 +69,55 @@ public class CocreationRoomGridFragment extends CocreationRoomFragment implement
     @Override
     public void update(Observable o, Object arg) {
         super.update(o,arg);
-        try {
-            gridAdapter.setData(response);
-            grid.setAdapter(gridAdapter);
-            gridAdapter.notifyDataSetChanged();
-        }catch (Exception e){
-            e.printStackTrace();
+
+         switch (NetworkChannel.getInstance().getCurrentService()){
+            case NetworkChannel.SERVICE_SYNC_NOTIFICATION:
+
+                Log.e("SYNC_NOTIFICATION", arg.toString());
+
+                break;
+            case NetworkChannel.SERVICE_COCREATION_GET_SHEET_DATA:
+                try {
+                    gridAdapter.setData(response);
+                    grid.setAdapter(gridAdapter);
+                    gridAdapter.notifyDataSetChanged();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+                break;
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        NetworkChannel.getInstance().addObserver(this);
+    }
+
+    @Override
+    public void onPause() {
         NetworkChannel.getInstance().deleteObserver(this);
+        super.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        NetworkChannel.getInstance().deleteObserver(this);
+        NetworkChannel.getInstance().closeWebSocket();
+        super.onDestroy();
     }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.bottom_bar_room_list_add:
-                boolean ls_available = SpodLocationServices.isAvailable();
-                Location currentL = SpodLocationServices.getCurrentLocation();
+                boolean ls_available = SpodLocationService.isAvailable();
+                Location currentL = SpodLocationService.getCurrentLocation();
                 if(ls_available || currentL == null) {
 
                     GalleryAddItemFragment addItemFragment = new GalleryAddItemFragment();
                     addItemFragment.setSheetId(room.getSheetId());
                     addItemFragment.setCocreationRoomGridFragment(this);
-
-                    NetworkChannel.getInstance().addObserver(this);
 
                     getActivity().getSupportFragmentManager().beginTransaction()
                             .add(R.id.container, addItemFragment)

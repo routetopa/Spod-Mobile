@@ -119,13 +119,20 @@
             android:hint="@string/agora_comment_add_hint"
             android:maxHeight="80dp" />
 
-        <ImageButton
-            android:id="@+id/agora_nested_comment_send"
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.12"
-            android:background="@drawable/agora_send_button"
-            android:text="d" />
+            android:layout_weight="0.12">
+
+            <ImageButton
+                android:id="@+id/agora_nested_comment_send"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/agora_send_button"
+                android:text="d" />
+
+        </LinearLayout>
 
     </LinearLayout>
 

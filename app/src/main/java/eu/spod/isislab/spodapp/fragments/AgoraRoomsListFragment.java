@@ -70,6 +70,7 @@ public class AgoraRoomsListFragment extends Fragment implements Observer, View.O
     public void update(Observable o, Object arg) {
 
         ListView listView = (ListView) asView.findViewById(R.id.agora_rooms_list);
+        listView.setScrollingCacheEnabled(false);
 
         JSONArray response = (JSONArray) arg;
         ArrayList<AgoraRoom> rooms = new ArrayList<>();

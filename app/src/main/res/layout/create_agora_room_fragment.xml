@@ -27,7 +27,8 @@
             android:textColor="#7b7b7b"
             android:textIsSelectable="true"
             android:textSize="16dp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:focusable="false"/>
 
         <EditText
             android:id="@+id/agora_new_room_name"
@@ -37,7 +38,8 @@
             android:inputType="text"
             android:padding="8dp"
             android:textAlignment="gravity"
-            android:textSize="16dp" />
+            android:textSize="16dp"
+            android:imeOptions="actionNext"/>
 
     </LinearLayout>
 
@@ -64,7 +66,8 @@
             android:textColor="#7b7b7b"
             android:textIsSelectable="true"
             android:textSize="16dp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:focusable="false"/>
 
         <EditText
             android:id="@+id/agora_new_room_description"
@@ -73,11 +76,11 @@
             android:layout_gravity="center_vertical"
             android:focusableInTouchMode="true"
             android:gravity="left"
-            android:inputType="textMultiLine"
+            android:imeOptions="actionDone"
+            android:inputType="textImeMultiLine"
             android:isScrollContainer="true"
             android:maxLines="4"
             android:padding="8dp"
-            android:singleLine="false"
             android:textAlignment="gravity"
             android:textSize="16dp"
             android:textStyle="normal" />
@@ -88,7 +91,7 @@
         android:id="@+id/agora_new_room_bottom_navigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
+        android:background="#185263"
         android:layout_gravity="bottom"
         app:menu="@menu/bottom_bar_new_room"
         app:itemIconTint="#FFFFFF"

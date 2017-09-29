@@ -1,53 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_height="fill_parent"
     android:layout_width="fill_parent"
     android:background="#FFFFFF">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:orientation="vertical"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clickable="true">
+        android:clickable="true"
+        android:orientation="vertical">
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
             <eu.spod.isislab.spodapp.utils.CustomImageViewCircularShape
                 android:id="@+id/new_item_avatar"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
-                android:src="@drawable/avatar5"
-                android:background="@drawable/circle"
                 android:layout_margin="8dp"
-                android:scaleType="centerCrop"/>
+                android:background="@drawable/circle"
+                android:scaleType="centerCrop"
+                android:src="@drawable/avatar5" />
 
             <EditText
+                android:id="@+id/new_item_title"
                 android:layout_width="fill_parent"
                 android:layout_height="50dp"
-                android:inputType="text|textNoSuggestions"
-                android:id="@+id/new_item_title"
-                android:hint="@string/cocreation_room_gallery_add_item_title_string"
                 android:layout_gravity="left|center_vertical"
+                android:focusableInTouchMode="true"
+                android:hint="@string/cocreation_room_gallery_add_item_title_string"
+                android:inputType="text|textNoSuggestions"
                 android:padding="16dp"
                 android:textStyle="bold"
-                android:focusableInTouchMode="true"/>
+                android:imeOptions="actionNext"/>
 
         </LinearLayout>
 
         <ImageView
+            android:id="@+id/new_item_image"
             android:layout_width="fill_parent"
             android:layout_height="0dp"
             android:layout_weight=".50"
-            android:id="@+id/new_item_image"
-            android:src="@drawable/camera"
             android:adjustViewBounds="true"
             android:background="@android:color/transparent"
-            android:padding="4dp" />
+            android:padding="4dp"
+            android:src="@drawable/camera" />
 
         <ScrollView
             android:layout_width="match_parent"
@@ -56,30 +57,31 @@
             android:layout_weight="0.1">
 
             <EditText
+                android:id="@+id/new_item_description"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:inputType="textMultiLine|textNoSuggestions"
-                android:id="@+id/new_item_description"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:gravity="left"
                 android:hint="@string/cocreation_room_gallery_add_item_description_string"
+                android:inputType="textMultiLine|textNoSuggestions"
+                android:isScrollContainer="false"
+                android:maxLines="4"
                 android:padding="8dp"
                 android:textAlignment="center"
-                android:textStyle="normal"
                 android:textSize="16dp"
-                android:gravity="left"
-                android:maxLines="4"
-                android:singleLine="false"
-                android:isScrollContainer="false"
-                android:focusableInTouchMode="true" />
+                android:textStyle="normal"
+                android:imeOptions="actionDone"/>
         </ScrollView>
 
         <android.support.design.widget.BottomNavigationView
             android:id="@+id/add_item_bottom_navigation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorPrimary"
-            app:menu="@menu/bottom_bar_add_item"
+            android:background="#185263"
             app:itemIconTint="#FFFFFF"
-            app:itemTextColor="#FFFFFF" />
+            app:itemTextColor="#FFFFFF"
+            app:menu="@menu/bottom_bar_add_item" />
 
     </LinearLayout>
 

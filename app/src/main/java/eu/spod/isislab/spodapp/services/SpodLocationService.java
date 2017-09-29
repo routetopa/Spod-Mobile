@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
-public class SpodLocationServices extends IntentService implements LocationListener
+public class SpodLocationService extends IntentService implements LocationListener
 {
     private static Location location        = null;
     private LocationManager locationManager = null;
@@ -24,7 +24,7 @@ public class SpodLocationServices extends IntentService implements LocationListe
     private static boolean gps_enabled;
     private static boolean network_enabled;
 
-    public SpodLocationServices() {
+    public SpodLocationService() {
         super("SpodMobileLocationServices");
     }
 

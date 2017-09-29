@@ -31,6 +31,7 @@ import java.util.Observer;
 import eu.spod.isislab.spodapp.R;
 import eu.spod.isislab.spodapp.adapters.AgoraCommentsAdapter;
 import eu.spod.isislab.spodapp.entities.AgoraComment;
+import eu.spod.isislab.spodapp.entities.User;
 import eu.spod.isislab.spodapp.utils.EndlessScrollListener;
 import eu.spod.isislab.spodapp.utils.NetworkChannel;
 
@@ -134,6 +135,7 @@ public class AgoraNestedCommentFragment extends Fragment implements Observer {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         NetworkChannel.getInstance().addObserver(this);
+        NetworkChannel.getInstance().connectAgoraWebSocket(comment.getRoomId());
         NetworkChannel.getInstance().getAgoraNestedComments(comment.getRoomId(), comment.getId(), "" + (Integer.parseInt(comment.getLevel()) + 1));
         super.onActivityCreated(savedInstanceState);
     }
@@ -142,6 +144,20 @@ public class AgoraNestedCommentFragment extends Fragment implements Observer {
     public void onResume() {
         super.onResume();
         comments.clear();
+    }
+
+    @Override
+    public void onPause() {
+        NetworkChannel.getInstance().deleteObserver(this);
+        NetworkChannel.getInstance().closeWebSocket();
+        super.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        NetworkChannel.getInstance().deleteObserver(this);
+        NetworkChannel.getInstance().closeWebSocket();
+        super.onDestroy();
     }
 
     @Override
@@ -174,8 +190,6 @@ public class AgoraNestedCommentFragment extends Fragment implements Observer {
                     }
                 }
                 adapter.notifyDataSetChanged();
-                NetworkChannel.getInstance().deleteObserver(this);
-
                 break;
             case NetworkChannel.SERVICE_AGORA_ADD_COMMENT:
 
@@ -189,7 +203,6 @@ public class AgoraNestedCommentFragment extends Fragment implements Observer {
                         InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                         imm.hideSoftInputFromWindow(asView.getWindowToken(), 0);
 
-                        NetworkChannel.getInstance().addObserver(this);
                         NetworkChannel.getInstance().getAgoraNestedComments(comment.getRoomId(), comment.getId(), "" + (Integer.parseInt(comment.getLevel()) + 1));
                     } else {
                         Snackbar.make(asView, res.getString("message"), Snackbar.LENGTH_LONG)
@@ -199,13 +212,15 @@ public class AgoraNestedCommentFragment extends Fragment implements Observer {
                     e.printStackTrace();
                     break;
                 }
-
+                break;
+            case NetworkChannel.SERVICE_SYNC_NOTIFICATION:
+                comments.clear();
+                NetworkChannel.getInstance().getAgoraNestedComments(comment.getRoomId(), comment.getId(), "" + (Integer.parseInt(comment.getLevel()) + 1));
                 break;
         }
     }
 
     private void getNextCommentPage(){
-        NetworkChannel.getInstance().addObserver(this);
         NetworkChannel.getInstance().getAgoraRoomComments(comment.getId(), ((AgoraComment)adapter.getItem(adapter.getCount() - 1)).getId());
     }
 }

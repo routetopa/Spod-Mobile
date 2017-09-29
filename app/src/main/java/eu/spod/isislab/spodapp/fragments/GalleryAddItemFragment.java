@@ -16,10 +16,14 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -35,15 +39,11 @@ import java.util.Observable;
 import java.util.Observer;
 
 import eu.spod.isislab.spodapp.R;
-import eu.spod.isislab.spodapp.services.SpodLocationServices;
+import eu.spod.isislab.spodapp.services.SpodLocationService;
 import eu.spod.isislab.spodapp.utils.DownloadImageTask;
-import eu.spod.isislab.spodapp.utils.ImageUtils;
 import eu.spod.isislab.spodapp.utils.NetworkChannel;
 import eu.spod.isislab.spodapp.entities.User;
 
-/**
- * Created by Utente on 07/07/2017.
- */
 public class GalleryAddItemFragment extends Fragment implements View.OnClickListener, BottomNavigationView.OnNavigationItemSelectedListener, Observer{
 
     private static final int PHOTO_REQUEST_CODE = 1;
@@ -61,9 +61,6 @@ public class GalleryAddItemFragment extends Fragment implements View.OnClickList
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
         rootView = (ViewGroup) inflater.inflate(R.layout.gallery_add_item_fragment, container, false);
-        /*TextView location = (TextView)rootView.findViewById(R.id.new_item_position);
-        if(SpodLocationServices.getCurrentLocation() != null)
-           new AddressSolver(location, getActivity()).execute(SpodLocationServices.getCurrentLocation());*/
 
         BottomNavigationView bottomNavigationView = (BottomNavigationView)
                 rootView.findViewById(R.id.add_item_bottom_navigation);
@@ -74,6 +71,9 @@ public class GalleryAddItemFragment extends Fragment implements View.OnClickList
 
         image = (ImageView)rootView.findViewById(R.id.new_item_image);
         image.setOnClickListener(this);
+
+        ((EditText)rootView.findViewById(R.id.new_item_description)).setImeOptions(EditorInfo.IME_ACTION_DONE);
+        ((EditText)rootView.findViewById(R.id.new_item_description)).setRawInputType(InputType.TYPE_CLASS_TEXT);
 
         return rootView;
     }
@@ -100,6 +100,17 @@ public class GalleryAddItemFragment extends Fragment implements View.OnClickList
     public void onPause() {
         NetworkChannel.getInstance().deleteObserver(this);
         super.onPause();
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        NetworkChannel.getInstance().addObserver(this);
+    }
+
+    @Override
+    public void onDestroy() {
+        NetworkChannel.getInstance().deleteObserver(this);
+        super.onDestroy();
     }
 
     @Override
@@ -194,7 +205,7 @@ public class GalleryAddItemFragment extends Fragment implements View.OnClickList
             case R.id.bottom_bar_add_item_upload:
                 String title       = ((TextView)rootView.findViewById(R.id.new_item_title)).getText().toString();
                 String description = ((TextView)rootView.findViewById(R.id.new_item_description)).getText().toString();
-                Location location  = SpodLocationServices.getCurrentLocation();
+                Location location  = SpodLocationService.getCurrentLocation();
 
                 if(title.isEmpty() || description.isEmpty() || location == null){
                     Snackbar.make(getActivity().findViewById(R.id.container), "Please fill form correctly, maybe the location is not accessible, check it!!!", Snackbar.LENGTH_LONG)
@@ -204,8 +215,7 @@ public class GalleryAddItemFragment extends Fragment implements View.OnClickList
                     Calendar c = Calendar.getInstance();
                     SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
                     String strDate = sdf.format(c.getTime());
-
-                    NetworkChannel.getInstance().addObserver(this);
+                    Log.e("ADDPHOTO", "Call network service");
                     NetworkChannel.getInstance().addRowToSheet(sheetId, title, description, strDate, bp);
                 }
 
@@ -226,7 +236,6 @@ public class GalleryAddItemFragment extends Fragment implements View.OnClickList
                 Snackbar.make(rootView, message, Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
 
-                NetworkChannel.getInstance().deleteObserver(this);
                 cocreationRoomGridFragment.refreshData();
                 this.getActivity().getSupportFragmentManager().popBackStack();
 
