@@ -56,17 +56,29 @@ public class CocreationRoomsListFragment extends Fragment implements Observer, V
         super.onDestroy();
     }
 
-    @Override
+    /*@Override
     public void onResume() {
+        NetworkChannel.getInstance().getCocreationMediaRooms();
         NetworkChannel.getInstance().addObserver(this);
         super.onResume();
+    }*/
+
+    @Override
+    public void onPause() {
+        NetworkChannel.getInstance().deleteObserver(this);
+        super.onPause();
     }
 
     @Override
     public void update(Observable o, Object arg) {
         ListView listView = (ListView) asView.findViewById(R.id.cocoreation_rooms_list);
 
-        JSONArray response = (JSONArray) arg;
+        JSONArray response = null;
+        try {
+            response = new JSONArray((String)arg);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         ArrayList<CocreationRoom> rooms = new ArrayList<>();
 
         for (int i=0; i< response.length(); i++)
@@ -88,8 +100,6 @@ public class CocreationRoomsListFragment extends Fragment implements Observer, V
         }
 
         listView.setAdapter(new CocreationRoomsAdapter(this.getActivity(), rooms));
-
-        NetworkChannel.getInstance().deleteObserver(this);
     }
 
     @Override

@@ -24,16 +24,13 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Ada
 
     public static final String SPOD_MOBILE_PREFERENCES    = "eu.spod.isislab.spodapp.preferences.preferences";
     public static final String SPOD_ENDPOINT_PREFERENCES  = "eu.spod.isislab.spodapp.preferences.spod_endpoint";
-
-    public static final String USED_INTENT = "eu.spod.isislab.spodapp.preferences.USED_INTENT";
+    public static final String USED_INTENT                = "eu.spod.isislab.spodapp.preferences.USED_INTENT";
 
 
     View asView = null;
     SharedPreferences spodPref;
 
-    public LoginFragment(){
-
-    }
+    public LoginFragment(){ }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -61,8 +58,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Ada
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         checkIntent(getActivity().getIntent());
-        AuthorizationService.getInstance().init(this.getContext());
-        AuthorizationService.getInstance().enablePostAuthorizationFlows();
         super.onActivityCreated(savedInstanceState);
     }
 

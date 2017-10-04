@@ -31,7 +31,6 @@ import java.util.Observer;
 import eu.spod.isislab.spodapp.R;
 import eu.spod.isislab.spodapp.adapters.AgoraCommentsAdapter;
 import eu.spod.isislab.spodapp.entities.AgoraComment;
-import eu.spod.isislab.spodapp.entities.User;
 import eu.spod.isislab.spodapp.utils.EndlessScrollListener;
 import eu.spod.isislab.spodapp.utils.NetworkChannel;
 
@@ -58,13 +57,13 @@ public class AgoraNestedCommentFragment extends Fragment implements Observer {
         listView = (ListView) asView.findViewById(R.id.room_nested_comment_list);
         adapter = new AgoraCommentsAdapter(getActivity(), comments, Integer.parseInt(comment.getLevel()) + 1);
         listView.setAdapter(adapter);
-        listView.setOnScrollListener(new EndlessScrollListener(0) {
+        EndlessScrollListener scrollListener = new EndlessScrollListener(0) {
             @Override
-            public boolean onLoadMore(int page, int totalItemsCount) {
+            public void onLoadMore(int page, int totalItemsCount) {
                 getNextCommentPage();
-                return true;
             }
-        });
+        };
+        scrollListener.setScrollDirection(EndlessScrollListener.SCROLL_DIRECTION_UP);
 
         ((TextView)asView.findViewById(R.id.agora_nested_comment_owner_name)).setText(comment.getUsername());
         ((TextView)asView.findViewById(R.id.agora_nested_comment_body)).setText(comment.getComment());
@@ -166,9 +165,14 @@ public class AgoraNestedCommentFragment extends Fragment implements Observer {
         switch(NetworkChannel.getInstance().getCurrentService()) {
             case NetworkChannel.SERVICE_AGORA_GET_COMMENTS:
 
-                JSONArray response = (JSONArray) arg;
+                JSONArray response = null;
+                try {
+                    response = new JSONArray((String)arg);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
 
-                for (int i=response.length() - 1; i > 0; i--)
+                for (int i=0; i < response.length(); i++)
                 {
                     try {
                         JSONObject j = response.getJSONObject(i);
@@ -221,6 +225,18 @@ public class AgoraNestedCommentFragment extends Fragment implements Observer {
     }
 
     private void getNextCommentPage(){
-        NetworkChannel.getInstance().getAgoraRoomComments(comment.getId(), ((AgoraComment)adapter.getItem(adapter.getCount() - 1)).getId());
+        NetworkChannel.getInstance().getAgoraRoomPagedComments(comment.getId(), ((AgoraComment)adapter.getItem(adapter.getCount() - 1)).getId());
+    }
+
+    private void scrollToLastVisibleItem(final int index){
+        listView.post(new Runnable() {
+            @Override
+            public void run() {
+                View v = listView.getChildAt(0);
+                int top = (v == null) ? 0 : v.getTop();
+                listView.setSelectionFromTop(index, top);
+
+            }
+        });
     }
 }

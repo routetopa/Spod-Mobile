@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity
     public static final int ACCESS_COARSE_LOCATION_PERMISSION = 1;
     public static final int WRITE_EXTERNAL_STORAGE_PERMISSION = 2;
     public static final int READ_EXTERNAL_STORAGE_PERMISSION  = 3;
+    public static final int ASK_APPLICAITON_PERMISSIONS = 4;
 
     public DrawerLayout drawer;
     public Toolbar toolbar;
@@ -72,34 +73,44 @@ public class MainActivity extends AppCompatActivity
             ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
             ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)  != PackageManager.PERMISSION_GRANTED)
         {
+            boolean requestPermissions = false;
+
             //GPS PERMISSION
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
                 startService(new Intent(this, SpodLocationService.class));
             }else{
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, ACCESS_COARSE_LOCATION_PERMISSION);
+                requestPermissions = true;
             }
             //INTERNET PERMISSION
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.INTERNET)) {
                 NetworkChannel.getInstance().init(this);
             }else{
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.INTERNET}, INTERNET_PERMISSION);
+                requestPermissions = true;
             }
             //SDCARD WRITE PERMISSION
             if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_EXTERNAL_STORAGE_PERMISSION);
+                requestPermissions = true;
             }
             //SDCARD READ PERMISSION
             if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                requestPermissions = true;
+            }
+
+            if(requestPermissions){
                 ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, READ_EXTERNAL_STORAGE_PERMISSION);
+                        new String[]{
+                                Manifest.permission.INTERNET,
+                                Manifest.permission.ACCESS_COARSE_LOCATION,
+                                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                Manifest.permission.READ_EXTERNAL_STORAGE
+                        },
+                        ASK_APPLICAITON_PERMISSIONS);
             }
         }else{
             NetworkChannel.getInstance().init(this);
             startService(new Intent(this, SpodLocationService.class));
-            getSupportFragmentManager().beginTransaction().replace(R.id.container, new LoginFragment()).addToBackStack("login").commit();
+            AuthorizationService.getInstance().init(this);
+            AuthorizationService.getInstance().enablePostAuthorizationFlows();
         }
 
     }
@@ -202,57 +213,28 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case INTERNET_PERMISSION: {
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // permission concessa
-                    //internetPermissionOk = true;
-                    NetworkChannel.getInstance().init(this);
-                } else {
-                    // permission negata
-                    Snackbar.make(this.findViewById(R.id.container), getString(R.string.main_activity_notwork_connection_off), Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
-                    openPermissions();
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults)
+    {
+        switch (requestCode){
+            case ASK_APPLICAITON_PERMISSIONS:
+                if(grantResults.length > 0){
+                    if(grantResults[INTERNET_PERMISSION]               == PackageManager.PERMISSION_GRANTED  &&
+                       grantResults[ACCESS_COARSE_LOCATION_PERMISSION] == PackageManager.PERMISSION_GRANTED  &&
+                       grantResults[WRITE_EXTERNAL_STORAGE_PERMISSION] == PackageManager.PERMISSION_GRANTED  &&
+                       grantResults[READ_EXTERNAL_STORAGE_PERMISSION]  == PackageManager.PERMISSION_GRANTED)
+                    {
+                        NetworkChannel.getInstance().init(this);
+                        startService(new Intent(this, SpodLocationService.class));
+                        AuthorizationService.getInstance().init(this);
+                        AuthorizationService.getInstance().enablePostAuthorizationFlows();
+                    }else{
+                        openPermissions();
+                    }
                 }
-                return;
-            }
-            case ACCESS_COARSE_LOCATION_PERMISSION:{
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    startService(new Intent(this, SpodLocationService.class));
 
-                } else {
-                    Snackbar.make(this.findViewById(R.id.container), getString(R.string.main_activity_gps_off), Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
-                    startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-                }
-            }
-            case WRITE_EXTERNAL_STORAGE_PERMISSION:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                } else {
-                    Snackbar.make(this.findViewById(R.id.container), getString(R.string.main_activity_storage_permission_off), Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
-                    openPermissions();
-                }
-                break;
-            case READ_EXTERNAL_STORAGE_PERMISSION:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                } else {
-                    Snackbar.make(this.findViewById(R.id.container), getString(R.string.main_activity_storage_permission_off), Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
-                    openPermissions();
-                }
                 break;
         }
+
     }
-
-  /*  @Override
-    protected void onResume() {
-        super.onResume();
-        if(internetPermissionOk){
-            //checkAuth();
-            internetPermissionOk = false;
-        }
-    }*/
 
 }

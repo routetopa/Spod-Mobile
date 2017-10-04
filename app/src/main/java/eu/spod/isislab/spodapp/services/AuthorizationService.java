@@ -45,7 +45,6 @@ public class AuthorizationService implements Observer {
     private Context context;
     private SharedPreferences spodPref;
     private AuthState mAuthState;
-    private String accessToken;
 
     private static final AuthorizationService ourInstance = new AuthorizationService();
 
@@ -57,6 +56,10 @@ public class AuthorizationService implements Observer {
 
     public void init(Context context) {
         this.context = context;
+    }
+
+    public String getAccessToken() {
+        return mAuthState.getAccessToken();
     }
 
     public void authorizationRequest(){
@@ -105,7 +108,6 @@ public class AuthorizationService implements Observer {
                             authState.update(tokenResponse, exception);
                             persistAuthState(authState);
                             Log.i("MAIN", String.format("Token Response [ Access Token: %s, ID Token: %s ]", tokenResponse.accessToken, tokenResponse.idToken));
-                            accessToken = tokenResponse.accessToken;
                         }
                     }
                 }
@@ -134,7 +136,6 @@ public class AuthorizationService implements Observer {
                                     .url(NetworkChannel.getInstance().getSpodEndpoint() + "/oauth2/oauth/v1/userinfo")
                                     .addHeader("Authorization", String.format("Bearer %s", tokens[0]))
                                     .build();
-
                             try {
                                 Response response = client.newCall(request).execute();
                                 String jsonBody = response.body().string();
@@ -151,15 +152,13 @@ public class AuthorizationService implements Observer {
                             if (userInfo != null) {
                                 NetworkChannel.getInstance().addObserver(AuthorizationService.getInstance());
                                 NetworkChannel.getInstance().getUserInfo(userInfo.optString("email", null), "");
-                            }else{
-                                //((MainActivity)context).getSupportFragmentManager().beginTransaction().add(R.id.container, new LoginFragment()).addToBackStack("login").commit();
-                            }
+                            }else{}
                         }
                     }.execute(accessToken);
                 }
             });
         } else {
-            //((MainActivity)context).getSupportFragmentManager().beginTransaction().replace(R.id.container, new LoginFragment()).addToBackStack("login").commit();
+            ((MainActivity)context).getSupportFragmentManager().beginTransaction().replace(R.id.container, new LoginFragment()).addToBackStack("login").commit();
         }
     }
 
@@ -199,7 +198,10 @@ public class AuthorizationService implements Observer {
                 case NetworkChannel.SERVICE_GET_USER_INFO:
 
                     Boolean status = res.getBoolean("status");
-                    if(status) {
+                    if(status)
+                    {
+                        NetworkChannel.getInstance().deleteObserver(this);
+
                         JSONObject user = new JSONObject(res.getString("user"));
                         User.getInstance().init(user.getString("id"), user.getString("username"), user.getString("image"), user.getString("name"));
 
@@ -211,8 +213,6 @@ public class AuthorizationService implements Observer {
                                 .addToBackStack("cocoreation_room_list")
                                 .commit();
                     }
-
-                    NetworkChannel.getInstance().deleteObserver(this);
                     break;
             }
 

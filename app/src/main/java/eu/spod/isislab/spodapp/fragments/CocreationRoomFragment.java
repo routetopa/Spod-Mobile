@@ -33,7 +33,7 @@ public class CocreationRoomFragment extends Fragment implements Observer {
     @Override
     public void update(Observable o, Object arg) {
         try {
-            response = (JSONArray) arg;
+            response = new JSONArray((String) arg);
         }catch (Exception e){
             e.printStackTrace();
         }

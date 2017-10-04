@@ -151,7 +151,6 @@ public class AgoraCommentsAdapter extends BaseAdapter {
         TextView  date;
         TextView  replay;
     }
-
 }
 
 
