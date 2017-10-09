@@ -70,7 +70,7 @@ public class NetworkChannel extends Observable
     private static final String DATALET_STATIC_URL                  = "/share_datalet/#";
     //Sync notification
     private static final String SYNC_NOTIFICATION_ENDPOINT             = "/realtime_notification";
-    private static final String COCREATION_SYNC_NOTIFICATION_ENDPOINT = "/ethersheet/#/pubsub/";
+    private static final String COCREATION_SYNC_NOTIFICATION_ENDPOINT  = "/ethersheet/#/pubsub/";
 
     private static NetworkChannel ourInstance = new NetworkChannel();
 
@@ -129,7 +129,8 @@ public class NetworkChannel extends Observable
 
     }
 
-    private void makePostRequest(String url, final Map<String, String> params, final boolean splash, String service){
+    private void makePostRequest(String url, final Map<String, String> params, final boolean splash, String service)
+    {
 
         if(service != null) currentService = service;
 
@@ -327,7 +328,7 @@ public class NetworkChannel extends Observable
         makePostRequest(AGORA_ADD_ROOM, params, true, SERVICE_AGORA_ADD_COMMENT);
     }
 
-    //Sync notification
+    //SYNC NOTIFICATION
    /* public void connectWebSocket(){
         URI uri;
         try {

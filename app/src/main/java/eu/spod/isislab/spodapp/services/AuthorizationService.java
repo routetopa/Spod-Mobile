@@ -152,9 +152,11 @@ public class AuthorizationService implements Observer {
                             if (userInfo != null) {
                                 NetworkChannel.getInstance().addObserver(AuthorizationService.getInstance());
                                 NetworkChannel.getInstance().getUserInfo(userInfo.optString("email", null), "");
-                            }else{}
+                            }else{
+                                Log.e("Auth", "user email null");
+                            }
                         }
-                    }.execute(accessToken);
+                    }.execute(mAuthState.getAccessToken());
                 }
             });
         } else {
