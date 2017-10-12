@@ -7,17 +7,17 @@ android {
         applicationId "eu.spod.isislab.spodapp"
         minSdkVersion 16
         targetSdkVersion 25
-        versionCode 0
-        versionName "0.2.5"
+        versionCode 1
+        versionName "1.0.0"
     }
     buildTypes {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            debug {
-                debuggable true
-            }
+        }
 
+        debug {
+            debuggable true
         }
     }
     productFlavors {

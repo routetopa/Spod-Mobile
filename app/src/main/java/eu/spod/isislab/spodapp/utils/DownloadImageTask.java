@@ -27,7 +27,7 @@ public class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
             options.inScaled = false;
             mIcon11 = BitmapFactory.decodeStream(in, null, options);
         } catch (Exception e) {
-            Log.e("Error", e.getMessage());
+            //Log.e("Error", e.getMessage());
             e.printStackTrace();
         }
         return mIcon11;

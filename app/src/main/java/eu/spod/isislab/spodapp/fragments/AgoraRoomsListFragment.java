@@ -84,7 +84,7 @@ public class AgoraRoomsListFragment extends Fragment implements Observer, View.O
         {
             try {
                 JSONObject j = response.getJSONObject(i);
-                Log.e("", j.toString());
+                //Log.e("", j.toString());
                 rooms.add(new AgoraRoom(
                         j.getString("ownerId"),
                         j.getString("subject"),

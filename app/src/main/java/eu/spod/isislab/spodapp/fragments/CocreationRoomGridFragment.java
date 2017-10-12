@@ -73,7 +73,7 @@ public class CocreationRoomGridFragment extends CocreationRoomFragment implement
          switch (NetworkChannel.getInstance().getCurrentService()){
             case NetworkChannel.SERVICE_SYNC_NOTIFICATION:
 
-                Log.e("SYNC_NOTIFICATION", arg.toString());
+                //Log.e("SYNC_NOTIFICATION", arg.toString());
 
                 break;
             case NetworkChannel.SERVICE_COCREATION_GET_SHEET_DATA:

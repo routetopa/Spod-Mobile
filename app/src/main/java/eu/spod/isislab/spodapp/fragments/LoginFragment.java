@@ -3,6 +3,7 @@ package eu.spod.isislab.spodapp.fragments;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 
 import android.support.annotation.Nullable;
@@ -15,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import eu.spod.isislab.spodapp.services.AuthorizationService;
 import eu.spod.isislab.spodapp.R;
@@ -40,6 +42,16 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Ada
 
         Button lBtn = (Button) asView.findViewById(R.id.login_button);
         lBtn.setOnClickListener(this);
+
+        ((TextView)asView.findViewById(R.id.forgot_password)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String url = NetworkChannel.getInstance().getSpodEndpoint() + NetworkChannel.RESET_PASSWORD_URL;
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(url));
+                startActivity(i);
+            }
+        });
 
         Spinner spinner = (Spinner) asView.findViewById(R.id.spod_endpoints_spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),

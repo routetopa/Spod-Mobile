@@ -3,11 +3,13 @@ package eu.spod.isislab.spodapp.adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -76,13 +78,15 @@ public class AgoraCommentsAdapter extends BaseAdapter {
         }
         holder.ownerImage   = (ImageView) rowView.findViewById(R.id.agora_comment_owner_image);
         holder.ownerName    = (TextView) rowView.findViewById(R.id.agora_comment_owner_name);
-        holder.body         = (TextView) rowView.findViewById(R.id.agora_comment_body);
+        holder.body         = (WebView) rowView.findViewById(R.id.agora_comment_body);
         holder.date         = (TextView) rowView.findViewById(R.id.agora_comment_date);
         holder.replay       = (TextView) rowView.findViewById(R.id.agora_comment_reply);
         holder.dataletImage = (ImageView) rowView.findViewById(R.id.agora_comment_datalet);
 
         holder.ownerName.setText(comments.get(position).getUsername());
-        holder.body.setText(comments.get(position).getComment());
+        //holder.body.setText(comments.get(position).getComment());
+        holder.body.loadDataWithBaseURL("", comments.get(position).getComment(), "text/html", "UTF-8", "");
+        holder.body.setBackgroundColor(Color.TRANSPARENT);
         holder.date.setText(comments.get(position).getTimestamp());
 
         if(level > 0){
@@ -147,7 +151,7 @@ public class AgoraCommentsAdapter extends BaseAdapter {
         ImageView ownerImage;
         ImageView dataletImage;
         TextView  ownerName;
-        TextView  body;
+        WebView   body;
         TextView  date;
         TextView  replay;
     }

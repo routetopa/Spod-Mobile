@@ -215,7 +215,7 @@ public class GalleryAddItemFragment extends Fragment implements View.OnClickList
                     Calendar c = Calendar.getInstance();
                     SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
                     String strDate = sdf.format(c.getTime());
-                    Log.e("ADDPHOTO", "Call network service");
+                    //Log.e("ADDPHOTO", "Call network service");
                     NetworkChannel.getInstance().addRowToSheet(sheetId, title, description, strDate, bp);
                 }
 

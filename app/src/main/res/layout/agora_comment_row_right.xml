@@ -28,7 +28,7 @@
             android:background="@drawable/bubble2"
             android:orientation="vertical">
 
-            <TextView
+            <WebView
                 android:id="@+id/agora_comment_body"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

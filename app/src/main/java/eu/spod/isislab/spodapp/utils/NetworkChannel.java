@@ -54,6 +54,9 @@ public class NetworkChannel extends Observable
     public static final String SERVICE_COCREATION_GET_SHEET_DATA    = "SERVICE_COCREATION_GET_SHEET_DATA";
     public static final String SERVICE_SYNC_NOTIFICATION            = "SERVICE_SYNC_NOTIFICATION";
 
+    public static final String RESET_PASSWORD_URL                   = "/password/reset";
+    public static final String LOGOUT_URL                           = "/login";
+
     private static String SPOD_ENDPOINT                             = "";
     private static final String POST_LOGIN_HANDLER                  = "/base/user/ajax-sign-in/";//"/openid/ajax.php";;
     private static final String GET_USER_INFO                       = "/cocreation/ajax/get-user-info/";
@@ -71,6 +74,7 @@ public class NetworkChannel extends Observable
     //Sync notification
     private static final String SYNC_NOTIFICATION_ENDPOINT             = "/realtime_notification";
     private static final String COCREATION_SYNC_NOTIFICATION_ENDPOINT  = "/ethersheet/#/pubsub/";
+
 
     private static NetworkChannel ourInstance = new NetworkChannel();
 
@@ -387,7 +391,7 @@ public class NetworkChannel extends Observable
                     .on(Socket.EVENT_CONNECT, new Emitter.Listener(){
                         @Override
                         public void call(Object... args) {
-                            Log.e("SOKETIO", "CONNECT");
+                            //Log.e("SOKETIO", "CONNECT");
                             JSONObject obj = new JSONObject();
                             try {
                                 obj.put("user_id", User.getInstance().getId());
@@ -402,26 +406,26 @@ public class NetworkChannel extends Observable
                     .on(Socket.EVENT_DISCONNECT, new Emitter.Listener() {
                             @Override
                             public void call(Object... args) {
-                                Log.e("SOKETIO", "DISCONNECT");
+                                //Log.e("SOKETIO", "DISCONNECT");
                             }
 
                     })
                     .on(Socket.EVENT_CONNECT_ERROR, new Emitter.Listener() {
                         @Override
                         public void call(Object... args) {
-                            Log.e("SOKETIO", "ERROR");
+                            //Log.e("SOKETIO", "ERROR");
                         }
                     })
                     .on("online_notification_" +  roomId, new Emitter.Listener() {
                         @Override
                         public void call(Object... args) {
-                            Log.e("SOKETIO", "Online users fanasia");
+                            //Log.e("SOKETIO", "Online users fanasia");
                         }
                     })
                     .on("realtime_message_" +  roomId, new Emitter.Listener() {
                         @Override
                         public void call(final Object... args) {
-                            Log.e("SOKETIO", "New message fanasy");
+                            //Log.e("SOKETIO", "New message fanasy");
                             try {
                                 mainActivity.runOnUiThread(new Runnable() {
                                     @Override
@@ -465,26 +469,26 @@ public class NetworkChannel extends Observable
                     .on(Socket.EVENT_CONNECT, new Emitter.Listener(){
                         @Override
                         public void call(Object... args) {
-                            Log.e("SOKETIO", "CONNECT");
+                            //Log.e("SOKETIO", "CONNECT");
                         }
                     })
                     .on(Socket.EVENT_DISCONNECT, new Emitter.Listener() {
                         @Override
                         public void call(Object... args) {
-                            Log.e("SOKETIO", "DISCONNECT");
+                            //Log.e("SOKETIO", "DISCONNECT");
                         }
 
                     })
                     .on(Socket.EVENT_CONNECT_ERROR, new Emitter.Listener() {
                         @Override
                         public void call(Object... args) {
-                            Log.e("SOKETIO", "ERROR");
+                            //Log.e("SOKETIO", "ERROR");
                         }
                     })
                     .on("realtime_message_" +  roomId, new Emitter.Listener() {
                         @Override
                         public void call(final Object... args) {
-                            Log.e("SOKETIO", "New message fanasy");
+                            //Log.e("SOKETIO", "New message fanasy");
                             try {
                                 mainActivity.runOnUiThread(new Runnable() {
                                     @Override

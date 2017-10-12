@@ -1,9 +1,11 @@
 package eu.spod.isislab.spodapp.utils;
 
 import android.util.Log;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.AbsListView;
 
-public abstract class EndlessScrollListener implements AbsListView.OnScrollListener {
+public abstract class EndlessScrollListener implements AbsListView.OnScrollListener, View.OnTouchListener {
     public final static int SCROLL_DIRECTION_UP = 0;
     public final static int SCROLL_DIRECTION_DOWN = 1;
 
@@ -21,6 +23,8 @@ public abstract class EndlessScrollListener implements AbsListView.OnScrollListe
     private int startingPageIndex = 0;
 
     private int scrollDirection = SCROLL_DIRECTION_DOWN;
+
+    private boolean isUserScrolling = false;
 
     public EndlessScrollListener() {
     }
@@ -69,7 +73,7 @@ public abstract class EndlessScrollListener implements AbsListView.OnScrollListe
                 onLoadMore(currentPage + 1, totalItemCount);
                 loading = true;
             }
-            else if( scrollDirection == SCROLL_DIRECTION_UP && firstVisibleItem<=visibleThreshold) {
+            else if( scrollDirection == SCROLL_DIRECTION_UP && firstVisibleItem<=visibleThreshold && isUserScrolling) {
                 onLoadMore(currentPage + 1, totalItemCount);
                 loading = true;
             }
@@ -91,6 +95,12 @@ public abstract class EndlessScrollListener implements AbsListView.OnScrollListe
     public void setScrollDirection(int scrollDirection) {
         if (scrollDirection == SCROLL_DIRECTION_DOWN || scrollDirection == SCROLL_DIRECTION_UP)
         { this.scrollDirection = scrollDirection; }
+    }
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        isUserScrolling  = event.getAction() == MotionEvent.ACTION_MOVE;
+        return false;
     }
 
     public boolean isLoading() {

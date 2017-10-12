@@ -57,13 +57,6 @@ public class AgoraNestedCommentFragment extends Fragment implements Observer {
         listView = (ListView) asView.findViewById(R.id.room_nested_comment_list);
         adapter = new AgoraCommentsAdapter(getActivity(), comments, Integer.parseInt(comment.getLevel()) + 1);
         listView.setAdapter(adapter);
-        EndlessScrollListener scrollListener = new EndlessScrollListener(0) {
-            @Override
-            public void onLoadMore(int page, int totalItemsCount) {
-                getNextCommentPage();
-            }
-        };
-        scrollListener.setScrollDirection(EndlessScrollListener.SCROLL_DIRECTION_UP);
 
         ((TextView)asView.findViewById(R.id.agora_nested_comment_owner_name)).setText(comment.getUsername());
         ((TextView)asView.findViewById(R.id.agora_nested_comment_body)).setText(comment.getComment());
@@ -222,21 +215,5 @@ public class AgoraNestedCommentFragment extends Fragment implements Observer {
                 NetworkChannel.getInstance().getAgoraNestedComments(comment.getRoomId(), comment.getId(), "" + (Integer.parseInt(comment.getLevel()) + 1));
                 break;
         }
-    }
-
-    private void getNextCommentPage(){
-        NetworkChannel.getInstance().getAgoraRoomPagedComments(comment.getId(), ((AgoraComment)adapter.getItem(adapter.getCount() - 1)).getId());
-    }
-
-    private void scrollToLastVisibleItem(final int index){
-        listView.post(new Runnable() {
-            @Override
-            public void run() {
-                View v = listView.getChildAt(0);
-                int top = (v == null) ? 0 : v.getTop();
-                listView.setSelectionFromTop(index, top);
-
-            }
-        });
     }
 }

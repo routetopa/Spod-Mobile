@@ -35,6 +35,8 @@ public class AgoraRoomFragment extends Fragment implements Observer {
     AgoraRoom room;
     ArrayList<AgoraComment> comments = new ArrayList<>();
     AgoraCommentsAdapter adapter;
+    EndlessScrollListener scrollListener;
+    boolean resume = false;
 
     public AgoraRoomFragment(){}
 
@@ -49,7 +51,7 @@ public class AgoraRoomFragment extends Fragment implements Observer {
         adapter = new AgoraCommentsAdapter(getActivity(), comments, 0);
         listView.setAdapter(adapter);
 
-        final EndlessScrollListener scrollListener = new EndlessScrollListener(0) {
+        scrollListener = new EndlessScrollListener(0) {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
                 getNextCommentPage();
@@ -58,6 +60,7 @@ public class AgoraRoomFragment extends Fragment implements Observer {
         scrollListener.setScrollDirection(EndlessScrollListener.SCROLL_DIRECTION_UP);
 
         listView.setOnScrollListener(scrollListener);
+        listView.setOnTouchListener(scrollListener);
 
         ((ImageButton)asView.findViewById(R.id.agora_comment_send)).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,10 +86,19 @@ public class AgoraRoomFragment extends Fragment implements Observer {
     }
 
     @Override
+    public void onAttach(Context context) {
+        NetworkChannel.getInstance().addObserver(this);
+        NetworkChannel.getInstance().getAgoraRoomPagedComments(room.getId());
+        NetworkChannel.getInstance().connectAgoraWebSocket(room.getId());
+        ((MainActivity)getActivity()).setToolbarTitle(room.getSubject());
+
+        super.onAttach(context);
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         NetworkChannel.getInstance().addObserver(this);
-        comments.clear();
     }
 
     @Override
@@ -105,10 +117,6 @@ public class AgoraRoomFragment extends Fragment implements Observer {
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
-        NetworkChannel.getInstance().addObserver(this);
-        NetworkChannel.getInstance().getAgoraRoomPagedComments(room.getId());
-        NetworkChannel.getInstance().connectAgoraWebSocket(room.getId());
-        ((MainActivity)getActivity()).setToolbarTitle(room.getSubject());
         super.onActivityCreated(savedInstanceState);
     }
 
@@ -137,7 +145,6 @@ public class AgoraRoomFragment extends Fragment implements Observer {
                                     j.getString("avatar_url"),
                                     j.getString("datalet_id")));
                         }
-
                     }
                 catch (JSONException | ClassCastException e) {
                     e.printStackTrace();

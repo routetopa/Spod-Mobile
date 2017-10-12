@@ -29,6 +29,7 @@ import java.util.Observer;
 import eu.spod.isislab.spodapp.MainActivity;
 import eu.spod.isislab.spodapp.R;
 import eu.spod.isislab.spodapp.entities.User;
+import eu.spod.isislab.spodapp.fragments.AgoraRoomsListFragment;
 import eu.spod.isislab.spodapp.fragments.CocreationRoomsListFragment;
 import eu.spod.isislab.spodapp.fragments.LoginFragment;
 import eu.spod.isislab.spodapp.utils.NetworkChannel;
@@ -153,7 +154,7 @@ public class AuthorizationService implements Observer {
                                 NetworkChannel.getInstance().addObserver(AuthorizationService.getInstance());
                                 NetworkChannel.getInstance().getUserInfo(userInfo.optString("email", null), "");
                             }else{
-                                Log.e("Auth", "user email null");
+                                //Log.e("Auth", "user email null");
                             }
                         }
                     }.execute(mAuthState.getAccessToken());
@@ -211,8 +212,8 @@ public class AuthorizationService implements Observer {
                         ((MainActivity)context).getSupportFragmentManager().popBackStack();
                         ((MainActivity)context).getSupportFragmentManager()
                                 .beginTransaction()
-                                .replace(R.id.container, new CocreationRoomsListFragment())
-                                .addToBackStack("cocoreation_room_list")
+                                .replace(R.id.container, new AgoraRoomsListFragment())
+                                .addToBackStack("agora_room_list")
                                 .commit();
                     }
                     break;

@@ -70,7 +70,7 @@ public class SpodLocationService extends IntentService implements LocationListen
     @Override
     public void onLocationChanged(Location location) {
         this.location = location;
-        Log.e("LOCATION SERVICE", "Lat: " + location.getLatitude() + " Long: " + location.getLongitude());
+        //Log.e("LOCATION SERVICE", "Lat: " + location.getLatitude() + " Long: " + location.getLongitude());
     }
 
     @Override
