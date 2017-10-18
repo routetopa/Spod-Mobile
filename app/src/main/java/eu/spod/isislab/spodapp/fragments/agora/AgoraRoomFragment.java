@@ -1,16 +1,10 @@
-package eu.spod.isislab.spodapp.fragments;
+package eu.spod.isislab.spodapp.fragments.agora;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.ListView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -18,25 +12,17 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Observable;
-import java.util.Observer;
 
 import eu.spod.isislab.spodapp.MainActivity;
 import eu.spod.isislab.spodapp.R;
-import eu.spod.isislab.spodapp.adapters.AgoraCommentsAdapter;
-import eu.spod.isislab.spodapp.entities.AgoraComment;
+import eu.spod.isislab.spodapp.entities.Comment;
 import eu.spod.isislab.spodapp.entities.AgoraRoom;
-import eu.spod.isislab.spodapp.utils.EndlessScrollListener;
+import eu.spod.isislab.spodapp.fragments.CommentFragment;
 import eu.spod.isislab.spodapp.utils.NetworkChannel;
 
-public class AgoraRoomFragment extends Fragment implements Observer {
-    View asView       = null;
-    ListView listView = null;
+public class AgoraRoomFragment extends CommentFragment {
 
     AgoraRoom room;
-    ArrayList<AgoraComment> comments = new ArrayList<>();
-    AgoraCommentsAdapter adapter;
-    EndlessScrollListener scrollListener;
-    boolean resume = false;
 
     public AgoraRoomFragment(){}
 
@@ -45,54 +31,21 @@ public class AgoraRoomFragment extends Fragment implements Observer {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        asView = inflater.inflate(R.layout.agora_room_fragment, container, false);
-        listView = (ListView) asView.findViewById(R.id.room_comment_list);
-        adapter = new AgoraCommentsAdapter(getActivity(), comments, 0);
-        listView.setAdapter(adapter);
-
-        scrollListener = new EndlessScrollListener(0) {
-            @Override
-            public void onLoadMore(int page, int totalItemsCount) {
-                getNextCommentPage();
-            }
-        };
-        scrollListener.setScrollDirection(EndlessScrollListener.SCROLL_DIRECTION_UP);
-
-        listView.setOnScrollListener(scrollListener);
-        listView.setOnTouchListener(scrollListener);
-
-        ((ImageButton)asView.findViewById(R.id.agora_comment_send)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                EditText etComment = (EditText)asView.findViewById(R.id.agora_comment_add_new);
-                if(!etComment.getText().toString().isEmpty())
-                {
-                    NetworkChannel.getInstance().addAgoraComment(
-                            room.getId(),
-                            room.getId(),
-                            etComment.getText().toString(),
-                            "0",
-                            "0");
-                }else{
-                    Snackbar.make(getActivity().findViewById(R.id.container), getString(R.string.agora_comment_add_empty_comment_warning), Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
-
-                }
-            }
-        });
-
-        return asView;
+    public void addComment(String comment){
+        NetworkChannel.getInstance().addAgoraComment(
+                room.getId(),
+                room.getId(),
+                comment,
+                "0",
+                "0");
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void init() {
         NetworkChannel.getInstance().addObserver(this);
         NetworkChannel.getInstance().getAgoraRoomPagedComments(room.getId());
-        NetworkChannel.getInstance().connectAgoraWebSocket(room.getId());
+        NetworkChannel.getInstance().connectToWebSocket("agora", new String[]{"realtime_message_" +  room.getId()});
         ((MainActivity)getActivity()).setToolbarTitle(room.getSubject());
-
-        super.onAttach(context);
     }
 
     @Override
@@ -116,11 +69,6 @@ public class AgoraRoomFragment extends Fragment implements Observer {
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-    }
-
-    @Override
     public void update(Observable o, Object arg) {
 
         switch(NetworkChannel.getInstance().getCurrentService()) {
@@ -132,7 +80,7 @@ public class AgoraRoomFragment extends Fragment implements Observer {
                     for (int i=0; i < response.length(); i++)
                     {
                             JSONObject j = response.getJSONObject(i);
-                            comments.add(new AgoraComment(
+                            comments.add(new Comment(
                                     j.getString("id"),
                                     j.getString("entityId"),
                                     j.getString("ownerId"),
@@ -160,7 +108,7 @@ public class AgoraRoomFragment extends Fragment implements Observer {
                         for (int i = response.length() - 1; i >= 0 ; i--)
                         {
                             JSONObject j = response.getJSONObject(i);
-                            comments.add(0, new AgoraComment(
+                            comments.add(0, new Comment(
                                     j.getString("id"),
                                     j.getString("entityId"),
                                     j.getString("ownerId"),
@@ -177,6 +125,7 @@ public class AgoraRoomFragment extends Fragment implements Observer {
                         adapter.notifyDataSetChanged();
                         //scrollToLastVisibleItem( (response.length() * 2) + 1 );
                         scrollMyListViewToItemIndex( (response.length() * 2) + 1 );
+                    showLoader(false);
 
                 }catch (JSONException | ClassCastException e) {
                     e.printStackTrace();
@@ -189,7 +138,7 @@ public class AgoraRoomFragment extends Fragment implements Observer {
 
                     String result = res.getString("result");
                     if (result.equals("ok")) {
-                        ((EditText)asView.findViewById(R.id.agora_comment_add_new)).setText("");
+                        ((EditText)asView.findViewById(R.id.comment_add_new)).setText("");
                         comments.clear();
                         InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                         imm.hideSoftInputFromWindow(asView.getWindowToken(), 0);
@@ -212,29 +161,10 @@ public class AgoraRoomFragment extends Fragment implements Observer {
         }
     }
 
-    private void getNextCommentPage(){
-        NetworkChannel.getInstance().getAgoraRoomPagedComments(room.getId(), ((AgoraComment)adapter.getItem(0)).getId());
+    @Override
+    public void getNextCommentPage(){
+        showLoader(true);
+        NetworkChannel.getInstance().getAgoraRoomPagedComments(room.getId(), ((Comment)adapter.getItem(0)).getId());
     }
-
-    private void scrollMyListViewToItemIndex(final int size) {
-        listView.post(new Runnable() {
-            @Override
-            public void run() {
-                listView.setSelection(size);
-            }
-        });
-    }
-
-    private void scrollToLastVisibleItem(final int index){
-        listView.post(new Runnable() {
-            @Override
-            public void run() {
-                View v = listView.getChildAt(0);
-                int top = (v == null) ? 0 : v.getTop();
-                listView.setSelectionFromTop(index, top);
-            }
-        });
-    }
-
 
 }

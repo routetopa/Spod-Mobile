@@ -43,6 +43,16 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Ada
         Button lBtn = (Button) asView.findViewById(R.id.login_button);
         lBtn.setOnClickListener(this);
 
+        ((TextView)asView.findViewById(R.id.create_account)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String url = NetworkChannel.getInstance().getSpodEndpoint() + NetworkChannel.CREATE_ACCOUNT_URL;
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(url));
+                startActivity(i);
+            }
+        });
+
         ((TextView)asView.findViewById(R.id.forgot_password)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

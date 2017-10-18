@@ -17,13 +17,13 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 
 import eu.spod.isislab.spodapp.R;
-import eu.spod.isislab.spodapp.entities.AgoraComment;
+import eu.spod.isislab.spodapp.entities.Comment;
 import eu.spod.isislab.spodapp.utils.NetworkChannel;
 
 public class DataletFragment extends Fragment {
-    AgoraComment comment;
+    Comment comment;
 
-    public void setComment(AgoraComment comment) {
+    public void setComment(Comment comment) {
         this.comment = comment;
     }
 
@@ -33,7 +33,7 @@ public class DataletFragment extends Fragment {
 
         View asView = inflater.inflate(R.layout.datalet_fragment, container, false);
         ((TextView) asView.findViewById(R.id.datalet_owner_name)).setText(comment.getUsername());
-        ((TextView) asView.findViewById(R.id.datalet_comment_body)).setText(comment.getComment());
+        ((WebView) asView.findViewById(R.id.datalet_comment_body)).loadDataWithBaseURL("", comment.getComment(), "text/html", "UTF-8", "");
         ((TextView) asView.findViewById(R.id.datalet_comment_date)).setText(comment.getTimestamp());
 
         final ImageView ownerImage = (ImageView) asView.findViewById(R.id.datalet_owner_image);

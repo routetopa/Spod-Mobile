@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -22,31 +21,30 @@ import java.util.ArrayList;
 
 import eu.spod.isislab.spodapp.MainActivity;
 import eu.spod.isislab.spodapp.R;
-import eu.spod.isislab.spodapp.entities.AgoraComment;
+import eu.spod.isislab.spodapp.entities.Comment;
 import eu.spod.isislab.spodapp.entities.User;
-import eu.spod.isislab.spodapp.fragments.AgoraNestedCommentFragment;
-import eu.spod.isislab.spodapp.fragments.AgoraRoomFragment;
+import eu.spod.isislab.spodapp.fragments.agora.AgoraNestedCommentFragment;
 import eu.spod.isislab.spodapp.fragments.DataletFragment;
 import eu.spod.isislab.spodapp.utils.NetworkChannel;
 
 /**
  * Created by Utente on 11/09/2017.
  */
-public class AgoraCommentsAdapter extends BaseAdapter {
+public class CommentsAdapter extends BaseAdapter {
 
-    ArrayList<AgoraComment> comments;
+    ArrayList<Comment> comments;
     Context context;
     private static LayoutInflater inflater = null;
     private int level;
 
-    public AgoraCommentsAdapter(Activity mainActivity, ArrayList<AgoraComment> comments, int level) {
+    public CommentsAdapter(Activity mainActivity, ArrayList<Comment> comments, int level) {
         this.context  = mainActivity;
         inflater      = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.comments = comments;
         this.level = level;
     }
 
-    public void add(AgoraComment comment){
+    public void add(Comment comment){
        comments.add(comment);
     }
 
@@ -72,16 +70,16 @@ public class AgoraCommentsAdapter extends BaseAdapter {
         View rowView;
         if(User.getInstance().getId().equals(comments.get(position).getOwnerId()))
         {
-            rowView = inflater.inflate(R.layout.agora_comment_row_right, null);
+            rowView = inflater.inflate(R.layout.comment_row_right, null);
         }else {
-            rowView = inflater.inflate(R.layout.agora_comment_row_left, null);
+            rowView = inflater.inflate(R.layout.comment_row_left, null);
         }
-        holder.ownerImage   = (ImageView) rowView.findViewById(R.id.agora_comment_owner_image);
-        holder.ownerName    = (TextView) rowView.findViewById(R.id.agora_comment_owner_name);
-        holder.body         = (WebView) rowView.findViewById(R.id.agora_comment_body);
-        holder.date         = (TextView) rowView.findViewById(R.id.agora_comment_date);
-        holder.replay       = (TextView) rowView.findViewById(R.id.agora_comment_reply);
-        holder.dataletImage = (ImageView) rowView.findViewById(R.id.agora_comment_datalet);
+        holder.ownerImage   = (ImageView) rowView.findViewById(R.id.comment_owner_image);
+        holder.ownerName    = (TextView) rowView.findViewById(R.id.comment_owner_name);
+        holder.body         = (WebView) rowView.findViewById(R.id.comment_body);
+        holder.date         = (TextView) rowView.findViewById(R.id.comment_date);
+        holder.replay       = (TextView) rowView.findViewById(R.id.comment_reply);
+        holder.dataletImage = (ImageView) rowView.findViewById(R.id.comment_datalet);
 
         holder.ownerName.setText(comments.get(position).getUsername());
         //holder.body.setText(comments.get(position).getComment());

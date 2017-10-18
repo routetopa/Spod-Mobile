@@ -52,18 +52,33 @@ public class NetworkChannel extends Observable
     public static final String SERVICE_AGORA_GET_PAGED_COMMENTS     = "SERVICE_AGORA_GET_PAGED_COMMENTS";
     public static final String SERVICE_AGORA_ADD_COMMENT            = "SERVICE_AGORA_ADD_COMMENT";
     public static final String SERVICE_COCREATION_GET_SHEET_DATA    = "SERVICE_COCREATION_GET_SHEET_DATA";
+    public static final String SERVICE_COCREATION_GET_METADATA      = "SERVICE_COCREATION_GET_METADATA";
+    public static final String SERVICE_COCREATION_GET_DATALETS      = "SERVICE_COCREATION_GET_DATALETS";
+    public static final String SERVICE_COCREATION_GET_COMMENTS      = "SERVICE_COCREATION_GET_DISCUSSION";
+    public static final String SERVICE_COCREATION_ADD_COMMENT       = "SERVICE_COCREATION_ADD_COMMENT";
     public static final String SERVICE_SYNC_NOTIFICATION            = "SERVICE_SYNC_NOTIFICATION";
 
-    public static final String RESET_PASSWORD_URL                   = "/password/reset";
+    public static final String RESET_PASSWORD_URL                   = "/oauth2/password/reset";
+    public static final String CREATE_ACCOUNT_URL                   = "/oauth2/register";
     public static final String LOGOUT_URL                           = "/login";
+    public static final String COCREATION_DATASET_ENDPOINT          = "/ethersheet/s/";
+    public static final String COCREATION_DOCUMENT_ENDPOINT         = "/etherpad/p/";
+    public static final String DEEP_ENDPOINT                        = "http://deep.routetopa.eu/deep_1_19";
 
     private static String SPOD_ENDPOINT                             = "";
-    private static final String POST_LOGIN_HANDLER                  = "/base/user/ajax-sign-in/";//"/openid/ajax.php";;
+    //private static final String POST_LOGIN_HANDLER                  = "/base/user/ajax-sign-in/";//"/openid/ajax.php";;
+    //Coreation
     private static final String GET_USER_INFO                       = "/cocreation/ajax/get-user-info/";
     private static final String MEDIAROOM_ADD_NEW_ROW               = "/ethersheet/mediaroom/addrow/";
     private static final String COCREATION_CREATE_ROOM              = "/cocreation/ajax/create-media-room-from-mobile/";
-    private static final String GET_COCREATION_MEDIA_ROOMS          = "/cocreation/ajax/get-media-rooms-by-user-id/";
+    private static final String GET_COCREATION_ROOMS                = "/cocreation/ajax/get-cocreation-rooms-by-user-id/";
+    private static final String GET_COCREATION_ROOM_METADATA        = "/cocreation/ajax/get-metadata-by-room-id/";
+    private static final String GET_COCREATION_ROOM_DATALETS        = "/cocreation/ajax/get-datalets-by-room-id/";
+    //private static final String GET_COCREATION_MEDIA_ROOMS          = "/cocreation/ajax/get-media-rooms-by-user-id/";
     private static final String GET_COCREATION_ROOMS_SHEET_DATA     = "/cocreation/ajax/get-sheet-data-by-room-id/";
+    private static final String GET_COCREATION_ROOM_COMMENTS        = "/spod_plugin_discussion/ajax/get-comments/";
+    private static final String COCREATION_ROOM_ADD_COMMENT         = "/spod_plugin_discussion/ajax/add-comment/";
+    //Agora
     private static final String GET_AGORA_ROOMS                     = "/agora/ajax/get-rooms";
     private static final String AGORA_ADD_ROOM                      = "/agora/ajax/add-agora-room";
     private static final String GET_AGORA_ROOM_COMMENTS             = "/agora/ajax/get-comments-page/";
@@ -83,7 +98,6 @@ public class NetworkChannel extends Observable
     private String currentService      = null;
     private Socket mSocket             = null;
     //private WebSocketClient mWebSocketClient   = null;
-    //Socket mSocket                     = null;
 
     public static NetworkChannel getInstance() {
         return ourInstance;
@@ -223,11 +237,11 @@ public class NetworkChannel extends Observable
     }
 
     //COCREATION
-    public void getCocreationMediaRooms()
+    public void getCocreationRooms()
     {
         Map<String, String> params = new HashMap<>();
         params.put("userId", User.getInstance().getId() );
-        makePostRequest(GET_COCREATION_MEDIA_ROOMS, params, true, null );
+        makePostRequest(GET_COCREATION_ROOMS, params, true, null );
     }
 
     public void createCocreationRoom(final String name, final String subject, final String description, final String goal, final String invitation_text)
@@ -277,6 +291,31 @@ public class NetworkChannel extends Observable
         partParams.put("image_file", new DataPart(title + ".jpg",  imageBytes , "image/jpeg"));
 
         makeMultipartRequest(MEDIAROOM_ADD_NEW_ROW + sheetId, stringParams, partParams, true, null);
+    }
+
+    public void getCocreationMetadata(String roomId){
+        Map<String, String> params = new HashMap<>();
+        params.put("roomId", roomId );
+        makePostRequest(GET_COCREATION_ROOM_METADATA, params, true, SERVICE_COCREATION_GET_METADATA );
+    }
+
+    public void getCocreationDatalets(String roomId){
+        Map<String, String> params = new HashMap<>();
+        params.put("roomId", roomId );
+        makePostRequest(GET_COCREATION_ROOM_DATALETS, params, true, SERVICE_COCREATION_GET_DATALETS );
+    }
+
+    public void getCocreationRoomComments(String roomId){
+        Map<String, String> params = new HashMap<>();
+        params.put("entityId", roomId );
+        makePostRequest(GET_COCREATION_ROOM_COMMENTS, params, true, SERVICE_COCREATION_GET_COMMENTS );
+    }
+
+    public void addCocreationRoomComment(String roomId, String comment){
+        Map<String, String> params = new HashMap<>();
+        params.put("entityId", roomId );
+        params.put("comment",  comment );
+        makePostRequest(COCREATION_ROOM_ADD_COMMENT, params, true, SERVICE_COCREATION_ADD_COMMENT );
     }
 
     //AGORA
@@ -377,8 +416,88 @@ public class NetworkChannel extends Observable
         }
     }
 
-    public void connectAgoraWebSocket(final String roomId){
+    public void connectToWebSocket(final String plugin, final String[] channels){
+        try {
+            String endPoint = SPOD_ENDPOINT + "/";
+            IO.Options options = new IO.Options();
+            options.port       = 3000;
+            options.path = "/realtime_notification";
+            options.transports = new String[]{WebSocket.NAME};
 
+
+            mSocket = IO.socket(endPoint, options);
+            mSocket
+                    .on(Socket.EVENT_CONNECT, new Emitter.Listener(){
+                        @Override
+                        public void call(Object... args) {
+                            //Log.e("SOKETIO", "CONNECT");
+                            JSONObject obj = new JSONObject();
+                            try {
+                                obj.put("user_id", User.getInstance().getId());
+                                obj.put("room_id", User.getInstance().getId());
+                                obj.put("plugin", plugin);
+                            }catch (JSONException e){
+                                e.printStackTrace();
+                            }
+                            mSocket.emit("online_notification", obj);
+                        }
+                    })
+                    .on(Socket.EVENT_DISCONNECT, new Emitter.Listener() {
+                        @Override
+                        public void call(Object... args) {
+                            //Log.e("SOKETIO", "DISCONNECT");
+                        }
+
+                    })
+                    .on(Socket.EVENT_CONNECT_ERROR, new Emitter.Listener() {
+                        @Override
+                        public void call(Object... args) {
+                            //Log.e("SOKETIO", "ERROR");
+                        }
+                    });
+
+            Emitter.Listener listener = new Emitter.Listener() {
+                @Override
+                public void call(final Object... args) {
+                    try {
+                        mainActivity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                    /*try{
+                                        JSONObject j = (JSONObject)args[0];
+                                        if(!j.getString("user_id").equals(User.getInstance().getId())){
+                                            currentService = SERVICE_SYNC_NOTIFICATION;
+                                            setChanged();
+                                            notifyObservers(args[0]);
+                                        }
+                                    }catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }*/
+                                currentService = SERVICE_SYNC_NOTIFICATION;
+                                setChanged();
+                                notifyObservers(args[0]);
+                            }
+                        });
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+            };
+
+            for(String channel : channels){
+                mSocket.on(channel, listener);
+            }
+
+            mSocket.connect();
+
+        }catch(URISyntaxException e){
+            e.printStackTrace();
+        }
+
+    }
+
+    public void connectAgoraWebSocket(final String roomId)
+    {
         try {
             String endPoint = SPOD_ENDPOINT + "/";
             IO.Options options = new IO.Options();
@@ -425,7 +544,7 @@ public class NetworkChannel extends Observable
                     .on("realtime_message_" +  roomId, new Emitter.Listener() {
                         @Override
                         public void call(final Object... args) {
-                            //Log.e("SOKETIO", "New message fanasy");
+                            Log.e("SOKETIO", "New message fanasy");
                             try {
                                 mainActivity.runOnUiThread(new Runnable() {
                                     @Override
@@ -455,7 +574,8 @@ public class NetworkChannel extends Observable
         }
     }
 
-    public void connectCocreationWebSocket(final String roomId){
+    public void connectCocreationWebSocket(final String roomId)
+    {
 
         try {
             String endPoint = "http://172.16.15.77/ethersheet/s/dataset_room_111_wEZGe/";//SPOD_ENDPOINT  + COCREATION_SYNC_NOTIFICATION_ENDPOINT.replace("#", roomId);

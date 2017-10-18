@@ -1,5 +1,7 @@
 package eu.spod.isislab.spodapp.entities;
 
+import java.util.ArrayList;
+
 public class CocreationRoom {
     private String name;
     private String description;
@@ -7,9 +9,11 @@ public class CocreationRoom {
     private String sheetId;
     private String ownerName;
     private String ownerImage;
+    private String type;
     private String timestamp;
+    private ArrayList<String> docs;
 
-    public CocreationRoom(String name, String description, String id, String sheetId, String ownerName, String ownerImage, String timestamp) {
+    public CocreationRoom(String name, String description, String id, String sheetId, String ownerName, String ownerImage, String timestamp, String type, ArrayList<String> docs) {
         this.name        = name;
         this.description = description;
         this.id          = id;
@@ -17,6 +21,8 @@ public class CocreationRoom {
         this.ownerName   = ownerName;
         this.ownerImage  = ownerImage;
         this.timestamp   = timestamp;
+        this.type        = type;
+        this.docs        = docs;
     }
 
     public String getName() {
@@ -73,6 +79,22 @@ public class CocreationRoom {
 
     public void setTimestamp(String timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public ArrayList<String> getDocs() {
+        return docs;
+    }
+
+    public void setDocs(ArrayList<String> docs) {
+        this.docs = docs;
     }
 
 }

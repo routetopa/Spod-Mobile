@@ -29,13 +29,13 @@
             android:orientation="vertical">
 
             <WebView
-                android:id="@+id/agora_comment_body"
+                android:id="@+id/comment_body"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="But I must explain to you how all this mistaken idea of denouncing pleasure" />
 
             <ImageView
-                android:id="@+id/agora_comment_datalet"
+                android:id="@+id/comment_datalet"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
@@ -47,7 +47,7 @@
                 android:padding="8dp">
 
                 <TextView
-                    android:id="@+id/agora_comment_date"
+                    android:id="@+id/comment_date"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="left|center_vertical|center"
@@ -57,7 +57,7 @@
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/agora_comment_reply"
+                    android:id="@+id/comment_reply"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="right|center_vertical|center"
@@ -80,7 +80,7 @@
             android:orientation="vertical">
 
             <ImageView
-                android:id="@+id/agora_comment_owner_image"
+                android:id="@+id/comment_owner_image"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_gravity="center"
@@ -89,10 +89,10 @@
                 android:src="@drawable/avatar5" />
 
             <TextView
-                android:id="@+id/agora_comment_owner_name"
+                android:id="@+id/comment_owner_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/agora_comment_owner_image"
+                android:layout_below="@+id/comment_owner_image"
                 android:layout_gravity="center"
                 android:gravity="clip_horizontal|center_horizontal"
                 android:lines="2"

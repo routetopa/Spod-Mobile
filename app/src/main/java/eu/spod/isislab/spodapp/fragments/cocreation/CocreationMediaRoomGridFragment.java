@@ -1,11 +1,10 @@
-package eu.spod.isislab.spodapp.fragments;
+package eu.spod.isislab.spodapp.fragments.cocreation;
 
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.Snackbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,16 +19,11 @@ import eu.spod.isislab.spodapp.entities.CocreationRoom;
 import eu.spod.isislab.spodapp.services.SpodLocationService;
 import eu.spod.isislab.spodapp.utils.NetworkChannel;
 
-public class CocreationRoomGridFragment extends CocreationRoomFragment implements BottomNavigationView.OnNavigationItemSelectedListener {
+public class CocreationMediaRoomGridFragment extends CocreationRoomFragment implements BottomNavigationView.OnNavigationItemSelectedListener {
 
     private ImageAdapter gridAdapter;
 
-    CocreationRoom room;
     GridView grid;
-
-    public void setRoom(CocreationRoom room){
-        this.room = room;
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -38,7 +32,7 @@ public class CocreationRoomGridFragment extends CocreationRoomFragment implement
                 R.layout.media_gallery_screen_slider_fragment, container, false);
 
         BottomNavigationView bottomNavigationView = (BottomNavigationView)
-                rootView.findViewById(R.id.room_list_bottom_navigation);
+                rootView.findViewById(R.id.cocoreation_room_media_list_bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
 
         gridAdapter = new ImageAdapter(getActivity());

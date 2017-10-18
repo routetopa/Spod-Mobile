@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import eu.spod.isislab.spodapp.MainActivity;
 import eu.spod.isislab.spodapp.R;
 import eu.spod.isislab.spodapp.entities.AgoraRoom;
-import eu.spod.isislab.spodapp.fragments.AgoraRoomFragment;
+import eu.spod.isislab.spodapp.fragments.agora.AgoraRoomFragment;
 
 public class AgoraRoomsAdapter extends BaseAdapter{
 

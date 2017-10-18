@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+<head>
+
+    <link rel="import" href="#DEEP_ENDPOINT#/COMPONENTS/controllets/datalet-slider-controllet/datalet-slider-controllet.html"/>
+    <link rel="stylesheet" href="#DEEP_ENDPOINT#/COMPONENTS/controllets/shared_js/perfect-scrollbar/css/perfect-scrollbar.min.css">
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script type="text/javascript" src="#DEEP_ENDPOINT#/COMPONENTS/bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
+    #ADDON#
+    <script src="#DEEP_ENDPOINT#/COMPONENTS/controllets/shared_js/perfect-scrollbar/js/min/perfect-scrollbar.jquery.min.js"></script>
+    <script src="#DEEP_ENDPOINT#/COMPONENTS/locales/datalet-slider_ln.js" type="text/javascript"></script>
+    <script>
+        $(document).ready(function(){
+            window.addEventListener('datalet-slider-controllet_attached', function(e){
+               document.getElementById('datalets_slider').setDatalets(#DATA#);
+            });
+        });
+    </script>
+</head>
+<body>
+   <div style="height:96vh">
+      <datalet-slider-controllet id="datalets_slider"></datalet-slider-controllet>
+   </div>
+</body>
+</html>

@@ -6,8 +6,10 @@
     android:background="#FFFFFF">
 
     <LinearLayout
+        android:id="@+id/nested_comment_header"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="0.30"
         android:layout_margin="8dp"
         android:background="@drawable/nested_comment_body_borderd"
         android:divider="#000000"
@@ -22,7 +24,7 @@
                 android:orientation="vertical">
 
                 <ImageView
-                    android:id="@+id/agora_nested_comment_owner_image"
+                    android:id="@+id/nested_comment_owner_image"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:layout_gravity="center"
@@ -31,10 +33,10 @@
                     android:src="@drawable/avatar5" />
 
                 <TextView
-                    android:id="@+id/agora_nested_comment_owner_name"
+                    android:id="@+id/nested_comment_owner_name"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/agora_nested_comment_owner_image"
+                    android:layout_height="match_parent"
+                    android:layout_below="@+id/comment_owner_image"
                     android:layout_gravity="center"
                     android:gravity="clip_horizontal|center_horizontal"
                     android:lines="2"
@@ -54,16 +56,15 @@
             android:layout_weight="0.75"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/agora_nested_comment_body"
+            <WebView
+                android:id="@+id/nested_comment_body"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="But I must explain to you how all this mistaken idea of denouncing pleasure"
                 android:textStyle="italic" />
 
 
             <ImageView
-                android:id="@+id/agora_comment_datalet"
+                android:id="@+id/comment_datalet"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
@@ -75,7 +76,7 @@
                 android:padding="8dp">
 
                 <TextView
-                    android:id="@+id/agora_nested_comment_date"
+                    android:id="@+id/nested_comment_date"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="left|center_vertical|center"
@@ -91,7 +92,7 @@
     </LinearLayout>
 
     <ListView
-        android:id="@+id/room_nested_comment_list"
+        android:id="@+id/nested_comment_list"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0.80"
@@ -110,7 +111,7 @@
         android:padding="4dp">
 
         <EditText
-            android:id="@+id/agora_nested_comment_add_new"
+            android:id="@+id/nested_comment_add_new"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_margin="4dp"
@@ -125,7 +126,7 @@
             android:layout_weight="0.12">
 
             <ImageButton
-                android:id="@+id/agora_nested_comment_send"
+                android:id="@+id/nested_comment_send"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_gravity="center_vertical"

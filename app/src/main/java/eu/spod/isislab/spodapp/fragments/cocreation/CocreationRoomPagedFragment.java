@@ -1,16 +1,12 @@
-package eu.spod.isislab.spodapp.fragments;
+package eu.spod.isislab.spodapp.fragments.cocreation;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import org.json.JSONArray;
-
 import java.util.Observable;
-import java.util.Observer;
 
 import eu.spod.isislab.spodapp.MainActivity;
 import eu.spod.isislab.spodapp.R;

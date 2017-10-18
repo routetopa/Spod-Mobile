@@ -6,6 +6,20 @@
     android:layout_height="match_parent"
     android:background="#FFFFFF">
 
+    <LinearLayout
+        android:id="@+id/room_comment_loader"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:gravity="center_vertical|center_horizontal">
+
+        <ImageView
+            android:id="@+id/loader_image"
+            android:layout_width="80dp"
+            android:layout_height="60dp"
+            android:background="@drawable/jelly_fluid_loader" />
+
+    </LinearLayout>
+
     <ListView
         android:id="@+id/room_comment_list"
         android:layout_width="match_parent"
@@ -26,7 +40,7 @@
         android:padding="4dp">
 
         <EditText
-            android:id="@+id/agora_comment_add_new"
+            android:id="@+id/comment_add_new"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_margin="4dp"
@@ -40,7 +54,7 @@
             android:layout_weight="0.12">
 
             <ImageButton
-                android:id="@+id/agora_comment_send"
+                android:id="@+id/comment_send"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_gravity="center_vertical"

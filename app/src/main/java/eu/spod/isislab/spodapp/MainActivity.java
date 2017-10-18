@@ -7,8 +7,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.provider.Settings;
-import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.design.widget.NavigationView;
 import android.support.v4.content.ContextCompat;
@@ -21,10 +19,9 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import eu.spod.isislab.spodapp.fragments.LoginFragment;
 import eu.spod.isislab.spodapp.services.AuthorizationService;
-import eu.spod.isislab.spodapp.fragments.AgoraRoomsListFragment;
-import eu.spod.isislab.spodapp.fragments.CocreationRoomsListFragment;
+import eu.spod.isislab.spodapp.fragments.agora.AgoraRoomsListFragment;
+import eu.spod.isislab.spodapp.fragments.cocreation.CocreationRoomsListFragment;
 import eu.spod.isislab.spodapp.services.SpodLocationService;
 import eu.spod.isislab.spodapp.utils.CustomDialog;
 import eu.spod.isislab.spodapp.utils.NetworkChannel;
@@ -127,7 +124,9 @@ public class MainActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
+            int index = getSupportFragmentManager().getBackStackEntryCount() - 1;
             if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
+                if(getSupportFragmentManager().getBackStackEntryAt(index).getName().contains("cocreation_data_room")) getSupportFragmentManager().popBackStack();
                 getSupportFragmentManager().popBackStack();
             } else {
                 this.finish();

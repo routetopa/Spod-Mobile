@@ -1,6 +1,6 @@
 package eu.spod.isislab.spodapp.entities;
 
-public class AgoraComment {
+public class Comment {
 
     String id;
     String roomId;
@@ -14,7 +14,7 @@ public class AgoraComment {
     String avatar_url;
     String datalet_id;
 
-    public AgoraComment(String id, String roomId, String ownerId, String comment, String level, String sentiment, String timestamp, String total_comment, String username, String avatar_url, String datalet_id) {
+    public Comment(String id, String roomId, String ownerId, String comment, String level, String sentiment, String timestamp, String total_comment, String username, String avatar_url, String datalet_id) {
         this.id = id;
         this.roomId        = roomId;
         this.ownerId       = ownerId;

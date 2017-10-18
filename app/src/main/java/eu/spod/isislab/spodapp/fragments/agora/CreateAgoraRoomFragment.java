@@ -1,4 +1,4 @@
-package eu.spod.isislab.spodapp.fragments;
+package eu.spod.isislab.spodapp.fragments.agora;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;

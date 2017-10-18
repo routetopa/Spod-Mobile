@@ -1,4 +1,4 @@
-package eu.spod.isislab.spodapp.fragments;
+package eu.spod.isislab.spodapp.fragments.cocreation;
 
 import android.app.ActivityManager;
 import android.content.ContentResolver;
@@ -17,7 +17,6 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.text.InputType;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -39,6 +38,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 import eu.spod.isislab.spodapp.R;
+import eu.spod.isislab.spodapp.fragments.cocreation.CocreationMediaRoomGridFragment;
 import eu.spod.isislab.spodapp.services.SpodLocationService;
 import eu.spod.isislab.spodapp.utils.DownloadImageTask;
 import eu.spod.isislab.spodapp.utils.NetworkChannel;
@@ -54,7 +54,7 @@ public class GalleryAddItemFragment extends Fragment implements View.OnClickList
     Bitmap bp = null;
     String sheetId;
 
-    CocreationRoomGridFragment cocreationRoomGridFragment;
+    CocreationMediaRoomGridFragment cocreationRoomGridFragment;
 
     @Nullable
     @Override
@@ -118,7 +118,7 @@ public class GalleryAddItemFragment extends Fragment implements View.OnClickList
         getPhoto();
     }
 
-    public void setCocreationRoomGridFragment(CocreationRoomGridFragment cocreationRoomGridFragment) {
+    public void setCocreationRoomGridFragment(CocreationMediaRoomGridFragment cocreationRoomGridFragment) {
         this.cocreationRoomGridFragment = cocreationRoomGridFragment;
     }
 

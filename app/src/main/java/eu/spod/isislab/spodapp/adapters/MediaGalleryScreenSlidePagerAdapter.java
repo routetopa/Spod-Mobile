@@ -12,7 +12,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import eu.spod.isislab.spodapp.entities.MediaGalleryItem;
-import eu.spod.isislab.spodapp.fragments.MediaGalleryScreenSliderFragment;
+import eu.spod.isislab.spodapp.fragments.cocreation.MediaGalleryScreenSliderFragment;
 
 
 public class MediaGalleryScreenSlidePagerAdapter extends FragmentStatePagerAdapter {

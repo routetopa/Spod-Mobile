@@ -1,4 +1,4 @@
-package eu.spod.isislab.spodapp.fragments;
+package eu.spod.isislab.spodapp.fragments.cocreation;
 
 import android.location.Location;
 import android.os.Bundle;
@@ -15,6 +15,7 @@ import android.widget.GridView;
 import java.util.ArrayList;
 
 import eu.spod.isislab.spodapp.adapters.MediaGalleryGridAdaper;
+import eu.spod.isislab.spodapp.fragments.cocreation.GalleryAddItemFragment;
 import eu.spod.isislab.spodapp.services.SpodLocationService;
 import eu.spod.isislab.spodapp.entities.MediaGalleryItem;
 import eu.spod.isislab.spodapp.R;
@@ -38,7 +39,7 @@ public class MediaGalleryScreenSliderFragment extends Fragment implements Bottom
                 R.layout.media_gallery_screen_slider_fragment, container, false);
 
         BottomNavigationView bottomNavigationView = (BottomNavigationView)
-                rootView.findViewById(R.id.room_list_bottom_navigation);
+                rootView.findViewById(R.id.cocoreation_room_media_list_bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
 
         gridAdapter = new MediaGalleryGridAdaper(getActivity());

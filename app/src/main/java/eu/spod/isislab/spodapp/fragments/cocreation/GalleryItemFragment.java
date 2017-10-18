@@ -1,4 +1,4 @@
-package eu.spod.isislab.spodapp.fragments;
+package eu.spod.isislab.spodapp.fragments.cocreation;
 
 import android.graphics.Bitmap;
 import android.location.Location;
@@ -23,6 +23,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 import eu.spod.isislab.spodapp.R;
+import eu.spod.isislab.spodapp.fragments.ItemMapFragment;
 import eu.spod.isislab.spodapp.utils.NetworkChannel;
 import eu.spod.isislab.spodapp.entities.User;
 
