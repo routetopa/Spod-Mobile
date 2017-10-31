@@ -37,6 +37,10 @@
     <string name="cocreation_room_data_notes">Notes</string>
     <string name="cocreation_room_data_discussion">Discussion</string>
     <string name="cocreation_room_data_datalets">Datalets</string>
+    <string name="cocreation_room_kwoledge_datalets">Datalets</string>
+    <string name="cocreation_room_kwoledge_explore">Explore</string>
+    <string name="cocreation_room_kwoledge_ideas">Ideas</string>
+    <string name="cocreation_room_kwoledge_outcome">Outcome</string>
 
     <!--Gallery-->
     <string name="cocreation_room_gallery_add_item_button">Add an item</string>
@@ -72,19 +76,22 @@
     <string name="cocreation_fill_form_correctly">Please fill form correctly!!!</string>
     <string name="cocreation_room_created">Room created</string>
 
+    <!-- Firebase notificatin : name format => 'PLUGIN_ACTION_notification_message' -->
+    <string name="notification_channel_name">SpodMobileNotificationChannel</string>
+    <string name="notification_channel_description">Spod Mobile Notification Channel</string>
 
     <string-array name="spod_endpoints_array">
-        <!--<item>172.16.15.77</item>-->
         <item>spod.routetopa.eu</item>
         <item>spod.databenc.it</item>
         <item>prato.routetopa.eu</item>
+        <item>nl-spod.routetopa.eu</item>
+        <item>dublin-spod.routetopa.eu</item>
         <!--<item>issy.routetopa.eu</item>-->
         <!--<item>groningen.routetopa.eu</item>-->
         <!--<item>denhaag.routetopa.eu</item>-->
-        <item>dublin-spod.routetopa.eu</item>
         <!--<item>opendata-crc.di.unisa.it</item>-->
         <!--<item>ddac-spod.routetopa.eu</item>-->
-        <!--<item>nl-spod.routetopa.eu</item>-->
+        <!--<item>172.16.15.77</item>-->
     </string-array>
 
     <string-array name="cocreation_search_menu_spinner">

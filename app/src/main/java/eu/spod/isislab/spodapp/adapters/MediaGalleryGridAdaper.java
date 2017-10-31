@@ -15,7 +15,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import eu.spod.isislab.spodapp.MainActivity;
-import eu.spod.isislab.spodapp.fragments.cocreation.GalleryItemFragment;
+import eu.spod.isislab.spodapp.fragments.cocreation.media.GalleryItemFragment;
 import eu.spod.isislab.spodapp.entities.MediaGalleryItem;
 import eu.spod.isislab.spodapp.R;
 

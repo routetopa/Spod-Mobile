@@ -7,9 +7,6 @@ import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
-/**
- * Created by Utente on 10/07/2017.
- */
 public class CustomImageViewCircularShape extends ImageView {
 
     public static float radius = 100.0f;

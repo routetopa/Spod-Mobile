@@ -1,4 +1,4 @@
-package eu.spod.isislab.spodapp.fragments.cocreation;
+package eu.spod.isislab.spodapp.fragments.cocreation.media;
 
 import android.location.Location;
 import android.os.Bundle;
@@ -15,7 +15,7 @@ import java.util.Observable;
 import eu.spod.isislab.spodapp.MainActivity;
 import eu.spod.isislab.spodapp.R;
 import eu.spod.isislab.spodapp.adapters.ImageAdapter;
-import eu.spod.isislab.spodapp.entities.CocreationRoom;
+import eu.spod.isislab.spodapp.fragments.cocreation.CocreationRoomFragment;
 import eu.spod.isislab.spodapp.services.SpodLocationService;
 import eu.spod.isislab.spodapp.utils.NetworkChannel;
 

@@ -1,4 +1,4 @@
-package eu.spod.isislab.spodapp.fragments.cocreation;
+package eu.spod.isislab.spodapp.fragments.cocreation.media;
 
 import android.location.Location;
 import android.os.Bundle;
@@ -15,7 +15,7 @@ import android.widget.GridView;
 import java.util.ArrayList;
 
 import eu.spod.isislab.spodapp.adapters.MediaGalleryGridAdaper;
-import eu.spod.isislab.spodapp.fragments.cocreation.GalleryAddItemFragment;
+import eu.spod.isislab.spodapp.fragments.cocreation.media.GalleryAddItemFragment;
 import eu.spod.isislab.spodapp.services.SpodLocationService;
 import eu.spod.isislab.spodapp.entities.MediaGalleryItem;
 import eu.spod.isislab.spodapp.R;

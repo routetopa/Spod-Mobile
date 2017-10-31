@@ -21,14 +21,12 @@ import java.util.ArrayList;
 
 import eu.spod.isislab.spodapp.MainActivity;
 import eu.spod.isislab.spodapp.R;
-import eu.spod.isislab.spodapp.fragments.cocreation.CocreationDataRoomFragment;
-import eu.spod.isislab.spodapp.fragments.cocreation.CocreationMediaRoomGridFragment;
+import eu.spod.isislab.spodapp.fragments.cocreation.data.CocreationDataRoomFragment;
+import eu.spod.isislab.spodapp.fragments.cocreation.knowledge.CocreationKnowledgeRoomFragment;
+import eu.spod.isislab.spodapp.fragments.cocreation.media.CocreationMediaRoomGridFragment;
 import eu.spod.isislab.spodapp.entities.CocreationRoom;
 import eu.spod.isislab.spodapp.fragments.cocreation.CocreationRoomFragment;
 
-/**
- * Created by Utente on 28/06/2017.
- */
 public class CocreationRoomsAdapter extends BaseAdapter{
 
     public static final String[] ROOM_TYPES = {"all", "media", "data", "knowledge"};
@@ -49,7 +47,7 @@ public class CocreationRoomsAdapter extends BaseAdapter{
     public void doFilter(String searchKey, String searchType){
         rooms.clear();
         for(CocreationRoom r : allRooms){
-            if((r.getName().contains(searchKey) || searchKey.isEmpty()) &&
+            if((r.getName().toLowerCase().contains(searchKey.toLowerCase()) || searchKey.isEmpty()) &&
                (r.getType().equals(searchType) || searchType.equals("all")))
                rooms.add(r);
         }
@@ -113,6 +111,7 @@ public class CocreationRoomsAdapter extends BaseAdapter{
                         roomFragment = new CocreationDataRoomFragment();
                         break;
                     case "knowledge":
+                        roomFragment = new CocreationKnowledgeRoomFragment();
                         break;
                 }
                 roomFragment.setRoom(rooms.get(position));

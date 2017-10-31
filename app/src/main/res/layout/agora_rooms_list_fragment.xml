@@ -6,6 +6,29 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <LinearLayout
+        android:id="@+id/agora_search_bar"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@drawable/search_bar"
+        android:divider="#000000"
+        android:padding="4dp"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/agora_search_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:hint="Search"
+            android:imeOptions="actionNext"
+            android:inputType="text"
+            android:padding="16dp"
+            android:textAlignment="gravity"
+            android:textSize="16dp" />
+
+    </LinearLayout>
+
     <ListView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/agora_rooms_list"
         android:layout_width="match_parent"

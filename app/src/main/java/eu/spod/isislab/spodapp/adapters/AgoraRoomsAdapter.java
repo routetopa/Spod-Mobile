@@ -19,13 +19,24 @@ import eu.spod.isislab.spodapp.fragments.agora.AgoraRoomFragment;
 public class AgoraRoomsAdapter extends BaseAdapter{
 
     ArrayList<AgoraRoom> rooms;
+    ArrayList<AgoraRoom> allRooms;
     Context context;
     private static LayoutInflater inflater = null;
 
     public AgoraRoomsAdapter(Activity mainActivity, ArrayList<AgoraRoom> rooms) {
         this.rooms    = rooms;
+        this.allRooms = new ArrayList<>(rooms);
         this.context  = mainActivity;
         inflater      = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    }
+
+    public void doFilter(String searchKey){
+        rooms.clear();
+        for(AgoraRoom r : allRooms){
+            if((r.getSubject().toLowerCase().contains(searchKey.toLowerCase()) || searchKey.isEmpty()))
+                rooms.add(r);
+        }
+        notifyDataSetChanged();
     }
 
     @Override

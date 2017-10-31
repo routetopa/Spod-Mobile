@@ -89,6 +89,8 @@ public class NetworkChannel extends Observable
     //Sync notification
     private static final String SYNC_NOTIFICATION_ENDPOINT             = "/realtime_notification";
     private static final String COCREATION_SYNC_NOTIFICATION_ENDPOINT  = "/ethersheet/#/pubsub/";
+    //Firebase Notification
+    private static final String FIREBASE_REGISTRATION_ID_ENDPOINT      = "/notification_system/ajax/add-user-registration-id/";
 
 
     private static NetworkChannel ourInstance = new NetworkChannel();
@@ -293,25 +295,29 @@ public class NetworkChannel extends Observable
         makeMultipartRequest(MEDIAROOM_ADD_NEW_ROW + sheetId, stringParams, partParams, true, null);
     }
 
-    public void getCocreationMetadata(String roomId){
+    public void getCocreationMetadata(String roomId)
+    {
         Map<String, String> params = new HashMap<>();
         params.put("roomId", roomId );
         makePostRequest(GET_COCREATION_ROOM_METADATA, params, true, SERVICE_COCREATION_GET_METADATA );
     }
 
-    public void getCocreationDatalets(String roomId){
+    public void getCocreationDatalets(String roomId)
+    {
         Map<String, String> params = new HashMap<>();
         params.put("roomId", roomId );
         makePostRequest(GET_COCREATION_ROOM_DATALETS, params, true, SERVICE_COCREATION_GET_DATALETS );
     }
 
-    public void getCocreationRoomComments(String roomId){
+    public void getCocreationRoomComments(String roomId)
+    {
         Map<String, String> params = new HashMap<>();
         params.put("entityId", roomId );
         makePostRequest(GET_COCREATION_ROOM_COMMENTS, params, true, SERVICE_COCREATION_GET_COMMENTS );
     }
 
-    public void addCocreationRoomComment(String roomId, String comment){
+    public void addCocreationRoomComment(String roomId, String comment)
+    {
         Map<String, String> params = new HashMap<>();
         params.put("entityId", roomId );
         params.put("comment",  comment );
@@ -369,6 +375,14 @@ public class NetworkChannel extends Observable
         params.put("body",    description);
         params.put("userId",  User.getInstance().getId());
         makePostRequest(AGORA_ADD_ROOM, params, true, SERVICE_AGORA_ADD_COMMENT);
+    }
+
+    //FIREBASE NOTIFICATION
+    public void addRegistrationId(String registrationId){
+        Map<String, String> params = new HashMap<>();
+        params.put("registrationId", registrationId);
+        params.put("userId",  User.getInstance().getId());
+        makePostRequest(FIREBASE_REGISTRATION_ID_ENDPOINT, params, true, null);
     }
 
     //SYNC NOTIFICATION

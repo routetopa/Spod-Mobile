@@ -26,13 +26,25 @@ import eu.spod.isislab.spodapp.utils.EndlessScrollListener;
 
 public class CommentFragment extends Fragment implements Observer {
 
-    public View asView       = null;
-    public ListView listView = null;
-    public LinearLayout loader  = null;
+    CommentFragment cInstance = null;
+
+    public View asView         = null;
+    public ListView listView   = null;
+    public LinearLayout loader = null;
 
     public ArrayList<Comment> comments = new ArrayList<>();
     public EndlessScrollListener scrollListener;
     public CommentsAdapter adapter;
+
+    public int maxLevel = 1;
+
+    public CommentFragment(){
+        cInstance = this;
+    }
+
+    public void setMaxLevel(int maxLevel) {
+        this.maxLevel = maxLevel;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -46,7 +58,12 @@ public class CommentFragment extends Fragment implements Observer {
                 .into((ImageView)asView.findViewById(R.id.loader_image));
 
         listView = (ListView) asView.findViewById(R.id.room_comment_list);
-        adapter = new CommentsAdapter(getActivity(), comments, 0);
+        adapter = new CommentsAdapter(getActivity(), comments, maxLevel){
+            @Override
+            public void nestedCommentAction(Comment comment){
+                cInstance.nestedCommentAction(comment);
+            }
+        };
         listView.setAdapter(adapter);
 
         scrollListener = new EndlessScrollListener(0) {
@@ -112,9 +129,13 @@ public class CommentFragment extends Fragment implements Observer {
 
     public void init(){}
 
+    public void initAdapter(){}
+
     public void addComment(String comment){}
 
     public void getNextCommentPage(){};
+
+    public void nestedCommentAction(Comment comment){}
 
     @Override
     public void update(Observable o, Object arg) {

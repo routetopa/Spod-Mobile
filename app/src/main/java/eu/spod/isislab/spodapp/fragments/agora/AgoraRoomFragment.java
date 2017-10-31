@@ -24,7 +24,9 @@ public class AgoraRoomFragment extends CommentFragment {
 
     AgoraRoom room;
 
-    public AgoraRoomFragment(){}
+    public AgoraRoomFragment(){
+        this.maxLevel = 2;
+    }
 
     public void setRoom(AgoraRoom room){
         this.room = room;
@@ -156,6 +158,11 @@ public class AgoraRoomFragment extends CommentFragment {
                 break;
             case NetworkChannel.SERVICE_SYNC_NOTIFICATION:
                 comments.clear();
+
+                ((EditText)asView.findViewById(R.id.comment_add_new)).setText("");
+                InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(asView.getWindowToken(), 0);
+
                 NetworkChannel.getInstance().getAgoraRoomPagedComments(room.getId());
                 break;
         }
@@ -165,6 +172,16 @@ public class AgoraRoomFragment extends CommentFragment {
     public void getNextCommentPage(){
         showLoader(true);
         NetworkChannel.getInstance().getAgoraRoomPagedComments(room.getId(), ((Comment)adapter.getItem(0)).getId());
+    }
+
+    @Override
+    public void nestedCommentAction(Comment comment){
+        AgoraNestedCommentFragment nestedCommentFragment = new AgoraNestedCommentFragment();
+        nestedCommentFragment.setComment(comment);
+        getActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.container, nestedCommentFragment, "nested_comment_fragment" )
+                .addToBackStack("nested_comment_fragment")
+                .commit();
     }
 
 }

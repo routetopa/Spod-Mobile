@@ -28,7 +28,10 @@ public class NestedCommentFragment extends CommentFragment {
     public Comment comment;
     NestedCommentFragment cInstance;
 
-    public NestedCommentFragment(){ cInstance = this;}
+    public NestedCommentFragment(){
+        cInstance = this;
+        maxLevel  = 2;
+    }
 
     public void setComment(Comment comment){
         this.comment = comment;
@@ -38,7 +41,7 @@ public class NestedCommentFragment extends CommentFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         asView = inflater.inflate(R.layout.room_nested_comment_fragment, container, false);
         listView = (ListView) asView.findViewById(R.id.nested_comment_list);
-        adapter = new CommentsAdapter(getActivity(), comments, Integer.parseInt(comment.getLevel()) + 1);
+        adapter = new CommentsAdapter(getActivity(), comments, maxLevel/*Integer.parseInt(comment.getLevel()) + 1*/);
         listView.setAdapter(adapter);
 
         ((TextView)asView.findViewById(R.id.nested_comment_owner_name)).setText(comment.getUsername());

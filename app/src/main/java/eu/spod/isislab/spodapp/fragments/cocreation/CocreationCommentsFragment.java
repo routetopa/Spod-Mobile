@@ -1,7 +1,11 @@
 package eu.spod.isislab.spodapp.fragments.cocreation;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
@@ -21,6 +25,10 @@ import eu.spod.isislab.spodapp.utils.NetworkChannel;
 public class CocreationCommentsFragment extends CommentFragment {
 
     CocreationRoom room;
+
+    public CocreationCommentsFragment(){
+        this.maxLevel = 1;
+    }
 
     public void setRoom(CocreationRoom room){
         this.room = room;
@@ -117,6 +125,10 @@ public class CocreationCommentsFragment extends CommentFragment {
                 break;
             case NetworkChannel.SERVICE_SYNC_NOTIFICATION:
                 comments.clear();
+                ((EditText)asView.findViewById(R.id.comment_add_new)).setText("");
+                comments.clear();
+                InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(asView.getWindowToken(), 0);
                 NetworkChannel.getInstance().getCocreationRoomComments(room.getId());
                 break;
         }

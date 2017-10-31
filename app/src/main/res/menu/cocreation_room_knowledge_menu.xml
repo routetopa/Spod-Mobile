@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/cocoreation_room_knowledge_menu_explore"
+        android:title="@string/cocreation_room_kwoledge_explore"
+        android:color="#FFFFFF"
+        android:icon="@drawable/ic_description_white_24dp"
+        android:checked="true"/>
+
+    <item android:id="@+id/cocoreation_room_knowledge_menu_ideas"
+        android:title="@string/cocreation_room_kwoledge_ideas"
+        android:color="#FFFFFF"
+        android:icon="@drawable/ic_description_white_24dp"
+        android:checked="true"/>
+
+    <item android:id="@+id/cocoreation_room_knowledge_menu_outcome"
+        android:title="@string/cocreation_room_kwoledge_outcome"
+        android:color="#FFFFFF"
+        android:icon="@drawable/ic_description_white_24dp"
+        android:checked="true"/>
+
+    <item android:id="@+id/cocoreation_room_knowledge_menu_datalets"
+        android:title="@string/cocreation_room_kwoledge_datalets"
+        android:color="#FFFFFF"
+        android:icon="@drawable/ic_assessment_white_24dp"
+        android:checked="true"/>
+
+</menu>

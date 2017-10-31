@@ -27,21 +27,18 @@ import eu.spod.isislab.spodapp.fragments.agora.AgoraNestedCommentFragment;
 import eu.spod.isislab.spodapp.fragments.DataletFragment;
 import eu.spod.isislab.spodapp.utils.NetworkChannel;
 
-/**
- * Created by Utente on 11/09/2017.
- */
 public class CommentsAdapter extends BaseAdapter {
 
     ArrayList<Comment> comments;
     Context context;
     private static LayoutInflater inflater = null;
-    private int level;
+    private int maxLevel;
 
-    public CommentsAdapter(Activity mainActivity, ArrayList<Comment> comments, int level) {
+    public CommentsAdapter(Activity mainActivity, ArrayList<Comment> comments, int maxLevel) {
         this.context  = mainActivity;
         inflater      = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.comments = comments;
-        this.level = level;
+        this.maxLevel = maxLevel;
     }
 
     public void add(Comment comment){
@@ -82,25 +79,18 @@ public class CommentsAdapter extends BaseAdapter {
         holder.dataletImage = (ImageView) rowView.findViewById(R.id.comment_datalet);
 
         holder.ownerName.setText(comments.get(position).getUsername());
-        //holder.body.setText(comments.get(position).getComment());
         holder.body.loadDataWithBaseURL("", comments.get(position).getComment(), "text/html", "UTF-8", "");
         holder.body.setBackgroundColor(Color.TRANSPARENT);
         holder.date.setText(comments.get(position).getTimestamp());
 
-        if(level > 0){
+        if(Integer.parseInt(comments.get(position).getLevel()) == maxLevel - 1){
             holder.replay.setText("");
         }else{
             holder.replay.setText(context.getResources().getString(R.string.agora_comment_replay_label) + "(" + comments.get(position).getTotal_comment() + ")");
             holder.replay.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    AgoraNestedCommentFragment nestedCommentFragment = new AgoraNestedCommentFragment();
-                    nestedCommentFragment.setComment(comments.get(position));
-                    ((MainActivity)context).getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.container, nestedCommentFragment, "nested_comment_fragment" )
-                            .addToBackStack("nested_comment_fragment")
-                            .commit();
-
+                    nestedCommentAction(comments.get(position));
                 }
             });
         }
@@ -144,6 +134,8 @@ public class CommentsAdapter extends BaseAdapter {
 
         return rowView;
     }
+
+    public void nestedCommentAction(Comment comment){};
 
     private class Holder{
         ImageView ownerImage;

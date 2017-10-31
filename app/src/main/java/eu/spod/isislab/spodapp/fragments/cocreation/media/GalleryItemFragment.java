@@ -1,4 +1,4 @@
-package eu.spod.isislab.spodapp.fragments.cocreation;
+package eu.spod.isislab.spodapp.fragments.cocreation.media;
 
 import android.graphics.Bitmap;
 import android.location.Location;

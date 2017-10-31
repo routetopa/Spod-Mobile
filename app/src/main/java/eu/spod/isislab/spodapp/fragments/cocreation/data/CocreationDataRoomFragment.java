@@ -1,4 +1,4 @@
-package eu.spod.isislab.spodapp.fragments.cocreation;
+package eu.spod.isislab.spodapp.fragments.cocreation.data;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,6 +17,9 @@ import java.util.Observer;
 
 import eu.spod.isislab.spodapp.MainActivity;
 import eu.spod.isislab.spodapp.R;
+import eu.spod.isislab.spodapp.fragments.cocreation.CocreationCommentsFragment;
+import eu.spod.isislab.spodapp.fragments.cocreation.CocreationRoomFragment;
+import eu.spod.isislab.spodapp.fragments.cocreation.CocreationWebContentFragment;
 import eu.spod.isislab.spodapp.utils.NetworkChannel;
 
 public class CocreationDataRoomFragment extends CocreationRoomFragment implements BottomNavigationView.OnNavigationItemSelectedListener {

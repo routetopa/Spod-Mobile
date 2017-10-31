@@ -1,4 +1,4 @@
-package eu.spod.isislab.spodapp.fragments.cocreation;
+package eu.spod.isislab.spodapp.fragments.cocreation.media;
 
 import android.app.ActivityManager;
 import android.content.ContentResolver;
@@ -38,7 +38,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 import eu.spod.isislab.spodapp.R;
-import eu.spod.isislab.spodapp.fragments.cocreation.CocreationMediaRoomGridFragment;
+import eu.spod.isislab.spodapp.fragments.cocreation.media.CocreationMediaRoomGridFragment;
 import eu.spod.isislab.spodapp.services.SpodLocationService;
 import eu.spod.isislab.spodapp.utils.DownloadImageTask;
 import eu.spod.isislab.spodapp.utils.NetworkChannel;

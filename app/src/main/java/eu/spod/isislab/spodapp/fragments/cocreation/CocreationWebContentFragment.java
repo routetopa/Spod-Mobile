@@ -1,19 +1,23 @@
 package eu.spod.isislab.spodapp.fragments.cocreation;
 
-import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+
+import com.bumptech.glide.Glide;
 
 import java.io.IOException;
 import java.io.InputStream;
 
-import eu.spod.isislab.spodapp.MainActivity;
 import eu.spod.isislab.spodapp.R;
 import eu.spod.isislab.spodapp.utils.NetworkChannel;
 
@@ -39,11 +43,26 @@ public class CocreationWebContentFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        ViewGroup rootView = (ViewGroup) inflater.inflate(
-                R.layout.cocoreation_dataset_fragment, container, false);
+        final ViewGroup rootView = (ViewGroup) inflater.inflate(
+                R.layout.cocoreation_web_content_fragment, container, false);
 
-        webView = (WebView)rootView.findViewById(R.id.cocoreation_dataset_webview);
+        Glide.with(getActivity())
+                .load(R.drawable.jelly_fluid_loader)
+                .asGif()
+                .into((ImageView)rootView.findViewById(R.id.cocoreation_web_content_loader_image));
+
+        webView = (WebView)rootView.findViewById(R.id.cocoreation_web_content_webview);
+        webView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
         webView.getSettings().setJavaScriptEnabled(true);
+        webView.getSettings().setSupportZoom(true);
+        webView.getSettings().setBuiltInZoomControls(true);
+        webView.setWebViewClient(new WebViewClient(){
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                ((LinearLayout) rootView.findViewById(R.id.cocoreation_web_content_loader)).setLayoutParams(new AppBarLayout.LayoutParams(0,0));
+                super.onPageFinished(view, url);
+            }
+        });
 
         if( resourceUrl == null ){
             webView.loadData(loadFromTemplate(), "text/html", null);

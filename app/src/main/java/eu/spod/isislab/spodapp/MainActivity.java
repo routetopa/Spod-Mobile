@@ -109,7 +109,6 @@ public class MainActivity extends AppCompatActivity
             AuthorizationService.getInstance().init(this);
             AuthorizationService.getInstance().enablePostAuthorizationFlows();
         }
-
     }
 
     public void setToolbarTitle(String title){
@@ -126,7 +125,9 @@ public class MainActivity extends AppCompatActivity
         } else {
             int index = getSupportFragmentManager().getBackStackEntryCount() - 1;
             if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
-                if(getSupportFragmentManager().getBackStackEntryAt(index).getName().contains("cocreation_data_room")) getSupportFragmentManager().popBackStack();
+                if(getSupportFragmentManager().getBackStackEntryAt(index).getName().contains("cocreation_data_room") ||
+                   getSupportFragmentManager().getBackStackEntryAt(index).getName().contains("cocreation_knowledge_room"))
+                    getSupportFragmentManager().popBackStack();
                 getSupportFragmentManager().popBackStack();
             } else {
                 this.finish();

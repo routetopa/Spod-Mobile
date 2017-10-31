@@ -20,23 +20,23 @@
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyCyx35Mv7TJQZuMsIVyLK_n--HinmfphI0"/>
 
-        <!--<service
-            android:name=".services.FetchAddressIntentService"
-            android:exported="false"/>-->
-
         <service
             android:name=".services.SpodLocationService"
             android:exported="false"/>
 
-        <!--<provider
-            android:name="android.support.v4.content.FileProvider"
-            android:authorities="eu.spod.isislab.provider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@"/>
-        </provider>-->
+        <!--<service
+            android:name=".services.SpodFirebaseInstanceIdService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+            </intent-filter>
+        </service>
+
+        <service
+            android:name=".services.SpodFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>-->
 
         <activity
             android:name=".MainActivity"

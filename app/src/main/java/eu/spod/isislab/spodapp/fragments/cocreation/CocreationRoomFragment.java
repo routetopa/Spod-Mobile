@@ -10,8 +10,8 @@ import eu.spod.isislab.spodapp.utils.NetworkChannel;
 
 public class CocreationRoomFragment extends Fragment implements Observer {
 
-    CocreationRoom room;
-    JSONArray response;
+    public CocreationRoom room;
+    public JSONArray response;
 
     public CocreationRoomFragment(){ }
 

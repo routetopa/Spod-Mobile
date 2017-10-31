@@ -20,7 +20,7 @@ import java.util.ArrayList;
 
 import eu.spod.isislab.spodapp.MainActivity;
 import eu.spod.isislab.spodapp.R;
-import eu.spod.isislab.spodapp.fragments.cocreation.GalleryItemFragment;
+import eu.spod.isislab.spodapp.fragments.cocreation.media.GalleryItemFragment;
 import eu.spod.isislab.spodapp.entities.MediaGalleryItem;
 
 public class ImageAdapter extends BaseAdapter
