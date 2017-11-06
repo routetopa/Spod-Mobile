@@ -94,7 +94,7 @@ public class SpodNotificationManager {
         try {
             JSONObject notificationBody = new JSONObject(body);
             JSONObject notificationData = new JSONObject(notificationBody.getString("data"));
-            message = notificationData.getString("message");
+            message = notificationBody.getString("message");
             /*switch(notificationBody.getString("plugin")){
                 case "agora":
                     //Manage agora notification action

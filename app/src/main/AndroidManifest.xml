@@ -24,7 +24,7 @@
             android:name=".services.SpodLocationService"
             android:exported="false"/>
 
-        <!--<service
+        <service
             android:name=".services.SpodFirebaseInstanceIdService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
@@ -36,7 +36,7 @@
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
-        </service>-->
+        </service>
 
         <activity
             android:name=".MainActivity"
