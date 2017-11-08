@@ -3,8 +3,12 @@ package eu.spod.isislab.spodapp.fragments.agora;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.Switch;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -18,6 +22,7 @@ import eu.spod.isislab.spodapp.R;
 import eu.spod.isislab.spodapp.entities.Comment;
 import eu.spod.isislab.spodapp.entities.AgoraRoom;
 import eu.spod.isislab.spodapp.fragments.CommentFragment;
+import eu.spod.isislab.spodapp.fragments.settings.SettingsFragment;
 import eu.spod.isislab.spodapp.utils.NetworkChannel;
 
 public class AgoraRoomFragment extends CommentFragment {
@@ -30,6 +35,24 @@ public class AgoraRoomFragment extends CommentFragment {
 
     public void setRoom(AgoraRoom room){
         this.room = room;
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
+        ((Switch)asView.findViewById(R.id.notification_switch)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NetworkChannel.getInstance().saveMobileNotification(
+                        (((Switch)v).isChecked() ? "true" : "false"),
+                        SettingsFragment.AGORA_PLUGIN,
+                        SettingsFragment.AGORA_ACTION_NEW_ROOM,
+                        SettingsFragment.AGORA_ACTION_COMMENT + "_" + room.getId(),
+                        "1");
+            }
+        });
+
+        return asView;
     }
 
     @Override
@@ -74,6 +97,15 @@ public class AgoraRoomFragment extends CommentFragment {
     public void update(Observable o, Object arg) {
 
         switch(NetworkChannel.getInstance().getCurrentService()) {
+            case NetworkChannel.SERVICE_SAVE_NOTIFICATION:
+                try {
+                    JSONObject res = new JSONObject((String)arg);
+                    Snackbar.make(asView, res.getString("message"), Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                break;
             case NetworkChannel.SERVICE_AGORA_GET_COMMENTS:
 
                 try {

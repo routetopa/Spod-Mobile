@@ -19,6 +19,7 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import eu.spod.isislab.spodapp.fragments.settings.SettingsFragment;
 import eu.spod.isislab.spodapp.services.AuthorizationService;
 import eu.spod.isislab.spodapp.fragments.agora.AgoraRoomsListFragment;
 import eu.spod.isislab.spodapp.fragments.cocreation.CocreationRoomsListFragment;
@@ -161,6 +162,14 @@ public class MainActivity extends AppCompatActivity
                 dialog.setTitle("Version");
                 dialog.setBody("Current version " + BuildConfig.VERSION_NAME);
                 dialog.show(getSupportFragmentManager(), "custom_dialog_fragment");
+
+                break;
+            case R.id.action_settings:
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.container, new SettingsFragment())
+                        .addToBackStack("settings_fragment")
+                        .commit();
 
                 break;
             case R.id.sign_out:

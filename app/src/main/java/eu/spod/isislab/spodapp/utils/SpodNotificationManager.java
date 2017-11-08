@@ -93,8 +93,8 @@ public class SpodNotificationManager {
         String message = "";
         try {
             JSONObject notificationBody = new JSONObject(body);
-            JSONObject notificationData = new JSONObject(notificationBody.getString("data"));
             message = notificationBody.getString("message");
+            JSONObject notificationData = new JSONObject(notificationBody.getString("data"));
             /*switch(notificationBody.getString("plugin")){
                 case "agora":
                     //Manage agora notification action
@@ -118,7 +118,8 @@ public class SpodNotificationManager {
             }*/
         } catch (JSONException e) {
             e.printStackTrace();
+        } finally {
+            return message;
         }
-        return message;
     }
 }

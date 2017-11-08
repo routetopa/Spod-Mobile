@@ -6,6 +6,27 @@
 
     <string name="action_info">Info</string>
     <string name="action_sign_out">Sign out</string>
+    <string name="action_settings">Settings</string>
+    <!-- Notification -->
+    <string name="settings_notification_label">Notifications</string>
+    <string name="settings_cocreation_label">CoCreation</string>
+    <string name="settings_cocreation_new_room_label">Someone create a new room</string>
+    <string name="settings_cocreation_comment_room_label">Someone comments in a room</string>
+    <string name="settings_cocreation_invite_room_label">Someone invite me to a room</string>
+    <string name="settings_cocreation_dataset_publication_label">Someone publish a new dataset</string>
+    <string name="settings_agora_label">Agora</string>
+    <string name="settings_agora_new_room_label">Someone create a new room</string>
+    <string name="settings_agora_comment_room_label">Someone comments to agora (that i follow)</string>
+    <string name="settings_agora_mention_label">Someone mentions me in a discussion</string>
+    <string name="settings_agora_replay_label">Someone replies to my post</string>
+    <string name="comment_notification_label">I want be notified when somone writes a comment</string>
+
+    <string-array name="settings_menu_spinner">
+        <item>Immediately</item>
+        <item>Every day</item>
+        <item>Every month</item>
+    </string-array>
+
 
     <!-- Messages -->
     <string name="wait_network_message">Please wait...</string>

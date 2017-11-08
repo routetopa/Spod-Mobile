@@ -57,6 +57,7 @@ public class NetworkChannel extends Observable
     public static final String SERVICE_COCREATION_GET_COMMENTS      = "SERVICE_COCREATION_GET_DISCUSSION";
     public static final String SERVICE_COCREATION_ADD_COMMENT       = "SERVICE_COCREATION_ADD_COMMENT";
     public static final String SERVICE_SYNC_NOTIFICATION            = "SERVICE_SYNC_NOTIFICATION";
+    public static final String SERVICE_SAVE_NOTIFICATION            = "SERVICE_SAVE_NOTIFICATION";
 
     public static final String RESET_PASSWORD_URL                   = "/oauth2/password/reset";
     public static final String CREATE_ACCOUNT_URL                   = "/oauth2/register";
@@ -91,7 +92,8 @@ public class NetworkChannel extends Observable
     private static final String COCREATION_SYNC_NOTIFICATION_ENDPOINT  = "/ethersheet/#/pubsub/";
     //Firebase Notification
     private static final String FIREBASE_REGISTRATION_ID_ENDPOINT      = "/notification_system/ajax/add-user-registration-id/";
-
+    //Settings
+    private static final String SAVE_MOBILE_NOTIFICATION               = "/notification_system/ajax/register-user-for-action/";
 
     private static NetworkChannel ourInstance = new NetworkChannel();
 
@@ -156,7 +158,7 @@ public class NetworkChannel extends Observable
 
         final ProgressDialog loading = (splash) ? ProgressDialog.show(mainActivity,"SPOD Mobile",mainActivity.getResources().getString(R.string.wait_network_message),false,false)
                                                 : null;
-        StringRequest postRequest = new StringRequest(Request.Method.POST, SPOD_ENDPOINT + url,
+        StringRequest postRequest = new StringRequest(Request.Method.POST, (service != null && service.equals(SERVICE_SAVE_NOTIFICATION) ? "http://172.16.15.77" : SPOD_ENDPOINT) + url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -383,6 +385,19 @@ public class NetworkChannel extends Observable
         params.put("registrationId", registrationId);
         params.put("userId",  User.getInstance().getId());
         makePostRequest(FIREBASE_REGISTRATION_ID_ENDPOINT, params, true, null);
+    }
+
+    //SETTINGS
+    public void saveMobileNotification(String status, String plugin, String action, String subAction, String frequency){
+        Map<String, String> params = new HashMap<>();
+        params.put("userId",    User.getInstance().getId());
+        params.put("status",    status);
+        params.put("plugin",    plugin);
+        params.put("action",    action);
+        params.put("subAction", subAction);
+        params.put("type",      "mobile");
+        params.put("frequency", frequency);
+        makePostRequest(SAVE_MOBILE_NOTIFICATION, params, false, SERVICE_SAVE_NOTIFICATION);
     }
 
     //SYNC NOTIFICATION
