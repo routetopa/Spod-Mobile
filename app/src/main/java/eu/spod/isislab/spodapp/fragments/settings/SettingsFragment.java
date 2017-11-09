@@ -28,7 +28,7 @@ public class SettingsFragment extends Fragment implements Observer, View.OnClick
 {
     public static String COCREATION_PLUGIN                    = "cocreation";
     public static String COCREATION_ACTION_NEW_ROOM           = COCREATION_PLUGIN + "_new_room";
-    public static String COCREATION_ACTION_COMMENT            = COCREATION_PLUGIN + "_add_comment";
+    public static String COCREATION_ACTION_COMMENT            = COCREATION_PLUGIN + "_comment";
     public static String COCREATION_ACTION_INVITE             = COCREATION_PLUGIN + "_invite";
     public static String COCREATION_ACTION_DATASET_PUBLISHED  = COCREATION_PLUGIN + "_dataset_published";
     public static String AGORA_PLUGIN                         = "agora";
@@ -82,7 +82,7 @@ public class SettingsFragment extends Fragment implements Observer, View.OnClick
 
     @Override
     public void onClick(View v) {
-        String plugin = null, action = null, subAction = "", status, frequency = "1";
+        String plugin = null, action = null, subAction = "", status;
 
         if(getResources().getResourceEntryName(v.getId()).contains(COCREATION_PLUGIN)) plugin = COCREATION_PLUGIN;
         if(getResources().getResourceEntryName(v.getId()).contains(AGORA_PLUGIN))      plugin = AGORA_PLUGIN;

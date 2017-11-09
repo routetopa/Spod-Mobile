@@ -31,6 +31,7 @@ import java.util.Observer;
 import eu.spod.isislab.spodapp.adapters.CocreationRoomsAdapter;
 import eu.spod.isislab.spodapp.MainActivity;
 import eu.spod.isislab.spodapp.entities.CocreationRoom;
+import eu.spod.isislab.spodapp.entities.User;
 import eu.spod.isislab.spodapp.utils.NetworkChannel;
 import eu.spod.isislab.spodapp.R;
 
@@ -41,9 +42,7 @@ public class CocreationRoomsListFragment extends Fragment implements Observer, V
     String currentRoomType  = "all";
     String currentSearchKey = "";
 
-    public CocreationRoomsListFragment(){
-    }
-
+    public CocreationRoomsListFragment(){}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -96,7 +95,6 @@ public class CocreationRoomsListFragment extends Fragment implements Observer, V
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.add(0, 1, 0, "Search").setIcon(android.R.drawable.ic_menu_search)
                 .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-        //getActivity().invalidateOptionsMenu();
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -150,19 +148,18 @@ public class CocreationRoomsListFragment extends Fragment implements Observer, V
                 for(int z = 0, count = jsonArray.length(); z< count; z++)
                         docs.add(jsonArray.getJSONObject(z).getString("url"));
 
-                //if( j.getString("type").equals("media"))
-                //{
-                    rooms.add(new CocreationRoom(
-                            Html.fromHtml(j.getString("name")).toString(),
-                            Html.fromHtml(j.getString("description")).toString(),
-                            j.getString("id"),
-                            j.getString("sheetId"),
-                            j.getString("ownerName"),
-                            j.getString("ownerImage"),
-                            j.getString("timestamp"),
-                            j.getString("type"),
-                            docs));
-                //}
+               rooms.add(new CocreationRoom(
+                        Html.fromHtml(j.getString("name")).toString(),
+                        Html.fromHtml(j.getString("description")).toString(),
+                        j.getString("id"),
+                        j.getString("sheetId"),
+                        j.getString("ownerName"),
+                        j.getString("ownerImage"),
+                        j.getString("timestamp"),
+                        j.getString("type"),
+                        docs,
+                       (j.getBoolean("hasJoined")) || j.getString("ownerId").equals(User.getInstance().getId())));
+
             }
             catch (JSONException e) {
                 e.printStackTrace();

@@ -19,7 +19,7 @@ public class SpodNotificationManager {
 
     public static final String NOTIFICATION_INTENT_EXTRA_BODY = "NOTIFICATION_INTENT_EXTRA_BODY";
 
-    public static final int ID_BIG_NOTIFICATION = 234;
+    public static final int ID_BIG_NOTIFICATION   = 234;
     public static final int ID_SMALL_NOTIFICATION = 235;
 
     private Context mContext;

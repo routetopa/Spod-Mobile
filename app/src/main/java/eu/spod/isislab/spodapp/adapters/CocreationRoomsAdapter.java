@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -74,6 +75,7 @@ public class CocreationRoomsAdapter extends BaseAdapter{
 
         final Holder holder = new Holder();
         final View rowView = inflater.inflate(R.layout.cocreation_room_row, null);
+
         holder.name = (TextView) rowView.findViewById(R.id.cocreation_room_row_name);
         holder.description = (TextView) rowView.findViewById(R.id.cocreation_room_row_description);
         holder.ownerName = (TextView) rowView.findViewById(R.id.cocreation_room_owner_name);
@@ -99,28 +101,34 @@ public class CocreationRoomsAdapter extends BaseAdapter{
                     }
                 });
 
-        rowView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                CocreationRoomFragment roomFragment = null;
-                switch (rooms.get(position).getType()) {
-                    case "media":
-                        roomFragment = new CocreationMediaRoomGridFragment();
-                        break;
-                    case "data":
-                        roomFragment = new CocreationDataRoomFragment();
-                        break;
-                    case "knowledge":
-                        roomFragment = new CocreationKnowledgeRoomFragment();
-                        break;
+        if(rooms.get(position).isHasJoined()) {
+            rowView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    CocreationRoomFragment roomFragment = null;
+                    switch (rooms.get(position).getType()) {
+                        case "media":
+                            roomFragment = new CocreationMediaRoomGridFragment();
+                            break;
+                        case "data":
+                            roomFragment = new CocreationDataRoomFragment();
+                            break;
+                        case "knowledge":
+                            roomFragment = new CocreationKnowledgeRoomFragment();
+                            break;
+                    }
+                    roomFragment.setRoom(rooms.get(position));
+                    ((MainActivity) context).getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.container, roomFragment, "cocreation_room")
+                            .addToBackStack("cocreation_room")
+                            .commit();
                 }
-                roomFragment.setRoom(rooms.get(position));
-                ((MainActivity) context).getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.container, roomFragment, "cocreation_room")
-                        .addToBackStack("cocreation_room")
-                        .commit();
-            }
-        });
+            });
+        }else{
+            LinearLayout mainContainer = (LinearLayout) rowView.findViewById(R.id.cocreation_room_main_container);
+            mainContainer.setAlpha((float)0.55);
+            (rowView.findViewById(R.id.cocreation_row_join_button)).setVisibility(View.VISIBLE);
+        }
 
         switch (rooms.get(position).getType()) {
             case "data":

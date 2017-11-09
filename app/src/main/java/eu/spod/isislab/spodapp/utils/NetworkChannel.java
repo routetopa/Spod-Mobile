@@ -158,7 +158,8 @@ public class NetworkChannel extends Observable
 
         final ProgressDialog loading = (splash) ? ProgressDialog.show(mainActivity,"SPOD Mobile",mainActivity.getResources().getString(R.string.wait_network_message),false,false)
                                                 : null;
-        StringRequest postRequest = new StringRequest(Request.Method.POST, (service != null && service.equals(SERVICE_SAVE_NOTIFICATION) ? "http://172.16.15.77" : SPOD_ENDPOINT) + url,
+        //StringRequest postRequest = new StringRequest(Request.Method.POST, SPOD_ENDPOINT + url,
+        StringRequest postRequest = new StringRequest(Request.Method.POST, ((service != null && (service.equals(SERVICE_SAVE_NOTIFICATION)) || url.equals(GET_COCREATION_ROOMS))? "http://172.16.15.77" : SPOD_ENDPOINT) + url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {

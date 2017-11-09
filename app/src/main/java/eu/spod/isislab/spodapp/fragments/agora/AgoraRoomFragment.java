@@ -1,6 +1,7 @@
 package eu.spod.isislab.spodapp.fragments.agora;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
@@ -22,12 +23,14 @@ import eu.spod.isislab.spodapp.R;
 import eu.spod.isislab.spodapp.entities.Comment;
 import eu.spod.isislab.spodapp.entities.AgoraRoom;
 import eu.spod.isislab.spodapp.fragments.CommentFragment;
+import eu.spod.isislab.spodapp.fragments.LoginFragment;
 import eu.spod.isislab.spodapp.fragments.settings.SettingsFragment;
 import eu.spod.isislab.spodapp.utils.NetworkChannel;
 
 public class AgoraRoomFragment extends CommentFragment {
 
     AgoraRoom room;
+    SharedPreferences spodPref;
 
     public AgoraRoomFragment(){
         this.maxLevel = 2;
@@ -40,17 +43,28 @@ public class AgoraRoomFragment extends CommentFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        ((Switch)asView.findViewById(R.id.notification_switch)).setOnClickListener(new View.OnClickListener() {
+
+        spodPref = getActivity().getSharedPreferences(LoginFragment.SPOD_MOBILE_PREFERENCES, Context.MODE_PRIVATE);
+
+        Switch notificationSwitch = (Switch) (asView.findViewById(R.id.notification_switch));
+        notificationSwitch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 NetworkChannel.getInstance().saveMobileNotification(
                         (((Switch)v).isChecked() ? "true" : "false"),
                         SettingsFragment.AGORA_PLUGIN,
-                        SettingsFragment.AGORA_ACTION_NEW_ROOM,
                         SettingsFragment.AGORA_ACTION_COMMENT + "_" + room.getId(),
-                        "1");
+                        SettingsFragment.AGORA_ACTION_COMMENT,
+                        "" +
+                        (spodPref.getInt
+                                (NetworkChannel.getInstance().getSpodEndpoint() + getResources().getResourceEntryName(R.id.settings_agora_comment_room_spinner), 0)
+                                + 1
+                        )
+                );
             }
         });
+
+        notificationSwitch.setChecked(spodPref.getBoolean( NetworkChannel.getInstance().getSpodEndpoint() + SettingsFragment.AGORA_ACTION_COMMENT + "_" + room.getId(), false));
 
         return asView;
     }
@@ -100,6 +114,12 @@ public class AgoraRoomFragment extends CommentFragment {
             case NetworkChannel.SERVICE_SAVE_NOTIFICATION:
                 try {
                     JSONObject res = new JSONObject((String)arg);
+
+                    spodPref.edit()
+                            .putBoolean(NetworkChannel.getInstance().getSpodEndpoint() + SettingsFragment.AGORA_ACTION_COMMENT + "_" + room.getId() ,
+                                       ((Switch)asView.findViewById(R.id.notification_switch)).isChecked())
+                            .apply();
+
                     Snackbar.make(asView, res.getString("message"), Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
                 } catch (JSONException e) {

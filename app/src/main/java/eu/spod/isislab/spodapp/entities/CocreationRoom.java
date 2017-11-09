@@ -12,8 +12,19 @@ public class CocreationRoom {
     private String type;
     private String timestamp;
     private ArrayList<String> docs;
+    private boolean hasJoined;
 
-    public CocreationRoom(String name, String description, String id, String sheetId, String ownerName, String ownerImage, String timestamp, String type, ArrayList<String> docs) {
+    public CocreationRoom(String name,
+                          String description,
+                          String id,
+                          String sheetId,
+                          String ownerName,
+                          String ownerImage,
+                          String timestamp,
+                          String type,
+                          ArrayList<String> docs,
+                          boolean hasJoined)
+    {
         this.name        = name;
         this.description = description;
         this.id          = id;
@@ -23,6 +34,7 @@ public class CocreationRoom {
         this.timestamp   = timestamp;
         this.type        = type;
         this.docs        = docs;
+        this.hasJoined   = hasJoined;
     }
 
     public String getName() {
@@ -96,5 +108,8 @@ public class CocreationRoom {
     public void setDocs(ArrayList<String> docs) {
         this.docs = docs;
     }
+
+    public boolean isHasJoined() { return hasJoined; }
+
 
 }

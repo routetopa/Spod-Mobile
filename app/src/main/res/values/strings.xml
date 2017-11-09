@@ -62,6 +62,7 @@
     <string name="cocreation_room_kwoledge_explore">Explore</string>
     <string name="cocreation_room_kwoledge_ideas">Ideas</string>
     <string name="cocreation_room_kwoledge_outcome">Outcome</string>
+    <string name="cocreation_button_join_label">Join</string>
 
     <!--Gallery-->
     <string name="cocreation_room_gallery_add_item_button">Add an item</string>
