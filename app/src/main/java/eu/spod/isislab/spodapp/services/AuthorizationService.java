@@ -27,7 +27,7 @@ import java.util.Observer;
 
 import eu.spod.isislab.spodapp.MainActivity;
 import eu.spod.isislab.spodapp.R;
-import eu.spod.isislab.spodapp.entities.User;
+import eu.spod.isislab.spodapp.utils.UserManager;
 import eu.spod.isislab.spodapp.fragments.agora.AgoraRoomsListFragment;
 import eu.spod.isislab.spodapp.fragments.LoginFragment;
 import eu.spod.isislab.spodapp.utils.NetworkChannel;
@@ -138,7 +138,7 @@ public class AuthorizationService implements Observer {
                             try {
                                 Response response = client.newCall(request).execute();
                                 String jsonBody = response.body().string();
-                                Log.i("AUTH", String.format("User Info Response %s", jsonBody));
+                                Log.i("AUTH", String.format("UserManager Info Response %s", jsonBody));
                                 return new JSONObject(jsonBody);
                             } catch (Exception exception) {
                                 Log.w("AUTH", exception);
@@ -204,7 +204,7 @@ public class AuthorizationService implements Observer {
                         NetworkChannel.getInstance().deleteObserver(this);
 
                         JSONObject user = new JSONObject(res.getString("user"));
-                        User.getInstance().init(user.getString("id"), user.getString("username"), user.getString("image"), user.getString("name"));
+                        UserManager.getInstance().init(user.getString("id"), user.getString("username"), user.getString("image"), user.getString("name"));
 
                         ((MainActivity)context).drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
                         ((MainActivity)context).getSupportFragmentManager().popBackStack();

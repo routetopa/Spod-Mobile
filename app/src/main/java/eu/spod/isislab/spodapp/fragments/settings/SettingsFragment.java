@@ -52,18 +52,6 @@ public class SettingsFragment extends Fragment implements Observer, View.OnClick
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        NetworkChannel.getInstance().addObserver(this);
-        super.onActivityCreated(savedInstanceState);
-    }
-
-    @Override
-    public void onDestroy() {
-        NetworkChannel.getInstance().deleteObserver(this);
-        super.onDestroy();
-    }
-
-    @Override
     public void update(Observable o, Object arg) {
            try {
                JSONObject res = new JSONObject((String)arg);
@@ -74,6 +62,8 @@ public class SettingsFragment extends Fragment implements Observer, View.OnClick
                editor.putBoolean(NetworkChannel.getInstance().getSpodEndpoint() + getResources().getResourceEntryName(currentPreferenceSwitch.getId()), currentPreferenceSwitch.isChecked());
                editor.putInt(NetworkChannel.getInstance().getSpodEndpoint() + getResources().getResourceEntryName(currentFrequencySpinner.getId()), currentFrequencySpinner.getSelectedItemPosition());
                editor.apply();
+
+               NetworkChannel.getInstance().deleteObserver(this);
 
            } catch (JSONException e) {
                e.printStackTrace();
@@ -124,6 +114,7 @@ public class SettingsFragment extends Fragment implements Observer, View.OnClick
                 currentFrequencySpinner =  (Spinner)asView.findViewById(R.id.settings_agora_replay_spinner);
                 break;
         }
+        NetworkChannel.getInstance().addObserver(this);
         NetworkChannel.getInstance().saveMobileNotification(status, plugin, action, subAction, "" + (currentFrequencySpinner.getSelectedItemPosition() + 1));
     }
 

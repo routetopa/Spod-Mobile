@@ -31,7 +31,7 @@ import java.util.Observer;
 import eu.spod.isislab.spodapp.adapters.CocreationRoomsAdapter;
 import eu.spod.isislab.spodapp.MainActivity;
 import eu.spod.isislab.spodapp.entities.CocreationRoom;
-import eu.spod.isislab.spodapp.entities.User;
+import eu.spod.isislab.spodapp.utils.UserManager;
 import eu.spod.isislab.spodapp.utils.NetworkChannel;
 import eu.spod.isislab.spodapp.R;
 
@@ -128,45 +128,51 @@ public class CocreationRoomsListFragment extends Fragment implements Observer, V
 
     @Override
     public void update(Observable o, Object arg) {
-        ListView listView = (ListView) asView.findViewById(R.id.cocoreation_rooms_list);
 
-        JSONArray response = null;
-        try {
-            response = new JSONArray((String)arg);
-        } catch (JSONException e) {
-            e.printStackTrace();
+        switch(NetworkChannel.getInstance().getCurrentService()){
+            case NetworkChannel.SERVICE_COCREATION_GET_ROOMS:
+                ListView listView = (ListView) asView.findViewById(R.id.cocoreation_rooms_list);
+
+                JSONArray response = null;
+                try {
+                    response = new JSONArray((String)arg);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                ArrayList<CocreationRoom> rooms = new ArrayList<>();
+
+                for (int i=0; i< response.length(); i++)
+                {
+                    try {
+                        JSONObject j = response.getJSONObject(i);
+
+                        ArrayList<String> docs = new ArrayList<>();
+                        JSONArray jsonArray = j.getJSONArray("docs");
+                        for(int z = 0, count = jsonArray.length(); z< count; z++)
+                            docs.add(jsonArray.getJSONObject(z).getString("url"));
+
+                        rooms.add(new CocreationRoom(
+                                Html.fromHtml(j.getString("name")).toString(),
+                                Html.fromHtml(j.getString("description")).toString(),
+                                j.getString("id"),
+                                j.getString("sheetId"),
+                                j.getString("ownerName"),
+                                j.getString("ownerImage"),
+                                j.getString("timestamp"),
+                                j.getString("type"),
+                                docs,
+                                (j.getBoolean("hasJoined")) || j.getString("ownerId").equals(UserManager.getInstance().getId()),
+                                j.getString("ownerId")));
+
+                    }
+                    catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                adapter = new CocreationRoomsAdapter(this.getActivity(), rooms);
+                listView.setAdapter(adapter);
+                break;
         }
-        ArrayList<CocreationRoom> rooms = new ArrayList<>();
-
-        for (int i=0; i< response.length(); i++)
-        {
-            try {
-                JSONObject j = response.getJSONObject(i);
-
-                ArrayList<String> docs = new ArrayList<>();
-                JSONArray jsonArray = j.getJSONArray("docs");
-                for(int z = 0, count = jsonArray.length(); z< count; z++)
-                        docs.add(jsonArray.getJSONObject(z).getString("url"));
-
-               rooms.add(new CocreationRoom(
-                        Html.fromHtml(j.getString("name")).toString(),
-                        Html.fromHtml(j.getString("description")).toString(),
-                        j.getString("id"),
-                        j.getString("sheetId"),
-                        j.getString("ownerName"),
-                        j.getString("ownerImage"),
-                        j.getString("timestamp"),
-                        j.getString("type"),
-                        docs,
-                       (j.getBoolean("hasJoined")) || j.getString("ownerId").equals(User.getInstance().getId())));
-
-            }
-            catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-        adapter = new CocreationRoomsAdapter(this.getActivity(), rooms);
-        listView.setAdapter(adapter);
     }
 
     @Override

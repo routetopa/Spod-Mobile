@@ -54,7 +54,7 @@ public class ImageAdapter extends BaseAdapter
                         row.getString("Image"),
                         loc,
                         row.getString("Date"),
-                        row.getString("User"))
+                        row.getString("UserManager"))
                 );
             }catch (Exception e){
                 e.printStackTrace();

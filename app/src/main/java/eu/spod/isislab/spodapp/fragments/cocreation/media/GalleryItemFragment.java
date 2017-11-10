@@ -23,9 +23,9 @@ import java.util.Observable;
 import java.util.Observer;
 
 import eu.spod.isislab.spodapp.R;
+import eu.spod.isislab.spodapp.utils.UserManager;
 import eu.spod.isislab.spodapp.fragments.ItemMapFragment;
 import eu.spod.isislab.spodapp.utils.NetworkChannel;
-import eu.spod.isislab.spodapp.entities.User;
 
 public class GalleryItemFragment extends Fragment implements View.OnClickListener, Observer{
 
@@ -70,7 +70,7 @@ public class GalleryItemFragment extends Fragment implements View.OnClickListene
         ((TextView) asView.findViewById(R.id.item_date)).setText(date);
         ((ImageView) asView.findViewById(R.id.item_location)).setOnClickListener(this);
          NetworkChannel.getInstance().addObserver(this);
-         NetworkChannel.getInstance().getUserInfo("", User.getInstance().getUsername());
+         NetworkChannel.getInstance().getUserInfo("", UserManager.getInstance().getUsername());
 
         /*TextView address = (TextView) asView.findViewById(R.id.item_location);
         address.setOnClickListener(this);

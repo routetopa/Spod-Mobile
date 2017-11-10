@@ -4,37 +4,47 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.support.design.widget.Snackbar;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.Observable;
+import java.util.Observer;
 
 import eu.spod.isislab.spodapp.MainActivity;
 import eu.spod.isislab.spodapp.R;
+import eu.spod.isislab.spodapp.utils.UserManager;
 import eu.spod.isislab.spodapp.fragments.cocreation.data.CocreationDataRoomFragment;
 import eu.spod.isislab.spodapp.fragments.cocreation.knowledge.CocreationKnowledgeRoomFragment;
 import eu.spod.isislab.spodapp.fragments.cocreation.media.CocreationMediaRoomGridFragment;
 import eu.spod.isislab.spodapp.entities.CocreationRoom;
 import eu.spod.isislab.spodapp.fragments.cocreation.CocreationRoomFragment;
+import eu.spod.isislab.spodapp.utils.NetworkChannel;
 
-public class CocreationRoomsAdapter extends BaseAdapter{
+public class CocreationRoomsAdapter extends BaseAdapter implements Observer{
 
     public static final String[] ROOM_TYPES = {"all", "media", "data", "knowledge"};
 
     ArrayList<CocreationRoom> rooms;
     ArrayList<CocreationRoom> allRooms;
     Context context;
+    CocreationRoomsAdapter mInstance;
+    CocreationRoom selectedRoom;
 
     private static LayoutInflater inflater = null;
 
@@ -43,6 +53,7 @@ public class CocreationRoomsAdapter extends BaseAdapter{
         this.allRooms = new ArrayList<>(rooms);
         this.context  = mainActivity;
         inflater      = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        mInstance     = this;
     }
 
     public void doFilter(String searchKey, String searchType){
@@ -105,29 +116,22 @@ public class CocreationRoomsAdapter extends BaseAdapter{
             rowView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    CocreationRoomFragment roomFragment = null;
-                    switch (rooms.get(position).getType()) {
-                        case "media":
-                            roomFragment = new CocreationMediaRoomGridFragment();
-                            break;
-                        case "data":
-                            roomFragment = new CocreationDataRoomFragment();
-                            break;
-                        case "knowledge":
-                            roomFragment = new CocreationKnowledgeRoomFragment();
-                            break;
-                    }
-                    roomFragment.setRoom(rooms.get(position));
-                    ((MainActivity) context).getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.container, roomFragment, "cocreation_room")
-                            .addToBackStack("cocreation_room")
-                            .commit();
+                   openRoom(rooms.get(position));
                 }
             });
         }else{
             LinearLayout mainContainer = (LinearLayout) rowView.findViewById(R.id.cocreation_room_main_container);
             mainContainer.setAlpha((float)0.55);
-            (rowView.findViewById(R.id.cocreation_row_join_button)).setVisibility(View.VISIBLE);
+            Button joinButton = (Button) rowView.findViewById(R.id.cocreation_row_join_button);
+            joinButton.setVisibility(View.VISIBLE);
+            joinButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    selectedRoom = rooms.get(position);
+                    NetworkChannel.getInstance().addObserver(mInstance);
+                    NetworkChannel.getInstance().cocreationConfirmToJoinToRoom(UserManager.getInstance().getId(), rooms.get(position).getId());
+                }
+            });
         }
 
         switch (rooms.get(position).getType()) {
@@ -145,6 +149,43 @@ public class CocreationRoomsAdapter extends BaseAdapter{
         }
 
         return rowView;
+    }
+
+    @Override
+    public void update(Observable o, Object arg)
+    {
+        try {
+            JSONObject res = new JSONObject((String)arg);
+            Snackbar.make(((MainActivity)context).findViewById(R.id.container), res.getString("message"), Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show();
+            NetworkChannel.getInstance().deleteObserver(mInstance);
+            openRoom(selectedRoom);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void openRoom(CocreationRoom room)
+    {
+        CocreationRoomFragment roomFragment = null;
+        switch (room.getType()) {
+            case "media":
+                roomFragment = new CocreationMediaRoomGridFragment();
+                break;
+            case "data":
+                roomFragment = new CocreationDataRoomFragment();
+                break;
+            case "knowledge":
+                roomFragment = new CocreationKnowledgeRoomFragment();
+                break;
+        }
+        roomFragment.setRoom(room);
+        ((MainActivity) context).getSupportFragmentManager().beginTransaction()
+                .replace(R.id.container, roomFragment, "cocreation_room")
+                .addToBackStack("cocreation_room")
+                .commit();
     }
 
     private class Holder{

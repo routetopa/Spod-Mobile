@@ -27,11 +27,12 @@ public class CocreationDataRoomFragment extends CocreationRoomFragment implement
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        super.onCreateView(inflater,container,savedInstanceState);
         ViewGroup rootView = (ViewGroup) inflater.inflate(
                 R.layout.cocreation_room_data_fragment, container, false);
 
         BottomNavigationView bottomNavigationView = (BottomNavigationView)
-                rootView.findViewById(R.id.cocoreation_room_data_list_bottom_navigation);
+        rootView.findViewById(R.id.cocreation_room_data_list_bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
 
         CocreationWebContentFragment datasetFragment = new CocreationWebContentFragment();
@@ -48,29 +49,29 @@ public class CocreationDataRoomFragment extends CocreationRoomFragment implement
     {
         String code = "";
         switch (item.getItemId()) {
-            case R.id.cocoreation_room_data_menu_dataset:
+            case R.id.cocreation_room_data_menu_dataset:
                 CocreationWebContentFragment datasetFragment = new CocreationWebContentFragment();
                 datasetFragment.setResourceUrl(NetworkChannel.getInstance().getSpodEndpoint() + NetworkChannel.COCREATION_DATASET_ENDPOINT + room.getSheetId());
                 getActivity().getSupportFragmentManager().popBackStack();
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.room_data_container, datasetFragment).addToBackStack("cocreation_data_room_dataset_fragment").commit();
                 break;
-            case R.id.cocoreation_room_data_menu_metadata:
+            case R.id.cocreation_room_data_menu_metadata:
                 NetworkChannel.getInstance().addObserver(this);
                 NetworkChannel.getInstance().getCocreationMetadata(room.getId());
                 break;
-            case R.id.cocoreation_room_data_menu_notes:
+            case R.id.cocreation_room_data_menu_notes:
                 CocreationWebContentFragment noteFragment = new CocreationWebContentFragment();
                 noteFragment.setResourceUrl(NetworkChannel.getInstance().getSpodEndpoint() + NetworkChannel.COCREATION_DOCUMENT_ENDPOINT + room.getDocs().get(0));
                 getActivity().getSupportFragmentManager().popBackStack();
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.room_data_container, noteFragment).addToBackStack("cocreation_data_room_note_fragment").commit();
                 break;
-            case R.id.cocoreation_room_data_menu_discussion:
+            case R.id.cocreation_room_data_menu_discussion:
                 CocreationCommentsFragment commentFragment = new CocreationCommentsFragment();
                 commentFragment.setRoom(room);
                 getActivity().getSupportFragmentManager().popBackStack();
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.room_data_container, commentFragment).addToBackStack("cocreation_data_room_comment_fragment").commit();
                 break;
-            case R.id.cocoreation_room_data_menu_datalets:
+            case R.id.cocreation_room_data_menu_datalets:
                 NetworkChannel.getInstance().addObserver(this);
                 NetworkChannel.getInstance().getCocreationDatalets(room.getId());
                 break;

@@ -22,8 +22,7 @@ import java.util.ArrayList;
 import eu.spod.isislab.spodapp.MainActivity;
 import eu.spod.isislab.spodapp.R;
 import eu.spod.isislab.spodapp.entities.Comment;
-import eu.spod.isislab.spodapp.entities.User;
-import eu.spod.isislab.spodapp.fragments.agora.AgoraNestedCommentFragment;
+import eu.spod.isislab.spodapp.utils.UserManager;
 import eu.spod.isislab.spodapp.fragments.DataletFragment;
 import eu.spod.isislab.spodapp.utils.NetworkChannel;
 
@@ -65,7 +64,7 @@ public class CommentsAdapter extends BaseAdapter {
     public View getView(final int position, View convertView, ViewGroup parent) {
         final Holder holder = new Holder();
         View rowView;
-        if(User.getInstance().getId().equals(comments.get(position).getOwnerId()))
+        if(UserManager.getInstance().getId().equals(comments.get(position).getOwnerId()))
         {
             rowView = inflater.inflate(R.layout.comment_row_right, null);
         }else {

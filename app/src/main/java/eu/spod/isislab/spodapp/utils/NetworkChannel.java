@@ -17,7 +17,6 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;;
 
@@ -27,7 +26,6 @@ import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -39,7 +37,6 @@ import java.util.Map;
 import java.util.Observable;
 
 import eu.spod.isislab.spodapp.R;
-import eu.spod.isislab.spodapp.entities.User;
 import eu.spod.isislab.spodapp.fragments.LoginFragment;
 import eu.spod.isislab.spodapp.services.AuthorizationService;
 import eu.spod.isislab.spodapp.services.SpodLocationService;
@@ -52,10 +49,13 @@ public class NetworkChannel extends Observable
     public static final String SERVICE_AGORA_GET_PAGED_COMMENTS     = "SERVICE_AGORA_GET_PAGED_COMMENTS";
     public static final String SERVICE_AGORA_ADD_COMMENT            = "SERVICE_AGORA_ADD_COMMENT";
     public static final String SERVICE_COCREATION_GET_SHEET_DATA    = "SERVICE_COCREATION_GET_SHEET_DATA";
+    public static final String SERVICE_COCREATION_GET_ROOMS         = "SERVICE_COCREATION_GET_ROOMS";
     public static final String SERVICE_COCREATION_GET_METADATA      = "SERVICE_COCREATION_GET_METADATA";
     public static final String SERVICE_COCREATION_GET_DATALETS      = "SERVICE_COCREATION_GET_DATALETS";
     public static final String SERVICE_COCREATION_GET_COMMENTS      = "SERVICE_COCREATION_GET_DISCUSSION";
     public static final String SERVICE_COCREATION_ADD_COMMENT       = "SERVICE_COCREATION_ADD_COMMENT";
+    public static final String SERVICE_COCREATION_JOIN_ROOM         = "SERVICE_COCREATION_JOIN_ROOM";
+    public static final String SERVICE_COCREATION_GET_ALL_FRIENDS   = "SERVICE_COCREATION_GET_ALL_FRIENDS";
     public static final String SERVICE_SYNC_NOTIFICATION            = "SERVICE_SYNC_NOTIFICATION";
     public static final String SERVICE_SAVE_NOTIFICATION            = "SERVICE_SAVE_NOTIFICATION";
 
@@ -75,10 +75,12 @@ public class NetworkChannel extends Observable
     private static final String GET_COCREATION_ROOMS                = "/cocreation/ajax/get-cocreation-rooms-by-user-id/";
     private static final String GET_COCREATION_ROOM_METADATA        = "/cocreation/ajax/get-metadata-by-room-id/";
     private static final String GET_COCREATION_ROOM_DATALETS        = "/cocreation/ajax/get-datalets-by-room-id/";
+    private static final String COCREATION_ROOM_JOIN_ROOM           = "/cocreation/ajax/confirm-to-join-to-room/";
     //private static final String GET_COCREATION_MEDIA_ROOMS          = "/cocreation/ajax/get-media-rooms-by-user-id/";
     private static final String GET_COCREATION_ROOMS_SHEET_DATA     = "/cocreation/ajax/get-sheet-data-by-room-id/";
     private static final String GET_COCREATION_ROOM_COMMENTS        = "/spod_plugin_discussion/ajax/get-comments/";
     private static final String COCREATION_ROOM_ADD_COMMENT         = "/spod_plugin_discussion/ajax/add-comment/";
+    private static final String COCREATION_ROOM_GET_ALL_FRIENDS     = "/cocreation/ajax/get-all-friends/";
     //Agora
     private static final String GET_AGORA_ROOMS                     = "/agora/ajax/get-rooms";
     private static final String AGORA_ADD_ROOM                      = "/agora/ajax/add-agora-room";
@@ -159,7 +161,12 @@ public class NetworkChannel extends Observable
         final ProgressDialog loading = (splash) ? ProgressDialog.show(mainActivity,"SPOD Mobile",mainActivity.getResources().getString(R.string.wait_network_message),false,false)
                                                 : null;
         //StringRequest postRequest = new StringRequest(Request.Method.POST, SPOD_ENDPOINT + url,
-        StringRequest postRequest = new StringRequest(Request.Method.POST, ((service != null && (service.equals(SERVICE_SAVE_NOTIFICATION)) || url.equals(GET_COCREATION_ROOMS))? "http://172.16.15.77" : SPOD_ENDPOINT) + url,
+        StringRequest postRequest = new StringRequest(Request.Method.POST, ((service != null &&
+                (service.equals(SERVICE_SAVE_NOTIFICATION) ||
+                 service.equals(SERVICE_COCREATION_GET_ROOMS) ||
+                 service.equals(SERVICE_COCREATION_JOIN_ROOM) ||
+                 service.equals(SERVICE_COCREATION_GET_ALL_FRIENDS)))
+                ? "http://172.16.15.77" : SPOD_ENDPOINT) + url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -245,8 +252,8 @@ public class NetworkChannel extends Observable
     public void getCocreationRooms()
     {
         Map<String, String> params = new HashMap<>();
-        params.put("userId", User.getInstance().getId() );
-        makePostRequest(GET_COCREATION_ROOMS, params, true, null );
+        params.put("userId", UserManager.getInstance().getId() );
+        makePostRequest(GET_COCREATION_ROOMS, params, true, SERVICE_COCREATION_GET_ROOMS );
     }
 
     public void createCocreationRoom(final String name, final String subject, final String description, final String goal, final String invitation_text)
@@ -257,7 +264,7 @@ public class NetworkChannel extends Observable
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String strDate = sdf.format(c.getTime());
 
-        params.put("ownerId",  User.getInstance().getId());
+        params.put("ownerId",  UserManager.getInstance().getId());
         params.put("name", name);
         params.put("subject", subject);
         params.put("description", description);
@@ -289,7 +296,7 @@ public class NetworkChannel extends Observable
         stringParams.put("description", description);
         stringParams.put("location",    location.getLatitude() + "," + location.getLongitude());
         stringParams.put("date",        date);
-        stringParams.put("user",        User.getInstance().getUsername());
+        stringParams.put("user",        UserManager.getInstance().getUsername());
 
         Map<String, DataPart> partParams = new HashMap<>();
         byte[] imageBytes = ImageUtils.getInstance().compressBitmap(bitmap, 1, 100);
@@ -327,6 +334,21 @@ public class NetworkChannel extends Observable
         makePostRequest(COCREATION_ROOM_ADD_COMMENT, params, true, SERVICE_COCREATION_ADD_COMMENT );
     }
 
+    public void cocreationConfirmToJoinToRoom(String memberId, String roomId)
+    {
+        Map<String, String> params = new HashMap<>();
+        params.put("memberId", memberId );
+        params.put("roomId",  roomId );
+        makePostRequest(COCREATION_ROOM_JOIN_ROOM, params, true, SERVICE_COCREATION_JOIN_ROOM);
+    }
+
+    public void cocreationGetAllFriends(String roomId)
+    {
+        Map<String, String> params = new HashMap<>();
+        params.put("userId", UserManager.getInstance().getId() );
+        params.put("roomId",  roomId );
+        makePostRequest(COCREATION_ROOM_GET_ALL_FRIENDS, params, true, SERVICE_COCREATION_GET_ALL_FRIENDS);
+    }
     //AGORA
     public void getAgoraRooms()
     {
@@ -355,7 +377,7 @@ public class NetworkChannel extends Observable
         params.put("entityId",  entityId);
         params.put("parentId",  parentId);
         params.put("level",     level);
-        params.put("userId",    User.getInstance().getId());
+        params.put("userId",    UserManager.getInstance().getId());
         makePostRequest(AGORA_ROOM_GET_NESTED_COMMENTS, params, false, SERVICE_AGORA_GET_COMMENTS);
     }
 
@@ -367,7 +389,7 @@ public class NetworkChannel extends Observable
         params.put("comment",         comment);
         params.put("level",           level);
         params.put("sentiment",       sentiment);
-        params.put("userId",          User.getInstance().getId());
+        params.put("userId",          UserManager.getInstance().getId());
         makePostRequest(AGORA_ROOM_ADD_COMMENTS, params, true, SERVICE_AGORA_ADD_COMMENT);
     }
 
@@ -376,7 +398,7 @@ public class NetworkChannel extends Observable
         Map<String, String> params = new HashMap<>();
         params.put("subject", title);
         params.put("body",    description);
-        params.put("userId",  User.getInstance().getId());
+        params.put("userId",  UserManager.getInstance().getId());
         makePostRequest(AGORA_ADD_ROOM, params, true, SERVICE_AGORA_ADD_COMMENT);
     }
 
@@ -384,14 +406,14 @@ public class NetworkChannel extends Observable
     public void addRegistrationId(String registrationId){
         Map<String, String> params = new HashMap<>();
         params.put("registrationId", registrationId);
-        params.put("userId",  User.getInstance().getId());
+        params.put("userId",  UserManager.getInstance().getId());
         makePostRequest(FIREBASE_REGISTRATION_ID_ENDPOINT, params, true, null);
     }
 
     //SETTINGS
     public void saveMobileNotification(String status, String plugin, String action, String subAction, String frequency){
         Map<String, String> params = new HashMap<>();
-        params.put("userId",    User.getInstance().getId());
+        params.put("userId",    UserManager.getInstance().getId());
         params.put("status",    status);
         params.put("plugin",    plugin);
         params.put("action",    action);
@@ -463,8 +485,8 @@ public class NetworkChannel extends Observable
                             //Log.e("SOKETIO", "CONNECT");
                             JSONObject obj = new JSONObject();
                             try {
-                                obj.put("user_id", User.getInstance().getId());
-                                obj.put("room_id", User.getInstance().getId());
+                                obj.put("user_id", UserManager.getInstance().getId());
+                                obj.put("room_id", UserManager.getInstance().getId());
                                 obj.put("plugin", plugin);
                             }catch (JSONException e){
                                 e.printStackTrace();
@@ -495,7 +517,7 @@ public class NetworkChannel extends Observable
                             public void run() {
                                     /*try{
                                         JSONObject j = (JSONObject)args[0];
-                                        if(!j.getString("user_id").equals(User.getInstance().getId())){
+                                        if(!j.getString("user_id").equals(UserManager.getInstance().getId())){
                                             currentService = SERVICE_SYNC_NOTIFICATION;
                                             setChanged();
                                             notifyObservers(args[0]);
@@ -543,8 +565,8 @@ public class NetworkChannel extends Observable
                             //Log.e("SOKETIO", "CONNECT");
                             JSONObject obj = new JSONObject();
                             try {
-                                obj.put("user_id", User.getInstance().getId());
-                                obj.put("room_id", User.getInstance().getId());
+                                obj.put("user_id", UserManager.getInstance().getId());
+                                obj.put("room_id", UserManager.getInstance().getId());
                                 obj.put("plugin", "agora");
                             }catch (JSONException e){
                                 e.printStackTrace();
@@ -581,7 +603,7 @@ public class NetworkChannel extends Observable
                                     public void run() {
                                         try{
                                             JSONObject j = (JSONObject)args[0];
-                                            if(!j.getString("user_id").equals(User.getInstance().getId())){
+                                            if(!j.getString("user_id").equals(UserManager.getInstance().getId())){
                                                 currentService = SERVICE_SYNC_NOTIFICATION;
                                                 setChanged();
                                                 notifyObservers(args[0]);
@@ -645,7 +667,7 @@ public class NetworkChannel extends Observable
                                     public void run() {
                                         try{
                                             JSONObject j = (JSONObject)args[0];
-                                            if(!j.getString("user_id").equals(User.getInstance().getId())){
+                                            if(!j.getString("user_id").equals(UserManager.getInstance().getId())){
                                                 currentService = SERVICE_SYNC_NOTIFICATION;
                                                 setChanged();
                                                 notifyObservers(args[0]);

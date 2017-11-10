@@ -38,11 +38,10 @@ import java.util.Observable;
 import java.util.Observer;
 
 import eu.spod.isislab.spodapp.R;
-import eu.spod.isislab.spodapp.fragments.cocreation.media.CocreationMediaRoomGridFragment;
 import eu.spod.isislab.spodapp.services.SpodLocationService;
 import eu.spod.isislab.spodapp.utils.DownloadImageTask;
 import eu.spod.isislab.spodapp.utils.NetworkChannel;
-import eu.spod.isislab.spodapp.entities.User;
+import eu.spod.isislab.spodapp.utils.UserManager;
 
 public class GalleryAddItemFragment extends Fragment implements View.OnClickListener, BottomNavigationView.OnNavigationItemSelectedListener, Observer{
 
@@ -67,7 +66,7 @@ public class GalleryAddItemFragment extends Fragment implements View.OnClickList
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
 
         new DownloadImageTask((ImageView)rootView.findViewById(R.id.new_item_avatar))
-                .execute(User.getInstance().getAvatarImage());
+                .execute(UserManager.getInstance().getAvatarImage());
 
         image = (ImageView)rootView.findViewById(R.id.new_item_image);
         image.setOnClickListener(this);

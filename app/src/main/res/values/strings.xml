@@ -58,11 +58,13 @@
     <string name="cocreation_room_data_notes">Notes</string>
     <string name="cocreation_room_data_discussion">Discussion</string>
     <string name="cocreation_room_data_datalets">Datalets</string>
+    <string name="cocreation_room_data_invite_members">Invite friends</string>
     <string name="cocreation_room_kwoledge_datalets">Datalets</string>
     <string name="cocreation_room_kwoledge_explore">Explore</string>
     <string name="cocreation_room_kwoledge_ideas">Ideas</string>
     <string name="cocreation_room_kwoledge_outcome">Outcome</string>
     <string name="cocreation_button_join_label">Join</string>
+    <string name="cocreation_bottom_bar_members_add_members">Add members</string>
 
     <!--Gallery-->
     <string name="cocreation_room_gallery_add_item_button">Add an item</string>

@@ -13,6 +13,7 @@ public class CocreationRoom {
     private String timestamp;
     private ArrayList<String> docs;
     private boolean hasJoined;
+    private String ownerId;
 
     public CocreationRoom(String name,
                           String description,
@@ -23,7 +24,8 @@ public class CocreationRoom {
                           String timestamp,
                           String type,
                           ArrayList<String> docs,
-                          boolean hasJoined)
+                          boolean hasJoined,
+                          String ownerId)
     {
         this.name        = name;
         this.description = description;
@@ -35,6 +37,7 @@ public class CocreationRoom {
         this.type        = type;
         this.docs        = docs;
         this.hasJoined   = hasJoined;
+        this.ownerId     = ownerId;
     }
 
     public String getName() {
@@ -110,6 +113,8 @@ public class CocreationRoom {
     }
 
     public boolean isHasJoined() { return hasJoined; }
+
+    public String getOwnerId() { return ownerId; }
 
 
 }

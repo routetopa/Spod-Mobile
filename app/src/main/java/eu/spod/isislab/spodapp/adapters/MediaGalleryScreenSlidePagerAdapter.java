@@ -68,7 +68,7 @@ public class MediaGalleryScreenSlidePagerAdapter extends FragmentStatePagerAdapt
                             row.getString("Image"),
                             loc,
                             row.getString("Date"),
-                            row.getString("User"))
+                            row.getString("UserManager"))
                     );
 
                     if ((i + 1) % MediaGalleryGridAdaper.NUM_IMAGES_PER_PAGE == 0) {

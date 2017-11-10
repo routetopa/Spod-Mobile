@@ -28,6 +28,7 @@ public class CocreationMediaRoomGridFragment extends CocreationRoomFragment impl
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        super.onCreateView(inflater,container,savedInstanceState);
         ViewGroup rootView = (ViewGroup) inflater.inflate(
                 R.layout.media_gallery_screen_slider_fragment, container, false);
 
