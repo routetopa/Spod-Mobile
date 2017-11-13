@@ -46,6 +46,7 @@ public class NetworkChannel extends Observable
     public static final String SERVICE_LOGIN                        = "SERVICE_LOGIN";
     public static final String SERVICE_GET_USER_INFO                = "SERVICE_GET_USER_INFO";
     public static final String SERVICE_AGORA_GET_COMMENTS           = "SERVICE_AGORA_GET_COMMENTS";
+    public static final String SERVICE_AGORA_GET_ROOMS              = "SERVICE_AGORA_GET_ROOMS";
     public static final String SERVICE_AGORA_GET_PAGED_COMMENTS     = "SERVICE_AGORA_GET_PAGED_COMMENTS";
     public static final String SERVICE_AGORA_ADD_COMMENT            = "SERVICE_AGORA_ADD_COMMENT";
     public static final String SERVICE_COCREATION_GET_SHEET_DATA    = "SERVICE_COCREATION_GET_SHEET_DATA";
@@ -162,14 +163,14 @@ public class NetworkChannel extends Observable
 
         final ProgressDialog loading = (splash) ? ProgressDialog.show(mainActivity,"SPOD Mobile",mainActivity.getResources().getString(R.string.wait_network_message),false,false)
                                                 : null;
-        //StringRequest postRequest = new StringRequest(Request.Method.POST, SPOD_ENDPOINT + url,
-        StringRequest postRequest = new StringRequest(Request.Method.POST, ((service != null &&
+        StringRequest postRequest = new StringRequest(Request.Method.POST, SPOD_ENDPOINT + url,
+       /* StringRequest postRequest = new StringRequest(Request.Method.POST, ((service != null &&
                 (service.equals(SERVICE_SAVE_NOTIFICATION) ||
                  service.equals(SERVICE_COCREATION_GET_ROOMS) ||
                  service.equals(SERVICE_COCREATION_JOIN_ROOM) ||
                  service.equals(SERVICE_COCREATION_GET_ALL_FRIENDS) ||
                  service.equals(SERVICE_COCREATION_INVITE_FRIENDS)))
-                ? "http://172.16.15.77" : SPOD_ENDPOINT) + url,
+                ? "http://172.16.15.77" : SPOD_ENDPOINT) + url,*/
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -366,7 +367,7 @@ public class NetworkChannel extends Observable
     public void getAgoraRooms()
     {
         Map<String, String> params = new HashMap<>();
-        makePostRequest(GET_AGORA_ROOMS, params, true, null);
+        makePostRequest(GET_AGORA_ROOMS, params, true, SERVICE_AGORA_GET_ROOMS);
     }
 
     public void getAgoraRoomPagedComments(final String roomId)

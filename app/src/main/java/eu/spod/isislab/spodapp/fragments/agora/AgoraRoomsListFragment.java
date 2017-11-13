@@ -114,41 +114,45 @@ public class AgoraRoomsListFragment extends Fragment implements Observer, View.O
     @Override
     public void update(Observable o, Object arg) {
 
-        ListView listView = (ListView) asView.findViewById(R.id.agora_rooms_list);
-        listView.setScrollingCacheEnabled(false);
-
-        JSONArray response = null;
-        try {
-            response = new JSONArray((String)arg);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        ArrayList<AgoraRoom> rooms = new ArrayList<>();
-
-        for (int i=0; i< response.length(); i++)
+        if(NetworkChannel.getInstance().getCurrentService().equals(NetworkChannel.SERVICE_AGORA_GET_ROOMS))
         {
-            try {
-                JSONObject j = response.getJSONObject(i);
-                //Log.e("", j.toString());
-                rooms.add(new AgoraRoom(
-                        j.getString("ownerId"),
-                        j.getString("subject"),
-                        j.getString("body"),
-                        j.getString("views"),
-                        j.getString("comments"),
-                        j.getString("opendata"),
-                        j.getString("timestamp"),
-                        j.getString("post"),
-                        j.getString("id"),
-                        j.getString("datalet_graph")));
-            }
-            catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
+            ListView listView = (ListView) asView.findViewById(R.id.agora_rooms_list);
+            listView.setScrollingCacheEnabled(false);
 
-        adapter = new AgoraRoomsAdapter(this.getActivity(), rooms);
-        listView.setAdapter(adapter);
+            JSONArray response = null;
+            try {
+                response = new JSONArray((String)arg);
+            } catch (JSONException e) {
+                e.printStackTrace();
+                return;
+            }
+            ArrayList<AgoraRoom> rooms = new ArrayList<>();
+
+            for (int i=0; i< response.length(); i++)
+            {
+                try {
+                    JSONObject j = response.getJSONObject(i);
+                    //Log.e("", j.toString());
+                    rooms.add(new AgoraRoom(
+                            j.getString("ownerId"),
+                            j.getString("subject"),
+                            j.getString("body"),
+                            j.getString("views"),
+                            j.getString("comments"),
+                            j.getString("opendata"),
+                            j.getString("timestamp"),
+                            j.getString("post"),
+                            j.getString("id"),
+                            j.getString("datalet_graph")));
+                }
+                catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            adapter = new AgoraRoomsAdapter(this.getActivity(), rooms);
+            listView.setAdapter(adapter);
+        }
 
     }
 

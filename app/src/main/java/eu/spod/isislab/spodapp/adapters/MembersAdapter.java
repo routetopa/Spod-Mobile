@@ -42,8 +42,9 @@ public class MembersAdapter extends BaseAdapter {
     public void doFilter(String searchKey){
         members.clear();
         for(User u : allMembers){
-            if((u.getName().toLowerCase().contains(searchKey.toLowerCase()) || searchKey.isEmpty()))
+            if((u.getName().toLowerCase().contains(searchKey.toLowerCase()) || searchKey.isEmpty())) {
                 members.add(u);
+            }
         }
         notifyDataSetChanged();
     }
@@ -66,14 +67,14 @@ public class MembersAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
+        final View rowView  = inflater.inflate(R.layout.member_row, null);
         final Holder holder = new Holder();
-        final View rowView    = inflater.inflate(R.layout.member_row, null);
-        holder.username = (TextView) rowView.findViewById(R.id.member_username);
-        holder.name     = (TextView) rowView.findViewById(R.id.member_name);
-        holder.email    = (TextView) rowView.findViewById(R.id.member_email);
-        holder.status   = (TextView) rowView.findViewById(R.id.member_status);
-        holder.avatar   = (ImageView) rowView.findViewById(R.id.member_avatar);
-        holder.selected = (ImageView) rowView.findViewById(R.id.member_selected);
+        holder.username     = (TextView) rowView.findViewById(R.id.member_username);
+        holder.name         = (TextView) rowView.findViewById(R.id.member_name);
+        holder.email        = (TextView) rowView.findViewById(R.id.member_email);
+        holder.status       = (TextView) rowView.findViewById(R.id.member_status);
+        holder.avatar       = (ImageView) rowView.findViewById(R.id.member_avatar);
+        holder.selected     = (ImageView) rowView.findViewById(R.id.member_selected);
 
         holder.username.setText(members.get(position).getUsername());
         holder.name.setText(members.get(position).getName());
@@ -95,6 +96,13 @@ public class MembersAdapter extends BaseAdapter {
                     }
                 });
 
+        if(selectedMember.contains(members.get(position))){
+            Animation animation = AnimationUtils.loadAnimation(context, R.anim.alpha_scale_animation_press);
+            rowView.startAnimation(animation);
+            selectedMember.add(members.get(position));
+            holder.selected.setVisibility(View.VISIBLE);
+        }
+
         if(members.get(position).getStatus() == User.COCREATION_STATUS_JOINED ||
            members.get(position).getStatus() == User.COCREATION_STATUS_PENDING){
             rowView.setAlpha((float)0.55);
@@ -103,7 +111,6 @@ public class MembersAdapter extends BaseAdapter {
             rowView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
                     if(selectedMember.contains(members.get(position))){
                         Animation animation = AnimationUtils.loadAnimation(context, R.anim.alpha_scale_animation_reset_press);
                         v.startAnimation(animation);
@@ -115,7 +122,6 @@ public class MembersAdapter extends BaseAdapter {
                         selectedMember.add(members.get(position));
                         holder.selected.setVisibility(View.VISIBLE);
                     }
-
                 }
             });
 

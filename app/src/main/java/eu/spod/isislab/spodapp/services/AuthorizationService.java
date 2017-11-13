@@ -204,7 +204,7 @@ public class AuthorizationService implements Observer {
                         NetworkChannel.getInstance().deleteObserver(this);
 
                         JSONObject user = new JSONObject(res.getString("user"));
-                        UserManager.getInstance().init(user.getString("id"), user.getString("username"), user.getString("image"), user.getString("name"));
+                        UserManager.getInstance().init(context, user.getString("id"), user.getString("username"), user.getString("image"), user.getString("name"));
 
                         ((MainActivity)context).drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
                         ((MainActivity)context).getSupportFragmentManager().popBackStack();
