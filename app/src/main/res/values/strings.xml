@@ -65,6 +65,7 @@
     <string name="cocreation_room_kwoledge_outcome">Outcome</string>
     <string name="cocreation_button_join_label">Join</string>
     <string name="cocreation_bottom_bar_members_add_members">Add members</string>
+    <string name="cocreation_room_add_users_no_selection">Thare are no users selected</string>
 
     <!--Gallery-->
     <string name="cocreation_room_gallery_add_item_button">Add an item</string>
@@ -115,16 +116,25 @@
         <!--<item>denhaag.routetopa.eu</item>-->
         <!--<item>opendata-crc.di.unisa.it</item>-->
         <!--<item>ddac-spod.routetopa.eu</item>-->
-        <!--<item>172.16.15.77</item>-->
     </string-array>
 
     <string-array name="cocreation_search_menu_spinner">
-        <!--<item>172.16.15.77</item>-->
         <item>All room</item>
         <item>Media room</item>
         <item>Data room</item>
         <item>Knowledge room</item>
-</string-array>
+    </string-array>
 
+    <string-array name="cocreation_room_user_status">
+        <item>Joined</item>
+        <item>Pending</item>
+        <item>Not invited</item>
+    </string-array>
+
+    <string-array name="cocreation_room_user_status_colors">
+        <item>#4CAF50</item>
+        <item>#F44336</item>
+        <item>#00BCD4</item>
+    </string-array>
 
 </resources>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:interpolator="@android:anim/bounce_interpolator"
+    android:fillAfter="true">
+
+    <scale
+        android:fromXScale="1.00"
+        android:toXScale="0.90"
+        android:fromYScale="1.0"
+        android:toYScale="0.90"
+        android:duration="500"
+        android:pivotX="10%p"
+        android:pivotY="10%p"
+        />
+
+    <!--<alpha
+        android:fromAlpha="0.8"
+        android:toAlpha="1.0"
+        android:duration="300"
+        android:repeatMode="reverse"
+        android:color="#f9dc04"
+        android:repeatCount="infinite"
+        />-->
+</set>

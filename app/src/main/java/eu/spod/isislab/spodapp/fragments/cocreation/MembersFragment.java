@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -15,7 +16,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
-import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -102,44 +102,65 @@ public class MembersFragment extends Fragment implements Observer,  BottomNaviga
     @Override
     public void update(Observable o, Object arg)
     {
-        ListView listView = (ListView) asView.findViewById(R.id.members_list);
-        listView.setScrollingCacheEnabled(false);
+        switch (NetworkChannel.getInstance().getCurrentService()){
+            case NetworkChannel.SERVICE_COCREATION_GET_ALL_FRIENDS:
+                ListView listView = (ListView) asView.findViewById(R.id.members_list);
+                listView.setScrollingCacheEnabled(false);
 
-        ArrayList<User> members = new ArrayList<>();
-        try {
-            JSONObject res = new JSONObject((String)arg);
-            if(res.getBoolean("status")){
-                JSONArray friends = res.getJSONArray("friends");
-                for (int i=0; i< friends.length(); i++)
-                {
-                    try {
-                        JSONObject j = friends.getJSONObject(i);
-                        User u = new User(
-                                j.getString("id"),
-                                j.getString("username"),
-                                j.getString("avatar"),
-                                j.getString("name"));
-                        u.setEmail(j.getString("email"));
-                        members.add(u);
-
+                ArrayList<User> members = new ArrayList<>();
+                try {
+                    JSONObject res = new JSONObject((String)arg);
+                    if(res.getBoolean("status")){
+                        JSONArray friends = res.getJSONArray("friends");
+                        for (int i=0; i< friends.length(); i++)
+                        {
+                            try {
+                                JSONObject j = friends.getJSONObject(i);
+                                User u = new User(
+                                        j.getString("id"),
+                                        j.getString("username"),
+                                        j.getString("avatar"),
+                                        j.getString("name"));
+                                u.setEmail(j.getString("email"));
+                                u.setStatus(j.getInt("status"));
+                                members.add(u);
+                            }
+                            catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
                     }
-                    catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
+                adapter = new MembersAdapter(this.getActivity(), members);
+                listView.setAdapter(adapter);
+                break;
+            case NetworkChannel.SERVICE_COCREATION_INVITE_FRIENDS:
+                try {
+                    JSONObject res = new JSONObject((String)arg);
+                    getActivity().getSupportFragmentManager().popBackStack();
+                    Snackbar.make(getActivity().findViewById(R.id.container), res.getString("message"), Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                break;
         }
-        adapter = new MembersAdapter(this.getActivity(), members);
-        listView.setAdapter(adapter);
         NetworkChannel.getInstance().deleteObserver(this);
-
     }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        String selectedUsers =  adapter.getSelectedUsersString();
+        if(!selectedUsers.isEmpty()){
+            NetworkChannel.getInstance().addObserver(this);
+            NetworkChannel.getInstance().cocreationInviteFriends(room.getId(), adapter.getSelectedUsersString());
+        }else{
+            Snackbar.make(getActivity().findViewById(R.id.container), getResources().getString(R.string.cocreation_room_add_users_no_selection), Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show();
+
+        }
         return false;
     }
 }

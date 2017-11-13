@@ -126,8 +126,9 @@ public class MainActivity extends AppCompatActivity
         } else {
             int index = getSupportFragmentManager().getBackStackEntryCount() - 1;
             if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
-                if(getSupportFragmentManager().getBackStackEntryAt(index).getName().contains("cocreation_data_room") ||
-                   getSupportFragmentManager().getBackStackEntryAt(index).getName().contains("cocreation_knowledge_room"))
+                if(getSupportFragmentManager().getBackStackEntryAt(index).getName().contains("cocreation_data_room")      ||
+                   getSupportFragmentManager().getBackStackEntryAt(index).getName().contains("cocreation_knowledge_room") ||
+                   getSupportFragmentManager().getBackStackEntryAt(index).getName().contains("cocreation_members_fragment"))
                     getSupportFragmentManager().popBackStack();
                 getSupportFragmentManager().popBackStack();
             } else {
@@ -243,7 +244,6 @@ public class MainActivity extends AppCompatActivity
 
                 break;
         }
-
     }
 
 }

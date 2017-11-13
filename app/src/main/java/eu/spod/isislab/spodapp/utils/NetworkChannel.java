@@ -56,6 +56,7 @@ public class NetworkChannel extends Observable
     public static final String SERVICE_COCREATION_ADD_COMMENT       = "SERVICE_COCREATION_ADD_COMMENT";
     public static final String SERVICE_COCREATION_JOIN_ROOM         = "SERVICE_COCREATION_JOIN_ROOM";
     public static final String SERVICE_COCREATION_GET_ALL_FRIENDS   = "SERVICE_COCREATION_GET_ALL_FRIENDS";
+    public static final String SERVICE_COCREATION_INVITE_FRIENDS    = "SERVICE_COCREATION_INVITE_FRIENDS";
     public static final String SERVICE_SYNC_NOTIFICATION            = "SERVICE_SYNC_NOTIFICATION";
     public static final String SERVICE_SAVE_NOTIFICATION            = "SERVICE_SAVE_NOTIFICATION";
 
@@ -81,6 +82,7 @@ public class NetworkChannel extends Observable
     private static final String GET_COCREATION_ROOM_COMMENTS        = "/spod_plugin_discussion/ajax/get-comments/";
     private static final String COCREATION_ROOM_ADD_COMMENT         = "/spod_plugin_discussion/ajax/add-comment/";
     private static final String COCREATION_ROOM_GET_ALL_FRIENDS     = "/cocreation/ajax/get-all-friends/";
+    private static final String COCREATION_ROOM_INVITE_FRIENDS      = "/cocreation/ajax/add-new-members-to-room-from-mobile/";
     //Agora
     private static final String GET_AGORA_ROOMS                     = "/agora/ajax/get-rooms";
     private static final String AGORA_ADD_ROOM                      = "/agora/ajax/add-agora-room";
@@ -165,7 +167,8 @@ public class NetworkChannel extends Observable
                 (service.equals(SERVICE_SAVE_NOTIFICATION) ||
                  service.equals(SERVICE_COCREATION_GET_ROOMS) ||
                  service.equals(SERVICE_COCREATION_JOIN_ROOM) ||
-                 service.equals(SERVICE_COCREATION_GET_ALL_FRIENDS)))
+                 service.equals(SERVICE_COCREATION_GET_ALL_FRIENDS) ||
+                 service.equals(SERVICE_COCREATION_INVITE_FRIENDS)))
                 ? "http://172.16.15.77" : SPOD_ENDPOINT) + url,
                 new Response.Listener<String>() {
                     @Override
@@ -349,6 +352,16 @@ public class NetworkChannel extends Observable
         params.put("roomId",  roomId );
         makePostRequest(COCREATION_ROOM_GET_ALL_FRIENDS, params, true, SERVICE_COCREATION_GET_ALL_FRIENDS);
     }
+
+    public void cocreationInviteFriends(String roomId, String users)
+    {
+        Map<String, String> params = new HashMap<>();
+        params.put("users", users );
+        params.put("roomId",      roomId );
+        makePostRequest(COCREATION_ROOM_INVITE_FRIENDS, params, true, SERVICE_COCREATION_INVITE_FRIENDS);
+    }
+
+
     //AGORA
     public void getAgoraRooms()
     {
