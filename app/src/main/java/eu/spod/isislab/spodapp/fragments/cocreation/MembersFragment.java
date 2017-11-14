@@ -16,8 +16,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
+import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import org.json.JSONArray;
@@ -43,8 +45,8 @@ public class MembersFragment extends Fragment implements Observer,  BottomNaviga
     CocreationRoom room;
     MembersAdapter adapter;
 
-    String currentMemberType  = "all";
-    String currentSearchKey   = "";
+    int currentMemberType   = 0;
+    String currentSearchKey = "";
 
     public void setRoom(CocreationRoom room) {
         this.room = room;
@@ -69,8 +71,21 @@ public class MembersFragment extends Fragment implements Observer,  BottomNaviga
             public void onTextChanged(CharSequence s, int start, int before, int count) {}
             @Override
             public void afterTextChanged(Editable s) {
-                adapter.doFilter(s.toString());
+                currentSearchKey = s.toString();
+                adapter.doFilter(currentSearchKey,currentMemberType);
             }
+        });
+
+        Spinner spinner = (Spinner)asView.findViewById(R.id.member_search_spinner);
+        spinner.setSelection(0,false);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                currentMemberType = position;
+                adapter.doFilter(currentSearchKey, currentMemberType );
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
         });
 
         return asView;

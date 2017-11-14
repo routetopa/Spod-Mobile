@@ -25,10 +25,12 @@ import eu.spod.isislab.spodapp.entities.User;
 
 public class MembersAdapter extends BaseAdapter {
 
-    ArrayList<User> allMembers;
-    ArrayList<User> members;
-    ArrayList<User> selectedMember;
-    Context context;
+    public static final String[] MEMBER_TYPES = {"all", "joined", "pending", "not invited", "selected"};
+
+    private ArrayList<User> allMembers;
+    private ArrayList<User> members;
+    private ArrayList<User> selectedMember;
+    private Context context;
     private static LayoutInflater inflater = null;
 
     public MembersAdapter(Activity mainActivity, ArrayList<User> members) {
@@ -39,12 +41,12 @@ public class MembersAdapter extends BaseAdapter {
         inflater      = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
-    public void doFilter(String searchKey){
+    public void doFilter(String searchKey, int searchType){
         members.clear();
         for(User u : allMembers){
-            if((u.getName().toLowerCase().contains(searchKey.toLowerCase()) || searchKey.isEmpty())) {
+            if((u.getName().toLowerCase().contains(searchKey.toLowerCase()) || searchKey.isEmpty()) &&
+               (u.getStatus() == (searchType - 1) || searchType == 0 || (searchType == 4 && selectedMember.contains(u))))
                 members.add(u);
-            }
         }
         notifyDataSetChanged();
     }
