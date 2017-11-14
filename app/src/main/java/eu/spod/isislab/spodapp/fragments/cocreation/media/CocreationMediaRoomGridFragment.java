@@ -22,6 +22,8 @@ import eu.spod.isislab.spodapp.utils.NetworkChannel;
 
 public class CocreationMediaRoomGridFragment extends CocreationRoomFragment implements BottomNavigationView.OnNavigationItemSelectedListener {
 
+    public static final String TAG = "CocreationMediaRoomGridFragment";
+
     private ImageAdapter gridAdapter;
 
     GridView grid;
@@ -117,7 +119,7 @@ public class CocreationMediaRoomGridFragment extends CocreationRoomFragment impl
 
                     getActivity().getSupportFragmentManager().beginTransaction()
                             .add(R.id.container, addItemFragment)
-                            .addToBackStack("gallery_add_item_fragment")
+                            .addToBackStack(GalleryAddItemFragment.TAG)
                             .commit();
 
                 }else{

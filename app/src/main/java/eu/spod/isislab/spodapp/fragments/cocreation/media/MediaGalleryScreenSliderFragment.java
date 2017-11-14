@@ -23,6 +23,8 @@ import eu.spod.isislab.spodapp.R;
 public class MediaGalleryScreenSliderFragment extends Fragment implements BottomNavigationView.OnNavigationItemSelectedListener
 {
 
+    public static final String TAG = "MediaGalleryScreenSliderFragment";
+
     private MediaGalleryGridAdaper gridAdapter;
     private String sheetId;
 
@@ -65,7 +67,7 @@ public class MediaGalleryScreenSliderFragment extends Fragment implements Bottom
 
                     getActivity().getSupportFragmentManager().beginTransaction()
                             .add(R.id.container, addItemFragment)
-                            .addToBackStack("gallery_add_item_fragment")
+                            .addToBackStack(GalleryAddItemFragment.TAG)
                             .commit();
 
                 }else{

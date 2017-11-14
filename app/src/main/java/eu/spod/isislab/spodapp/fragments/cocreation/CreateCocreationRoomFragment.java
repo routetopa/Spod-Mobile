@@ -23,6 +23,9 @@ import eu.spod.isislab.spodapp.R;
 import eu.spod.isislab.spodapp.utils.NetworkChannel;
 
 public class CreateCocreationRoomFragment extends Fragment implements Observer, OnNavigationItemSelectedListener {
+
+    public static final String TAG = "CreateCocreationRoomFragment";
+
     private View asView = null;
 
     @Override

@@ -17,6 +17,8 @@ import eu.spod.isislab.spodapp.utils.ZoomOutPageTransformer;
 
 public class CocreationRoomPagedFragment extends CocreationRoomFragment {
 
+    public static final String TAG = "CocreationRoomPagedFragment";
+
     private View asView = null;
     private ViewPager mPager;
     private MediaGalleryScreenSlidePagerAdapter mPagerAdapter;

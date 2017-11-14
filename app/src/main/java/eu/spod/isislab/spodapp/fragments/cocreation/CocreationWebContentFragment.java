@@ -24,6 +24,10 @@ import eu.spod.isislab.spodapp.utils.NetworkChannel;
 
 public class CocreationWebContentFragment extends Fragment {
 
+    public static final String TAG = "CocreationWebContentFragment";
+    public static final String DATALETS_TEMPLATE = "datalets";
+    public static final String METADATA_TEMPLATE = "metadata";
+
     String resourceUrl = null;
     String template    = null;
     String data        = null;
@@ -79,10 +83,10 @@ public class CocreationWebContentFragment extends Fragment {
         try {
             int template_resource_id = 0;
             switch(template){
-                case "metadata":
+                case METADATA_TEMPLATE:
                     template_resource_id = R.raw.metadata_template;
                     break;
-                case "datalets":
+                case DATALETS_TEMPLATE:
                     template_resource_id = R.raw.datalets_template;
                     break;
             }

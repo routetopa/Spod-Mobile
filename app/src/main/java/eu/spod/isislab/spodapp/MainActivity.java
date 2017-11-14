@@ -24,6 +24,9 @@ import android.view.MenuItem;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import eu.spod.isislab.spodapp.fragments.cocreation.MembersFragment;
+import eu.spod.isislab.spodapp.fragments.cocreation.data.CocreationDataRoomFragment;
+import eu.spod.isislab.spodapp.fragments.cocreation.knowledge.CocreationKnowledgeRoomFragment;
 import eu.spod.isislab.spodapp.fragments.settings.SettingsFragment;
 import eu.spod.isislab.spodapp.services.AuthorizationService;
 import eu.spod.isislab.spodapp.fragments.agora.AgoraRoomsListFragment;
@@ -94,12 +97,15 @@ public class MainActivity extends AppCompatActivity
                                 fragment = new CocreationRoomsListFragment();
                                 switch(notificationBody.getString("action")){
                                     case Consts.COCREATION_ACTION_NEW_ROOM:
+                                        fragment = new CocreationRoomsListFragment();
                                         break;
                                     case Consts.COCREATION_ACTION_COMMENT:
                                         break;
                                     case Consts.COCREATION_ACTION_INVITE:
+                                        fragment = new CocreationRoomsListFragment();
                                         break;
                                     case Consts.COCREATION_ACTION_DATASET_PUBLISHED:
+                                        fragment = new CocreationRoomsListFragment();
                                         break;
                                 }
                                 break;
@@ -182,9 +188,9 @@ public class MainActivity extends AppCompatActivity
         } else {
             int index = getSupportFragmentManager().getBackStackEntryCount() - 1;
             if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
-                if(getSupportFragmentManager().getBackStackEntryAt(index).getName().contains("cocreation_data_room")      ||
-                   getSupportFragmentManager().getBackStackEntryAt(index).getName().contains("cocreation_knowledge_room") ||
-                   getSupportFragmentManager().getBackStackEntryAt(index).getName().contains("cocreation_members_fragment"))
+                if(getSupportFragmentManager().getBackStackEntryAt(index).getName().contains(CocreationDataRoomFragment.TAG)      ||
+                   getSupportFragmentManager().getBackStackEntryAt(index).getName().contains(CocreationKnowledgeRoomFragment.TAG) ||
+                   getSupportFragmentManager().getBackStackEntryAt(index).getName().contains(MembersFragment.TAG))
                     getSupportFragmentManager().popBackStack();
                 getSupportFragmentManager().popBackStack();
             } else {
@@ -218,14 +224,14 @@ public class MainActivity extends AppCompatActivity
                 CustomDialog dialog = new CustomDialog();
                 dialog.setTitle("Version");
                 dialog.setBody("Current version " + BuildConfig.VERSION_NAME);
-                dialog.show(getSupportFragmentManager(), "custom_dialog_fragment");
+                dialog.show(getSupportFragmentManager(), CustomDialog.TAG);
 
                 break;
             case R.id.action_settings:
                 getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.container, new SettingsFragment())
-                        .addToBackStack("settings_fragment")
+                        .addToBackStack(SettingsFragment.TAG)
                         .commit();
 
                 break;
@@ -251,14 +257,14 @@ public class MainActivity extends AppCompatActivity
                 getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.container, new AgoraRoomsListFragment())
-                        .addToBackStack("agora_room_list")
+                        .addToBackStack(AgoraRoomsListFragment.TAG)
                         .commit();
                 break;
             case R.id.nav_cocreation:
                 getSupportFragmentManager()
                    .beginTransaction()
                    .replace(R.id.container, new CocreationRoomsListFragment())
-                   .addToBackStack("cocoreation_room_list")
+                   .addToBackStack(CocreationRoomsListFragment.TAG)
                    .commit();
                 break;
             case R.id.nav_share:

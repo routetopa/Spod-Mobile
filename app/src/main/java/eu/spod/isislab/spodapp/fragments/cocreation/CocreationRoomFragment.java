@@ -21,6 +21,8 @@ import eu.spod.isislab.spodapp.utils.NetworkChannel;
 
 public class CocreationRoomFragment extends Fragment implements Observer {
 
+    public static final String TAG = "CocreationRoomFragment";
+
     public CocreationRoom room;
     public JSONArray response;
 
@@ -49,8 +51,8 @@ public class CocreationRoomFragment extends Fragment implements Observer {
             membersFragment.setRoom(room);
             getActivity().getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.container, membersFragment, "cocreation_members_fragment")
-                    .addToBackStack("cocreation_members_fragment")
+                    .replace(R.id.container, membersFragment, MembersFragment.TAG)
+                    .addToBackStack(MembersFragment.TAG)
                     .commit();
 
         }

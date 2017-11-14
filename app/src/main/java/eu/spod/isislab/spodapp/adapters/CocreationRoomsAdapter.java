@@ -170,21 +170,25 @@ public class CocreationRoomsAdapter extends BaseAdapter implements Observer{
     private void openRoom(CocreationRoom room)
     {
         CocreationRoomFragment roomFragment = null;
+        String tag = "";
         switch (room.getType()) {
             case "media":
                 roomFragment = new CocreationMediaRoomGridFragment();
+                tag = CocreationMediaRoomGridFragment.TAG;
                 break;
             case "data":
                 roomFragment = new CocreationDataRoomFragment();
+                tag = CocreationDataRoomFragment.TAG;
                 break;
             case "knowledge":
                 roomFragment = new CocreationKnowledgeRoomFragment();
+                tag = CocreationKnowledgeRoomFragment.TAG;
                 break;
         }
         roomFragment.setRoom(room);
         ((MainActivity) context).getSupportFragmentManager().beginTransaction()
-                .replace(R.id.container, roomFragment, "cocreation_room")
-                .addToBackStack("cocreation_room")
+                .replace(R.id.container, roomFragment, tag)
+                .addToBackStack(tag)
                 .commit();
     }
 

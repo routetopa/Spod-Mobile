@@ -85,8 +85,8 @@ public class AgoraRoomsAdapter extends BaseAdapter{
                 AgoraRoomFragment roomFragment = new AgoraRoomFragment();
                 roomFragment.setRoom(rooms.get(position));
                 ((MainActivity)context).getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.container, roomFragment, "agora_room" )
-                        .addToBackStack("agora_room")
+                        .replace(R.id.container, roomFragment, AgoraRoomFragment.TAG)
+                        .addToBackStack(AgoraRoomFragment.TAG)
                         .commit();
             }
         });

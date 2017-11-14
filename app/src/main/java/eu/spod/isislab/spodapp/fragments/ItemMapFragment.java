@@ -20,6 +20,8 @@ import eu.spod.isislab.spodapp.utils.AddressSolver;
 
 public class ItemMapFragment extends Fragment {
 
+    public static final String TAG = "ItemMapFragment";
+
     private String title;
     private String description;
     private String image;

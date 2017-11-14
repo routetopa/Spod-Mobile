@@ -29,6 +29,8 @@ import eu.spod.isislab.spodapp.utils.NetworkChannel;
 
 public class CocreationCommentsFragment extends CommentFragment {
 
+    public static final String TAG = "CocreationCommentsFragment";
+
     CocreationRoom room;
     SharedPreferences spodPref;
 

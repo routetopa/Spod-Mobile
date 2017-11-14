@@ -29,6 +29,8 @@ import eu.spod.isislab.spodapp.utils.NetworkChannel;
 
 public class GalleryItemFragment extends Fragment implements View.OnClickListener, Observer{
 
+    public static final String TAG = "GalleryItemFragment";
+
     private String title;
     private String description;
     private String image;
@@ -92,7 +94,7 @@ public class GalleryItemFragment extends Fragment implements View.OnClickListene
         mapFragment.setData(title, description, image, location);
         getActivity().getSupportFragmentManager().beginTransaction()
                 .add(R.id.container, mapFragment)
-                .addToBackStack("map_fragment")
+                .addToBackStack(ItemMapFragment.TAG)
                 .commit();
     }
 

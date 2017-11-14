@@ -38,6 +38,8 @@ import eu.spod.isislab.spodapp.R;
 
 public class CocreationRoomsListFragment extends Fragment implements Observer, View.OnClickListener{
 
+    public static final String TAG = "CocreationRoomsListFragment";
+
     View asView = null;
     CocreationRoomsAdapter adapter;
     String currentRoomType  = "all";
@@ -182,7 +184,7 @@ public class CocreationRoomsListFragment extends Fragment implements Observer, V
         this.getActivity().getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.container, new CreateCocreationRoomFragment())
-                .addToBackStack("create_cocoreation_room_fragment")
+                .addToBackStack(CreateCocreationRoomFragment.TAG)
                 .commit();
     }
 }

@@ -25,6 +25,8 @@ import eu.spod.isislab.spodapp.utils.NetworkChannel;
 
 public class NestedCommentFragment extends CommentFragment {
 
+    public static final String TAG = "NestedCommentFragment";
+
     public Comment comment;
     NestedCommentFragment cInstance;
 
@@ -79,8 +81,8 @@ public class NestedCommentFragment extends CommentFragment {
                     DataletFragment dataletFragment = new DataletFragment();
                     dataletFragment.setComment(comment);
                     (getActivity()).getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.container, dataletFragment, "datalet_fragment" )
-                            .addToBackStack("datalet_fragment")
+                            .replace(R.id.container, dataletFragment, DataletFragment.TAG )
+                            .addToBackStack(DataletFragment.TAG)
                             .commit();
                 }
             });

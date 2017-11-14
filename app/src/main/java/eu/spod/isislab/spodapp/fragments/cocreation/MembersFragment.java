@@ -37,6 +37,8 @@ import eu.spod.isislab.spodapp.utils.NetworkChannel;
 
 public class MembersFragment extends Fragment implements Observer,  BottomNavigationView.OnNavigationItemSelectedListener{
 
+    public static final String TAG = "MembersFragment";
+
     ViewGroup asView;
     CocreationRoom room;
     MembersAdapter adapter;

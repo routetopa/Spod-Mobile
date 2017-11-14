@@ -37,6 +37,8 @@ import eu.spod.isislab.spodapp.utils.NetworkChannel;
  */
 public class AgoraRoomsListFragment extends Fragment implements Observer, View.OnClickListener {
 
+    public static final String TAG = "AgoraRoomsListFragment";
+
     View asView = null;
     AgoraRoomsAdapter adapter;
 
@@ -163,7 +165,7 @@ public class AgoraRoomsListFragment extends Fragment implements Observer, View.O
         this.getActivity().getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.container, new CreateAgoraRoomFragment())
-                .addToBackStack("create_cocoreation_room_fragment")
+                .addToBackStack(CreateAgoraRoomFragment.TAG)
                 .commit();
 
     }

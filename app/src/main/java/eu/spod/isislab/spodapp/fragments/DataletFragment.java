@@ -21,6 +21,9 @@ import eu.spod.isislab.spodapp.entities.Comment;
 import eu.spod.isislab.spodapp.utils.NetworkChannel;
 
 public class DataletFragment extends Fragment {
+
+    public static final String TAG = "DataletFragment";
+
     Comment comment;
 
     public void setComment(Comment comment) {

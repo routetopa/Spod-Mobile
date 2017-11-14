@@ -25,6 +25,13 @@ import eu.spod.isislab.spodapp.utils.NetworkChannel;
 
 public class CocreationDataRoomFragment extends CocreationRoomFragment implements BottomNavigationView.OnNavigationItemSelectedListener {
 
+    public static final String TAG         = "CocreationDataRoomFragment";
+    public static final String DATASET_TAG = "CocreationDataRoomFragmentDataset";
+    public static final String NOTE_TAG    = "CocreationDataRoomFragmentNote";
+    public static final String COMMENT_TAG = "CocreationDataRoomFragmentComment";
+    public static final String WEB_TAG     = "CocreationDataRoomFragmentWeb";
+
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -38,7 +45,7 @@ public class CocreationDataRoomFragment extends CocreationRoomFragment implement
 
         CocreationWebContentFragment datasetFragment = new CocreationWebContentFragment();
         datasetFragment.setResourceUrl(NetworkChannel.getInstance().getSpodEndpoint() + Consts.COCREATION_DATASET_ENDPOINT + room.getSheetId());
-        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.room_data_container, datasetFragment).addToBackStack("cocreation_data_room_dataset_fragment").commit();
+        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.room_data_container, datasetFragment).addToBackStack(DATASET_TAG).commit();
 
         ((MainActivity)getActivity()).setToolbarTitle(room.getName());
 
@@ -54,7 +61,7 @@ public class CocreationDataRoomFragment extends CocreationRoomFragment implement
                 CocreationWebContentFragment datasetFragment = new CocreationWebContentFragment();
                 datasetFragment.setResourceUrl(NetworkChannel.getInstance().getSpodEndpoint() + Consts.COCREATION_DATASET_ENDPOINT + room.getSheetId());
                 getActivity().getSupportFragmentManager().popBackStack();
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.room_data_container, datasetFragment).addToBackStack("cocreation_data_room_dataset_fragment").commit();
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.room_data_container, datasetFragment).addToBackStack(DATASET_TAG).commit();
                 break;
             case R.id.cocreation_room_data_menu_metadata:
                 NetworkChannel.getInstance().addObserver(this);
@@ -64,13 +71,13 @@ public class CocreationDataRoomFragment extends CocreationRoomFragment implement
                 CocreationWebContentFragment noteFragment = new CocreationWebContentFragment();
                 noteFragment.setResourceUrl(NetworkChannel.getInstance().getSpodEndpoint() + Consts.COCREATION_DOCUMENT_ENDPOINT + room.getDocs().get(0));
                 getActivity().getSupportFragmentManager().popBackStack();
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.room_data_container, noteFragment).addToBackStack("cocreation_data_room_note_fragment").commit();
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.room_data_container, noteFragment).addToBackStack(NOTE_TAG).commit();
                 break;
             case R.id.cocreation_room_data_menu_discussion:
                 CocreationCommentsFragment commentFragment = new CocreationCommentsFragment();
                 commentFragment.setRoom(room);
                 getActivity().getSupportFragmentManager().popBackStack();
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.room_data_container, commentFragment).addToBackStack("cocreation_data_room_comment_fragment").commit();
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.room_data_container, commentFragment).addToBackStack(COMMENT_TAG).commit();
                 break;
             case R.id.cocreation_room_data_menu_datalets:
                 NetworkChannel.getInstance().addObserver(this);
@@ -93,15 +100,15 @@ public class CocreationDataRoomFragment extends CocreationRoomFragment implement
                 CocreationWebContentFragment webFragment = new CocreationWebContentFragment();
                 switch(NetworkChannel.getInstance().getCurrentService()) {
                     case Consts.SERVICE_COCREATION_GET_METADATA:
-                        webFragment.setTemplate("metadata", res.getString("metadata"), "");
+                        webFragment.setTemplate(CocreationWebContentFragment.METADATA_TEMPLATE, res.getString("metadata"), "");
                         break;
                     case Consts.SERVICE_COCREATION_GET_DATALETS:
-                        webFragment.setTemplate("datalets", res.getString("datalets"), res.getString("datalets_definition"));
+                        webFragment.setTemplate(CocreationWebContentFragment.DATALETS_TEMPLATE, res.getString("datalets"), res.getString("datalets_definition"));
                         break;
                 }
 
                 getActivity().getSupportFragmentManager().popBackStack();
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.room_data_container, webFragment).addToBackStack("cocreation_data_room_web_fragment").commit();
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.room_data_container, webFragment).addToBackStack(WEB_TAG).commit();
 
             }
         }catch (JSONException e){

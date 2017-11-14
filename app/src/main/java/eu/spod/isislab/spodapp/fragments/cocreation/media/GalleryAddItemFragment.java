@@ -45,6 +45,8 @@ import eu.spod.isislab.spodapp.utils.UserManager;
 
 public class GalleryAddItemFragment extends Fragment implements View.OnClickListener, BottomNavigationView.OnNavigationItemSelectedListener, Observer{
 
+    public static final String TAG = "GalleryAddItemFragment";
+
     private static final int PHOTO_REQUEST_CODE = 1;
     private ImageView image;
     private Uri mImageUri;

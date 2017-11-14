@@ -26,6 +26,8 @@ import eu.spod.isislab.spodapp.utils.EndlessScrollListener;
 
 public class CommentFragment extends Fragment implements Observer {
 
+    public static final String TAG = "CommentFragment";
+
     CommentFragment cInstance = null;
 
     public View asView         = null;

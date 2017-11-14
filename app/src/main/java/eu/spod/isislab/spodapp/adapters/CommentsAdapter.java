@@ -123,8 +123,8 @@ public class CommentsAdapter extends BaseAdapter {
                     DataletFragment dataletFragment = new DataletFragment();
                     dataletFragment.setComment(comments.get(position));
                     ((MainActivity)context).getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.container, dataletFragment, "datalet_fragment" )
-                            .addToBackStack("datalet_fragment")
+                            .replace(R.id.container, dataletFragment, DataletFragment.TAG )
+                            .addToBackStack(DataletFragment.TAG)
                             .commit();
 
                 }

@@ -105,7 +105,7 @@ public class ImageAdapter extends BaseAdapter
                 ((MainActivity)mContext).getSupportFragmentManager().beginTransaction()
                         .setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right,android.R.anim.slide_out_right, android.R.anim.slide_in_left)
                         .add(R.id.container, galleryItemFragment)
-                        .addToBackStack("gallery_item_fragment")
+                        .addToBackStack(GalleryItemFragment.TAG)
                         .commit();
             }
         });

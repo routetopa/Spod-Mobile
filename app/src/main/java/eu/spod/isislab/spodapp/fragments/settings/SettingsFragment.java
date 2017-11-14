@@ -27,6 +27,7 @@ import eu.spod.isislab.spodapp.utils.NetworkChannel;
 
 public class SettingsFragment extends Fragment implements Observer, View.OnClickListener
 {
+    public static final String TAG = "SettingsFragment";
 
     View asView;
     Switch currentPreferenceSwitch;

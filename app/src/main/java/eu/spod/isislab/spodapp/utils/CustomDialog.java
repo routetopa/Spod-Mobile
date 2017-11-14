@@ -13,6 +13,8 @@ import eu.spod.isislab.spodapp.R;
 
 public class CustomDialog extends DialogFragment {
 
+    public static final String TAG = "CustomDialog";
+
     String title;
     String body;
     CustomDialog self;

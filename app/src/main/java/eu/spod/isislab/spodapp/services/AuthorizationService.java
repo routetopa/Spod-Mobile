@@ -160,7 +160,7 @@ public class AuthorizationService implements Observer {
                 }
             });
         } else {
-            ((MainActivity)context).getSupportFragmentManager().beginTransaction().replace(R.id.container, new LoginFragment()).addToBackStack("login").commit();
+            ((MainActivity)context).getSupportFragmentManager().beginTransaction().replace(R.id.container, new LoginFragment()).addToBackStack(LoginFragment.TAG).commit();
         }
     }
 
@@ -209,11 +209,6 @@ public class AuthorizationService implements Observer {
 
                         ((MainActivity)context).drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
                         ((MainActivity)context).getSupportFragmentManager().popBackStack();
-                        /*((MainActivity)context).getSupportFragmentManager()
-                                .beginTransaction()
-                                .replace(R.id.container, new AgoraRoomsListFragment())
-                                .addToBackStack("agora_room_list")
-                                .commit();*/
                         ((MainActivity)context).handleNotificationIntent();
                     }
                     break;

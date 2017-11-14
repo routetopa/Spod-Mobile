@@ -24,6 +24,9 @@ import eu.spod.isislab.spodapp.utils.NetworkChannel;
 public class CocreationKnowledgeRoomFragment extends CocreationRoomFragment implements BottomNavigationView.OnNavigationItemSelectedListener
 {
 
+    public static final String TAG     = "CocreationKnowledgeRoomFragment";
+    public static final String WEB_TAG = "CocreationDataRoomFragmentWeb";
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -72,9 +75,9 @@ public class CocreationKnowledgeRoomFragment extends CocreationRoomFragment impl
             if(status)
             {
                 CocreationWebContentFragment webFragment = new CocreationWebContentFragment();
-                webFragment.setTemplate("datalets", res.getString("datalets"), res.getString("datalets_definition"));
+                webFragment.setTemplate(CocreationWebContentFragment.DATALETS_TEMPLATE, res.getString("datalets"), res.getString("datalets_definition"));
                 getActivity().getSupportFragmentManager().popBackStack();
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.room_knowledge_container, webFragment).addToBackStack("cocreation_knowledge_room_web_fragment").commit();
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.room_knowledge_container, webFragment).addToBackStack(WEB_TAG).commit();
 
             }
         }catch (JSONException e){
@@ -87,7 +90,7 @@ public class CocreationKnowledgeRoomFragment extends CocreationRoomFragment impl
         CocreationWebContentFragment fragment = new CocreationWebContentFragment();
         fragment.setResourceUrl(NetworkChannel.getInstance().getSpodEndpoint() + Consts.COCREATION_DOCUMENT_ENDPOINT + room.getDocs().get(doc));
         if(pop) getActivity().getSupportFragmentManager().popBackStack();
-        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.room_knowledge_container, fragment).addToBackStack("cocreation_knowledge_room_web_fragment").commit();
+        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.room_knowledge_container, fragment).addToBackStack(WEB_TAG).commit();
     }
 
 

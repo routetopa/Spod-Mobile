@@ -37,6 +37,8 @@ import eu.spod.isislab.spodapp.utils.NetworkChannel;
 
 public class AgoraNestedCommentFragment extends NestedCommentFragment {
 
+    public static final String TAG = "AgoraNestedCommentFragment";
+
     @Override
     public void init() {
         NetworkChannel.getInstance().addObserver(this);

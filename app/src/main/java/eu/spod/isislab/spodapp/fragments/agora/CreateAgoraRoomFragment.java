@@ -24,6 +24,7 @@ import eu.spod.isislab.spodapp.utils.NetworkChannel;
 
 public class CreateAgoraRoomFragment extends Fragment implements Observer, OnNavigationItemSelectedListener {
 
+    public static final String TAG = "CreateAgoraRoomFragment";
     View asView = null;
 
     public CreateAgoraRoomFragment(){ }

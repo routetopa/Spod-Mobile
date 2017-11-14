@@ -25,6 +25,8 @@ import eu.spod.isislab.spodapp.utils.NetworkChannel;
 
 public class LoginFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
+    public static final String TAG = "LoginFragment";
+
     View asView = null;
     SharedPreferences spodPref;
 

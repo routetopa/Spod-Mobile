@@ -30,6 +30,8 @@ import eu.spod.isislab.spodapp.utils.NetworkChannel;
 
 public class AgoraRoomFragment extends CommentFragment {
 
+    public static final String TAG = "AgoraRoomFragment";
+
     AgoraRoom room;
     SharedPreferences spodPref;
 
@@ -232,8 +234,8 @@ public class AgoraRoomFragment extends CommentFragment {
         AgoraNestedCommentFragment nestedCommentFragment = new AgoraNestedCommentFragment();
         nestedCommentFragment.setComment(comment);
         getActivity().getSupportFragmentManager().beginTransaction()
-                .replace(R.id.container, nestedCommentFragment, "nested_comment_fragment" )
-                .addToBackStack("nested_comment_fragment")
+                .replace(R.id.container, nestedCommentFragment, AgoraNestedCommentFragment.TAG )
+                .addToBackStack(AgoraNestedCommentFragment.TAG)
                 .commit();
     }
 
