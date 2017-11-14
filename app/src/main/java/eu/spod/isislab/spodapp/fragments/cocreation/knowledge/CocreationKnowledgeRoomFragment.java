@@ -18,6 +18,7 @@ import eu.spod.isislab.spodapp.MainActivity;
 import eu.spod.isislab.spodapp.R;
 import eu.spod.isislab.spodapp.fragments.cocreation.CocreationRoomFragment;
 import eu.spod.isislab.spodapp.fragments.cocreation.CocreationWebContentFragment;
+import eu.spod.isislab.spodapp.utils.Consts;
 import eu.spod.isislab.spodapp.utils.NetworkChannel;
 
 public class CocreationKnowledgeRoomFragment extends CocreationRoomFragment implements BottomNavigationView.OnNavigationItemSelectedListener
@@ -84,7 +85,7 @@ public class CocreationKnowledgeRoomFragment extends CocreationRoomFragment impl
 
     private void laodDocumentFragment(int doc, boolean pop){
         CocreationWebContentFragment fragment = new CocreationWebContentFragment();
-        fragment.setResourceUrl(NetworkChannel.getInstance().getSpodEndpoint() + NetworkChannel.COCREATION_DOCUMENT_ENDPOINT + room.getDocs().get(doc));
+        fragment.setResourceUrl(NetworkChannel.getInstance().getSpodEndpoint() + Consts.COCREATION_DOCUMENT_ENDPOINT + room.getDocs().get(doc));
         if(pop) getActivity().getSupportFragmentManager().popBackStack();
         getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.room_knowledge_container, fragment).addToBackStack("cocreation_knowledge_room_web_fragment").commit();
     }

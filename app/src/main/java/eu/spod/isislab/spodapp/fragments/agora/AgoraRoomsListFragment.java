@@ -29,6 +29,7 @@ import eu.spod.isislab.spodapp.MainActivity;
 import eu.spod.isislab.spodapp.R;
 import eu.spod.isislab.spodapp.adapters.AgoraRoomsAdapter;
 import eu.spod.isislab.spodapp.entities.AgoraRoom;
+import eu.spod.isislab.spodapp.utils.Consts;
 import eu.spod.isislab.spodapp.utils.NetworkChannel;
 
 /**
@@ -114,7 +115,7 @@ public class AgoraRoomsListFragment extends Fragment implements Observer, View.O
     @Override
     public void update(Observable o, Object arg) {
 
-        if(NetworkChannel.getInstance().getCurrentService().equals(NetworkChannel.SERVICE_AGORA_GET_ROOMS))
+        if(NetworkChannel.getInstance().getCurrentService().equals(Consts.SERVICE_AGORA_GET_ROOMS))
         {
             ListView listView = (ListView) asView.findViewById(R.id.agora_rooms_list);
             listView.setScrollingCacheEnabled(false);

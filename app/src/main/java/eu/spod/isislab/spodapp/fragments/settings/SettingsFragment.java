@@ -22,21 +22,11 @@ import java.util.Observer;
 
 import eu.spod.isislab.spodapp.R;
 import eu.spod.isislab.spodapp.fragments.LoginFragment;
+import eu.spod.isislab.spodapp.utils.Consts;
 import eu.spod.isislab.spodapp.utils.NetworkChannel;
 
 public class SettingsFragment extends Fragment implements Observer, View.OnClickListener
 {
-    public static String COCREATION_PLUGIN                    = "cocreation";
-    public static String COCREATION_ACTION_NEW_ROOM           = COCREATION_PLUGIN + "_new_room";
-    public static String COCREATION_ACTION_COMMENT            = COCREATION_PLUGIN + "_comment";
-    public static String COCREATION_ACTION_INVITE             = COCREATION_PLUGIN + "_invite";
-    public static String COCREATION_ACTION_DATASET_PUBLISHED  = COCREATION_PLUGIN + "_dataset_published";
-    public static String AGORA_PLUGIN                         = "agora";
-    public static String AGORA_ACTION_NEW_ROOM                = AGORA_PLUGIN + "_new_room";
-    public static String AGORA_ACTION_COMMENT                 = AGORA_PLUGIN + "_add_comment";
-    public static String AGORA_ACTION_MENTION                 = AGORA_PLUGIN + "_mention";
-    public static String AGORA_ACTION_REPLAY                  = AGORA_PLUGIN + "_replay";
-
 
     View asView;
     Switch currentPreferenceSwitch;
@@ -58,7 +48,7 @@ public class SettingsFragment extends Fragment implements Observer, View.OnClick
                Snackbar.make(getActivity().findViewById(R.id.container), res.getString("message"), Snackbar.LENGTH_LONG)
                        .setAction("Action", null).show();
 
-               SharedPreferences.Editor editor = getActivity().getSharedPreferences(LoginFragment.SPOD_MOBILE_PREFERENCES, Context.MODE_PRIVATE).edit();
+               SharedPreferences.Editor editor = getActivity().getSharedPreferences(Consts.SPOD_MOBILE_PREFERENCES, Context.MODE_PRIVATE).edit();
                editor.putBoolean(NetworkChannel.getInstance().getSpodEndpoint() + getResources().getResourceEntryName(currentPreferenceSwitch.getId()), currentPreferenceSwitch.isChecked());
                editor.putInt(NetworkChannel.getInstance().getSpodEndpoint() + getResources().getResourceEntryName(currentFrequencySpinner.getId()), currentFrequencySpinner.getSelectedItemPosition());
                editor.apply();
@@ -74,43 +64,43 @@ public class SettingsFragment extends Fragment implements Observer, View.OnClick
     public void onClick(View v) {
         String plugin = null, action = null, subAction = "", status;
 
-        if(getResources().getResourceEntryName(v.getId()).contains(COCREATION_PLUGIN)) plugin = COCREATION_PLUGIN;
-        if(getResources().getResourceEntryName(v.getId()).contains(AGORA_PLUGIN))      plugin = AGORA_PLUGIN;
+        if(getResources().getResourceEntryName(v.getId()).contains(Consts.COCREATION_PLUGIN)) plugin = Consts.COCREATION_PLUGIN;
+        if(getResources().getResourceEntryName(v.getId()).contains(Consts.AGORA_PLUGIN))      plugin = Consts.AGORA_PLUGIN;
 
         currentPreferenceSwitch = (Switch)v;
         status = (currentPreferenceSwitch.isChecked()) ? "true" : "false";
 
         switch(v.getId()){
             case R.id.settings_cocreation_new_room_toggle:
-                action = COCREATION_ACTION_NEW_ROOM;
+                action = Consts.COCREATION_ACTION_NEW_ROOM;
                 currentFrequencySpinner =  (Spinner)asView.findViewById(R.id.settings_cocreation_new_room_spinner);
                break;
             case R.id.settings_cocreation_comment_room_toggle:
-                action = COCREATION_ACTION_COMMENT;
+                action = Consts.COCREATION_ACTION_COMMENT;
                 currentFrequencySpinner =  (Spinner)asView.findViewById(R.id.settings_cocreation_comment_room_spinner);
                 break;
             case R.id.settings_cocreation_invite_room_toggle:
-                action = COCREATION_ACTION_INVITE;
+                action = Consts.COCREATION_ACTION_INVITE;
                 currentFrequencySpinner =  (Spinner)asView.findViewById(R.id.settings_cocreation_invite_room_spinner);
                 break;
             case R.id.settings_cocreation_dataset_publication_toggle:
-                action = COCREATION_ACTION_DATASET_PUBLISHED;
+                action = Consts.COCREATION_ACTION_DATASET_PUBLISHED;
                 currentFrequencySpinner =  (Spinner)asView.findViewById(R.id.settings_cocreation_dataset_publication_spinner);
                 break;
             case R.id.settings_agora_new_room_toggle:
-                action = AGORA_ACTION_NEW_ROOM;
+                action = Consts.AGORA_ACTION_NEW_ROOM;
                 currentFrequencySpinner =  (Spinner)asView.findViewById(R.id.settings_agora_new_room_spinner);
                 break;
             case R.id.settings_agora_comment_room_toggle:
-                action = AGORA_ACTION_COMMENT;
+                action = Consts.AGORA_ACTION_COMMENT;
                 currentFrequencySpinner =  (Spinner)asView.findViewById(R.id.settings_agora_comment_room_spinner);
                 break;
             case R.id.settings_agora_mention_toggle:
-                action = AGORA_ACTION_MENTION;
+                action = Consts.AGORA_ACTION_MENTION;
                 currentFrequencySpinner =  (Spinner)asView.findViewById(R.id.settings_agora_mention_spinner);
                 break;
             case R.id.settings_agora_replay_toggle:
-                action = AGORA_ACTION_REPLAY;
+                action = Consts.AGORA_ACTION_REPLAY;
                 currentFrequencySpinner =  (Spinner)asView.findViewById(R.id.settings_agora_replay_spinner);
                 break;
         }
@@ -120,7 +110,7 @@ public class SettingsFragment extends Fragment implements Observer, View.OnClick
 
     private void initUIElements(LinearLayout container)
     {
-        SharedPreferences spodPref =  getActivity().getSharedPreferences(LoginFragment.SPOD_MOBILE_PREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences spodPref =  getActivity().getSharedPreferences(Consts.SPOD_MOBILE_PREFERENCES, Context.MODE_PRIVATE);
         int count = container.getChildCount();
         for (int i = 0; i < count; i++) {
             View v = container.getChildAt(i);

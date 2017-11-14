@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import eu.spod.isislab.spodapp.R;
+import eu.spod.isislab.spodapp.utils.Consts;
 import eu.spod.isislab.spodapp.utils.NetworkChannel;
 
 public class CocreationWebContentFragment extends Fragment {
@@ -91,7 +92,7 @@ public class CocreationWebContentFragment extends Fragment {
             inputStream.read(code);
 
             sourceCode = new String(code);
-            sourceCode = sourceCode.replaceAll("#DEEP_ENDPOINT#", NetworkChannel.DEEP_ENDPOINT);
+            sourceCode = sourceCode.replaceAll("#DEEP_ENDPOINT#", Consts.DEEP_ENDPOINT);
             sourceCode = sourceCode.replaceAll("#DATA#", data);
             sourceCode = sourceCode.replaceAll("#ADDON#", addon);
 

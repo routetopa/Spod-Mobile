@@ -24,6 +24,7 @@ import eu.spod.isislab.spodapp.entities.Comment;
 import eu.spod.isislab.spodapp.fragments.CommentFragment;
 import eu.spod.isislab.spodapp.fragments.LoginFragment;
 import eu.spod.isislab.spodapp.fragments.settings.SettingsFragment;
+import eu.spod.isislab.spodapp.utils.Consts;
 import eu.spod.isislab.spodapp.utils.NetworkChannel;
 
 public class CocreationCommentsFragment extends CommentFragment {
@@ -43,7 +44,7 @@ public class CocreationCommentsFragment extends CommentFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
-        spodPref = getActivity().getSharedPreferences(LoginFragment.SPOD_MOBILE_PREFERENCES, Context.MODE_PRIVATE);
+        spodPref = getActivity().getSharedPreferences(Consts.SPOD_MOBILE_PREFERENCES, Context.MODE_PRIVATE);
 
         Switch notificationSwitch = (Switch) (asView.findViewById(R.id.notification_switch));
         notificationSwitch.setOnClickListener(new View.OnClickListener() {
@@ -51,9 +52,9 @@ public class CocreationCommentsFragment extends CommentFragment {
             public void onClick(View v) {
                 NetworkChannel.getInstance().saveMobileNotification(
                         (((Switch)v).isChecked() ? "true" : "false"),
-                        SettingsFragment.COCREATION_PLUGIN,
-                        SettingsFragment.COCREATION_ACTION_COMMENT + "_" + room.getId(),
-                        SettingsFragment.COCREATION_ACTION_COMMENT,
+                        Consts.COCREATION_PLUGIN,
+                        Consts.COCREATION_ACTION_COMMENT + "_" + room.getId(),
+                        Consts.COCREATION_ACTION_COMMENT,
                         "" +
                                 (spodPref.getInt
                                         (NetworkChannel.getInstance().getSpodEndpoint() + getResources().getResourceEntryName(R.id.settings_cocreation_comment_room_spinner), 0)
@@ -63,7 +64,7 @@ public class CocreationCommentsFragment extends CommentFragment {
             }
         });
 
-        notificationSwitch.setChecked(spodPref.getBoolean( NetworkChannel.getInstance().getSpodEndpoint() + SettingsFragment.COCREATION_ACTION_COMMENT + "_" + room.getId(), false));
+        notificationSwitch.setChecked(spodPref.getBoolean( NetworkChannel.getInstance().getSpodEndpoint() + Consts.COCREATION_ACTION_COMMENT + "_" + room.getId(), false));
 
         return asView;
     }
@@ -105,12 +106,12 @@ public class CocreationCommentsFragment extends CommentFragment {
     public void update(Observable o, Object arg) {
 
         switch(NetworkChannel.getInstance().getCurrentService()) {
-            case NetworkChannel.SERVICE_SAVE_NOTIFICATION:
+            case Consts.SERVICE_SAVE_NOTIFICATION:
                 try {
                     JSONObject res = new JSONObject((String)arg);
 
                     spodPref.edit()
-                            .putBoolean(NetworkChannel.getInstance().getSpodEndpoint() + SettingsFragment.COCREATION_ACTION_COMMENT + "_" + room.getId() ,
+                            .putBoolean(NetworkChannel.getInstance().getSpodEndpoint() + Consts.COCREATION_ACTION_COMMENT + "_" + room.getId() ,
                                     ((Switch)asView.findViewById(R.id.notification_switch)).isChecked())
                             .apply();
 
@@ -120,7 +121,7 @@ public class CocreationCommentsFragment extends CommentFragment {
                     e.printStackTrace();
                 }
                 break;
-            case NetworkChannel.SERVICE_COCREATION_GET_COMMENTS:
+            case Consts.SERVICE_COCREATION_GET_COMMENTS:
 
                 try {
                     JSONArray response = new JSONArray((String)arg);
@@ -149,7 +150,7 @@ public class CocreationCommentsFragment extends CommentFragment {
                 scrollMyListViewToItemIndex(adapter.getCount() - 1);
                 break;
 
-            case NetworkChannel.SERVICE_COCREATION_ADD_COMMENT:
+            case Consts.SERVICE_COCREATION_ADD_COMMENT:
 
                 try {
                     JSONObject res = new JSONObject((String) arg);
@@ -172,7 +173,7 @@ public class CocreationCommentsFragment extends CommentFragment {
                 }
 
                 break;
-            case NetworkChannel.SERVICE_SYNC_NOTIFICATION:
+            case Consts.SERVICE_SYNC_NOTIFICATION:
                 comments.clear();
                 ((EditText)asView.findViewById(R.id.comment_add_new)).setText("");
                 comments.clear();

@@ -17,6 +17,7 @@ import eu.spod.isislab.spodapp.R;
 import eu.spod.isislab.spodapp.adapters.ImageAdapter;
 import eu.spod.isislab.spodapp.fragments.cocreation.CocreationRoomFragment;
 import eu.spod.isislab.spodapp.services.SpodLocationService;
+import eu.spod.isislab.spodapp.utils.Consts;
 import eu.spod.isislab.spodapp.utils.NetworkChannel;
 
 public class CocreationMediaRoomGridFragment extends CocreationRoomFragment implements BottomNavigationView.OnNavigationItemSelectedListener {
@@ -66,12 +67,12 @@ public class CocreationMediaRoomGridFragment extends CocreationRoomFragment impl
         super.update(o,arg);
 
          switch (NetworkChannel.getInstance().getCurrentService()){
-            case NetworkChannel.SERVICE_SYNC_NOTIFICATION:
+            case Consts.SERVICE_SYNC_NOTIFICATION:
 
                 //Log.e("SYNC_NOTIFICATION", arg.toString());
 
                 break;
-            case NetworkChannel.SERVICE_COCREATION_GET_SHEET_DATA:
+            case Consts.SERVICE_COCREATION_GET_SHEET_DATA:
                 try {
                     gridAdapter.setData(response);
                     grid.setAdapter(gridAdapter);

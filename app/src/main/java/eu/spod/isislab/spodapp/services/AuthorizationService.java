@@ -27,6 +27,7 @@ import java.util.Observer;
 
 import eu.spod.isislab.spodapp.MainActivity;
 import eu.spod.isislab.spodapp.R;
+import eu.spod.isislab.spodapp.utils.Consts;
 import eu.spod.isislab.spodapp.utils.UserManager;
 import eu.spod.isislab.spodapp.fragments.agora.AgoraRoomsListFragment;
 import eu.spod.isislab.spodapp.fragments.LoginFragment;
@@ -196,7 +197,7 @@ public class AuthorizationService implements Observer {
             JSONObject res = new JSONObject((String)response);
 
             switch(NetworkChannel.getInstance().getCurrentService()){
-                case NetworkChannel.SERVICE_GET_USER_INFO:
+                case Consts.SERVICE_GET_USER_INFO:
 
                     Boolean status = res.getBoolean("status");
                     if(status)
@@ -208,11 +209,12 @@ public class AuthorizationService implements Observer {
 
                         ((MainActivity)context).drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
                         ((MainActivity)context).getSupportFragmentManager().popBackStack();
-                        ((MainActivity)context).getSupportFragmentManager()
+                        /*((MainActivity)context).getSupportFragmentManager()
                                 .beginTransaction()
                                 .replace(R.id.container, new AgoraRoomsListFragment())
                                 .addToBackStack("agora_room_list")
-                                .commit();
+                                .commit();*/
+                        ((MainActivity)context).handleNotificationIntent();
                     }
                     break;
             }

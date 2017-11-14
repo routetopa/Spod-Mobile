@@ -32,6 +32,7 @@ import eu.spod.isislab.spodapp.R;
 import eu.spod.isislab.spodapp.adapters.MembersAdapter;
 import eu.spod.isislab.spodapp.entities.CocreationRoom;
 import eu.spod.isislab.spodapp.entities.User;
+import eu.spod.isislab.spodapp.utils.Consts;
 import eu.spod.isislab.spodapp.utils.NetworkChannel;
 
 public class MembersFragment extends Fragment implements Observer,  BottomNavigationView.OnNavigationItemSelectedListener{
@@ -39,6 +40,9 @@ public class MembersFragment extends Fragment implements Observer,  BottomNaviga
     ViewGroup asView;
     CocreationRoom room;
     MembersAdapter adapter;
+
+    String currentMemberType  = "all";
+    String currentSearchKey   = "";
 
     public void setRoom(CocreationRoom room) {
         this.room = room;
@@ -103,7 +107,7 @@ public class MembersFragment extends Fragment implements Observer,  BottomNaviga
     public void update(Observable o, Object arg)
     {
         switch (NetworkChannel.getInstance().getCurrentService()){
-            case NetworkChannel.SERVICE_COCREATION_GET_ALL_FRIENDS:
+            case Consts.SERVICE_COCREATION_GET_ALL_FRIENDS:
                 ListView listView = (ListView) asView.findViewById(R.id.members_list);
                 listView.setScrollingCacheEnabled(false);
 
@@ -136,7 +140,7 @@ public class MembersFragment extends Fragment implements Observer,  BottomNaviga
                 adapter = new MembersAdapter(this.getActivity(), members);
                 listView.setAdapter(adapter);
                 break;
-            case NetworkChannel.SERVICE_COCREATION_INVITE_FRIENDS:
+            case Consts.SERVICE_COCREATION_INVITE_FRIENDS:
                 try {
                     JSONObject res = new JSONObject((String)arg);
                     getActivity().getSupportFragmentManager().popBackStack();

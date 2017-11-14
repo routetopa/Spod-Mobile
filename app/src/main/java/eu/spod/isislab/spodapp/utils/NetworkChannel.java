@@ -37,69 +37,11 @@ import java.util.Map;
 import java.util.Observable;
 
 import eu.spod.isislab.spodapp.R;
-import eu.spod.isislab.spodapp.fragments.LoginFragment;
 import eu.spod.isislab.spodapp.services.AuthorizationService;
 import eu.spod.isislab.spodapp.services.SpodLocationService;
 
 public class NetworkChannel extends Observable
 {
-    public static final String SERVICE_LOGIN                        = "SERVICE_LOGIN";
-    public static final String SERVICE_GET_USER_INFO                = "SERVICE_GET_USER_INFO";
-    public static final String SERVICE_AGORA_GET_COMMENTS           = "SERVICE_AGORA_GET_COMMENTS";
-    public static final String SERVICE_AGORA_GET_ROOMS              = "SERVICE_AGORA_GET_ROOMS";
-    public static final String SERVICE_AGORA_GET_PAGED_COMMENTS     = "SERVICE_AGORA_GET_PAGED_COMMENTS";
-    public static final String SERVICE_AGORA_ADD_COMMENT            = "SERVICE_AGORA_ADD_COMMENT";
-    public static final String SERVICE_COCREATION_GET_SHEET_DATA    = "SERVICE_COCREATION_GET_SHEET_DATA";
-    public static final String SERVICE_COCREATION_GET_ROOMS         = "SERVICE_COCREATION_GET_ROOMS";
-    public static final String SERVICE_COCREATION_GET_METADATA      = "SERVICE_COCREATION_GET_METADATA";
-    public static final String SERVICE_COCREATION_GET_DATALETS      = "SERVICE_COCREATION_GET_DATALETS";
-    public static final String SERVICE_COCREATION_GET_COMMENTS      = "SERVICE_COCREATION_GET_DISCUSSION";
-    public static final String SERVICE_COCREATION_ADD_COMMENT       = "SERVICE_COCREATION_ADD_COMMENT";
-    public static final String SERVICE_COCREATION_JOIN_ROOM         = "SERVICE_COCREATION_JOIN_ROOM";
-    public static final String SERVICE_COCREATION_GET_ALL_FRIENDS   = "SERVICE_COCREATION_GET_ALL_FRIENDS";
-    public static final String SERVICE_COCREATION_INVITE_FRIENDS    = "SERVICE_COCREATION_INVITE_FRIENDS";
-    public static final String SERVICE_SYNC_NOTIFICATION            = "SERVICE_SYNC_NOTIFICATION";
-    public static final String SERVICE_SAVE_NOTIFICATION            = "SERVICE_SAVE_NOTIFICATION";
-
-    public static final String RESET_PASSWORD_URL                   = "/oauth2/password/reset";
-    public static final String CREATE_ACCOUNT_URL                   = "/oauth2/register";
-    public static final String LOGOUT_URL                           = "/login";
-    public static final String COCREATION_DATASET_ENDPOINT          = "/ethersheet/s/";
-    public static final String COCREATION_DOCUMENT_ENDPOINT         = "/etherpad/p/";
-    public static final String DEEP_ENDPOINT                        = "http://deep.routetopa.eu/deep_1_19";
-
-    private static String SPOD_ENDPOINT                             = "";
-    //private static final String POST_LOGIN_HANDLER                  = "/base/user/ajax-sign-in/";//"/openid/ajax.php";;
-    //Coreation
-    private static final String GET_USER_INFO                       = "/cocreation/ajax/get-user-info/";
-    private static final String MEDIAROOM_ADD_NEW_ROW               = "/ethersheet/mediaroom/addrow/";
-    private static final String COCREATION_CREATE_ROOM              = "/cocreation/ajax/create-media-room-from-mobile/";
-    private static final String GET_COCREATION_ROOMS                = "/cocreation/ajax/get-cocreation-rooms-by-user-id/";
-    private static final String GET_COCREATION_ROOM_METADATA        = "/cocreation/ajax/get-metadata-by-room-id/";
-    private static final String GET_COCREATION_ROOM_DATALETS        = "/cocreation/ajax/get-datalets-by-room-id/";
-    private static final String COCREATION_ROOM_JOIN_ROOM           = "/cocreation/ajax/confirm-to-join-to-room/";
-    //private static final String GET_COCREATION_MEDIA_ROOMS          = "/cocreation/ajax/get-media-rooms-by-user-id/";
-    private static final String GET_COCREATION_ROOMS_SHEET_DATA     = "/cocreation/ajax/get-sheet-data-by-room-id/";
-    private static final String GET_COCREATION_ROOM_COMMENTS        = "/spod_plugin_discussion/ajax/get-comments/";
-    private static final String COCREATION_ROOM_ADD_COMMENT         = "/spod_plugin_discussion/ajax/add-comment/";
-    private static final String COCREATION_ROOM_GET_ALL_FRIENDS     = "/cocreation/ajax/get-all-friends/";
-    private static final String COCREATION_ROOM_INVITE_FRIENDS      = "/cocreation/ajax/add-new-members-to-room-from-mobile/";
-    //Agora
-    private static final String GET_AGORA_ROOMS                     = "/agora/ajax/get-rooms";
-    private static final String AGORA_ADD_ROOM                      = "/agora/ajax/add-agora-room";
-    private static final String GET_AGORA_ROOM_COMMENTS             = "/agora/ajax/get-comments-page/";
-    private static final String AGORA_ROOM_ADD_COMMENTS             = "/agora/ajax/add-comment/";
-    private static final String AGORA_ROOM_GET_NESTED_COMMENTS      = "/agora/ajax/get-nested-comment-json/";
-    private static final String DATALET_STATIC_IMAGE_URL            = "/ow_plugins/ode/datalet_images/datalet_#.png";
-    private static final String DATALET_STATIC_URL                  = "/share_datalet/#";
-    //Sync notification
-    private static final String SYNC_NOTIFICATION_ENDPOINT             = "/realtime_notification";
-    private static final String COCREATION_SYNC_NOTIFICATION_ENDPOINT  = "/ethersheet/#/pubsub/";
-    //Firebase Notification
-    private static final String FIREBASE_REGISTRATION_ID_ENDPOINT      = "/notification_system/ajax/add-user-registration-id/";
-    //Settings
-    private static final String SAVE_MOBILE_NOTIFICATION               = "/notification_system/ajax/register-user-for-action/";
-
     private static NetworkChannel ourInstance = new NetworkChannel();
 
     private Activity mainActivity      = null;
@@ -118,17 +60,17 @@ public class NetworkChannel extends Observable
     public void init(Activity mainActivity){
         this.mainActivity = mainActivity;
         mRequestQueue= Volley.newRequestQueue(this.mainActivity);
-        SharedPreferences spodPref = mainActivity.getSharedPreferences(LoginFragment.SPOD_MOBILE_PREFERENCES, Context.MODE_PRIVATE);
-        SPOD_ENDPOINT = "http://" +  spodPref.getString(LoginFragment.SPOD_ENDPOINT_PREFERENCES, "");
+        SharedPreferences spodPref = mainActivity.getSharedPreferences(Consts.SPOD_MOBILE_PREFERENCES, Context.MODE_PRIVATE);
+        Consts.SPOD_ENDPOINT = "http://" +  spodPref.getString(Consts.SPOD_ENDPOINT_PREFERENCES, "");
     }
 
     public String getCurrentService(){
         return currentService;
     }
 
-    public String getSpodEndpoint(){ return SPOD_ENDPOINT; }
+    public String getSpodEndpoint(){ return Consts.SPOD_ENDPOINT; }
 
-    public void setSpodEndpoint(String spodendpoint){ SPOD_ENDPOINT = "http://" + spodendpoint; }
+    public void setSpodEndpoint(String spodendpoint){ Consts.SPOD_ENDPOINT = "http://" + spodendpoint; }
 
     // added as an instance method to an Activity
     boolean isNetworkConnectionAvailable() {
@@ -140,11 +82,11 @@ public class NetworkChannel extends Observable
     }
 
     public String getDataletStaticUrl(String dataletId){
-        return (SPOD_ENDPOINT + DATALET_STATIC_URL).replace("#", dataletId);
+        return (Consts.SPOD_ENDPOINT + Consts.DATALET_STATIC_URL).replace("#", dataletId);
     }
 
     public String getDataletImageStaticUrl(String dataletId){
-        return (SPOD_ENDPOINT + DATALET_STATIC_IMAGE_URL).replace("#", dataletId);
+        return (Consts.SPOD_ENDPOINT + Consts.DATALET_STATIC_IMAGE_URL).replace("#", dataletId);
     }
 
     private void  unavailableNetworkMessage(VolleyError err){
@@ -163,14 +105,14 @@ public class NetworkChannel extends Observable
 
         final ProgressDialog loading = (splash) ? ProgressDialog.show(mainActivity,"SPOD Mobile",mainActivity.getResources().getString(R.string.wait_network_message),false,false)
                                                 : null;
-        StringRequest postRequest = new StringRequest(Request.Method.POST, SPOD_ENDPOINT + url,
-       /* StringRequest postRequest = new StringRequest(Request.Method.POST, ((service != null &&
-                (service.equals(SERVICE_SAVE_NOTIFICATION) ||
-                 service.equals(SERVICE_COCREATION_GET_ROOMS) ||
-                 service.equals(SERVICE_COCREATION_JOIN_ROOM) ||
-                 service.equals(SERVICE_COCREATION_GET_ALL_FRIENDS) ||
-                 service.equals(SERVICE_COCREATION_INVITE_FRIENDS)))
-                ? "http://172.16.15.77" : SPOD_ENDPOINT) + url,*/
+        //StringRequest postRequest = new StringRequest(Request.Method.POST, SPOD_ENDPOINT + url,
+        StringRequest postRequest = new StringRequest(Request.Method.POST, ((service != null &&
+                (service.equals(Consts.SERVICE_SAVE_NOTIFICATION) ||
+                 service.equals(Consts.SERVICE_COCREATION_GET_ROOMS) ||
+                 service.equals(Consts.SERVICE_COCREATION_JOIN_ROOM) ||
+                 service.equals(Consts.SERVICE_COCREATION_GET_ALL_FRIENDS) ||
+                 service.equals(Consts.SERVICE_COCREATION_INVITE_FRIENDS)))
+                ? "http://172.16.15.77" : Consts.SPOD_ENDPOINT) + url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -210,7 +152,7 @@ public class NetworkChannel extends Observable
         final ProgressDialog loading = (splash) ? ProgressDialog.show(mainActivity,"SPOD Mobile",mainActivity.getResources().getString(R.string.wait_network_message),false,false)
                 : null;
 
-        VolleyMultipartRequest multipartRequest = new VolleyMultipartRequest(Request.Method.POST, SPOD_ENDPOINT + url , new Response.Listener<NetworkResponse>() {
+        VolleyMultipartRequest multipartRequest = new VolleyMultipartRequest(Request.Method.POST, Consts.SPOD_ENDPOINT + url , new Response.Listener<NetworkResponse>() {
             @Override
             public void onResponse(NetworkResponse response) {
                 String resultResponse = new String(response.data);
@@ -249,7 +191,7 @@ public class NetworkChannel extends Observable
         else
             params.put("username", username);
 
-        makePostRequest(GET_USER_INFO, params, true, SERVICE_GET_USER_INFO );
+        makePostRequest(Consts.GET_USER_INFO, params, true, Consts.SERVICE_GET_USER_INFO );
     }
 
     //COCREATION
@@ -257,7 +199,7 @@ public class NetworkChannel extends Observable
     {
         Map<String, String> params = new HashMap<>();
         params.put("userId", UserManager.getInstance().getId() );
-        makePostRequest(GET_COCREATION_ROOMS, params, true, SERVICE_COCREATION_GET_ROOMS );
+        makePostRequest(Consts.GET_COCREATION_ROOMS, params, true, Consts.SERVICE_COCREATION_GET_ROOMS );
     }
 
     public void createCocreationRoom(final String name, final String subject, final String description, final String goal, final String invitation_text)
@@ -279,7 +221,7 @@ public class NetworkChannel extends Observable
         params.put("users_value", "");
         params.put("room_type", "media");
 
-        makePostRequest(COCREATION_CREATE_ROOM, params, true, null);
+        makePostRequest(Consts.COCREATION_CREATE_ROOM, params, true, null);
 
     }
 
@@ -287,7 +229,7 @@ public class NetworkChannel extends Observable
     {
         Map<String, String> params = new HashMap<>();
         params.put("roomId",  roomId);
-        makePostRequest(GET_COCREATION_ROOMS_SHEET_DATA, params, true, SERVICE_COCREATION_GET_SHEET_DATA);
+        makePostRequest(Consts.GET_COCREATION_ROOMS_SHEET_DATA, params, true, Consts.SERVICE_COCREATION_GET_SHEET_DATA);
     }
 
     public void addRowToSheet(final String sheetId, final String title, final String description, final String date, final Bitmap bitmap)
@@ -306,28 +248,28 @@ public class NetworkChannel extends Observable
         byte[] imageBytes = ImageUtils.getInstance().compressBitmap(bitmap, 1, 100);
         partParams.put("image_file", new DataPart(title + ".jpg",  imageBytes , "image/jpeg"));
 
-        makeMultipartRequest(MEDIAROOM_ADD_NEW_ROW + sheetId, stringParams, partParams, true, null);
+        makeMultipartRequest(Consts.MEDIAROOM_ADD_NEW_ROW + sheetId, stringParams, partParams, true, null);
     }
 
     public void getCocreationMetadata(String roomId)
     {
         Map<String, String> params = new HashMap<>();
         params.put("roomId", roomId );
-        makePostRequest(GET_COCREATION_ROOM_METADATA, params, true, SERVICE_COCREATION_GET_METADATA );
+        makePostRequest(Consts.GET_COCREATION_ROOM_METADATA, params, true, Consts.SERVICE_COCREATION_GET_METADATA );
     }
 
     public void getCocreationDatalets(String roomId)
     {
         Map<String, String> params = new HashMap<>();
         params.put("roomId", roomId );
-        makePostRequest(GET_COCREATION_ROOM_DATALETS, params, true, SERVICE_COCREATION_GET_DATALETS );
+        makePostRequest(Consts.GET_COCREATION_ROOM_DATALETS, params, true, Consts.SERVICE_COCREATION_GET_DATALETS );
     }
 
     public void getCocreationRoomComments(String roomId)
     {
         Map<String, String> params = new HashMap<>();
         params.put("entityId", roomId );
-        makePostRequest(GET_COCREATION_ROOM_COMMENTS, params, true, SERVICE_COCREATION_GET_COMMENTS );
+        makePostRequest(Consts.GET_COCREATION_ROOM_COMMENTS, params, true, Consts.SERVICE_COCREATION_GET_COMMENTS );
     }
 
     public void addCocreationRoomComment(String roomId, String comment)
@@ -335,7 +277,7 @@ public class NetworkChannel extends Observable
         Map<String, String> params = new HashMap<>();
         params.put("entityId", roomId );
         params.put("comment",  comment );
-        makePostRequest(COCREATION_ROOM_ADD_COMMENT, params, true, SERVICE_COCREATION_ADD_COMMENT );
+        makePostRequest(Consts.COCREATION_ROOM_ADD_COMMENT, params, true, Consts.SERVICE_COCREATION_ADD_COMMENT );
     }
 
     public void cocreationConfirmToJoinToRoom(String memberId, String roomId)
@@ -343,7 +285,7 @@ public class NetworkChannel extends Observable
         Map<String, String> params = new HashMap<>();
         params.put("memberId", memberId );
         params.put("roomId",  roomId );
-        makePostRequest(COCREATION_ROOM_JOIN_ROOM, params, true, SERVICE_COCREATION_JOIN_ROOM);
+        makePostRequest(Consts.COCREATION_ROOM_JOIN_ROOM, params, true, Consts.SERVICE_COCREATION_JOIN_ROOM);
     }
 
     public void cocreationGetAllFriends(String roomId)
@@ -351,7 +293,7 @@ public class NetworkChannel extends Observable
         Map<String, String> params = new HashMap<>();
         params.put("userId", UserManager.getInstance().getId() );
         params.put("roomId",  roomId );
-        makePostRequest(COCREATION_ROOM_GET_ALL_FRIENDS, params, true, SERVICE_COCREATION_GET_ALL_FRIENDS);
+        makePostRequest(Consts.COCREATION_ROOM_GET_ALL_FRIENDS, params, true, Consts.SERVICE_COCREATION_GET_ALL_FRIENDS);
     }
 
     public void cocreationInviteFriends(String roomId, String users)
@@ -359,7 +301,7 @@ public class NetworkChannel extends Observable
         Map<String, String> params = new HashMap<>();
         params.put("users", users );
         params.put("roomId",      roomId );
-        makePostRequest(COCREATION_ROOM_INVITE_FRIENDS, params, true, SERVICE_COCREATION_INVITE_FRIENDS);
+        makePostRequest(Consts.COCREATION_ROOM_INVITE_FRIENDS, params, true, Consts.SERVICE_COCREATION_INVITE_FRIENDS);
     }
 
 
@@ -367,14 +309,14 @@ public class NetworkChannel extends Observable
     public void getAgoraRooms()
     {
         Map<String, String> params = new HashMap<>();
-        makePostRequest(GET_AGORA_ROOMS, params, true, SERVICE_AGORA_GET_ROOMS);
+        makePostRequest(Consts.GET_AGORA_ROOMS, params, true, Consts.SERVICE_AGORA_GET_ROOMS);
     }
 
     public void getAgoraRoomPagedComments(final String roomId)
     {
         Map<String, String> params = new HashMap<>();
         params.put("roomId",  roomId);
-        makePostRequest(GET_AGORA_ROOM_COMMENTS, params, true, SERVICE_AGORA_GET_COMMENTS);
+        makePostRequest(Consts.GET_AGORA_ROOM_COMMENTS, params, true, Consts.SERVICE_AGORA_GET_COMMENTS);
     }
 
     public void getAgoraRoomPagedComments(final String roomId, final String lastCommentId)
@@ -382,7 +324,7 @@ public class NetworkChannel extends Observable
         Map<String, String> params = new HashMap<>();
         params.put("roomId",  roomId);
         params.put("last_id", lastCommentId);
-        makePostRequest(GET_AGORA_ROOM_COMMENTS, params, false, SERVICE_AGORA_GET_PAGED_COMMENTS);
+        makePostRequest(Consts.GET_AGORA_ROOM_COMMENTS, params, false, Consts.SERVICE_AGORA_GET_PAGED_COMMENTS);
     }
 
     public void getAgoraNestedComments(final String entityId, final String parentId, final String level)
@@ -392,7 +334,7 @@ public class NetworkChannel extends Observable
         params.put("parentId",  parentId);
         params.put("level",     level);
         params.put("userId",    UserManager.getInstance().getId());
-        makePostRequest(AGORA_ROOM_GET_NESTED_COMMENTS, params, false, SERVICE_AGORA_GET_COMMENTS);
+        makePostRequest(Consts.AGORA_ROOM_GET_NESTED_COMMENTS, params, false, Consts.SERVICE_AGORA_GET_COMMENTS);
     }
 
     public void addAgoraComment(final String entityId, final String parentId, final String comment, final String level, final String sentiment)
@@ -404,7 +346,7 @@ public class NetworkChannel extends Observable
         params.put("level",           level);
         params.put("sentiment",       sentiment);
         params.put("userId",          UserManager.getInstance().getId());
-        makePostRequest(AGORA_ROOM_ADD_COMMENTS, params, true, SERVICE_AGORA_ADD_COMMENT);
+        makePostRequest(Consts.AGORA_ROOM_ADD_COMMENTS, params, true, Consts.SERVICE_AGORA_ADD_COMMENT);
     }
 
     public void addAgoraRoom(final String title, final String description)
@@ -413,7 +355,7 @@ public class NetworkChannel extends Observable
         params.put("subject", title);
         params.put("body",    description);
         params.put("userId",  UserManager.getInstance().getId());
-        makePostRequest(AGORA_ADD_ROOM, params, true, SERVICE_AGORA_ADD_COMMENT);
+        makePostRequest(Consts.AGORA_ADD_ROOM, params, true, Consts.SERVICE_AGORA_ADD_COMMENT);
     }
 
     //FIREBASE NOTIFICATION
@@ -421,7 +363,7 @@ public class NetworkChannel extends Observable
         Map<String, String> params = new HashMap<>();
         params.put("registrationId", registrationId);
         params.put("userId",  UserManager.getInstance().getId());
-        makePostRequest(FIREBASE_REGISTRATION_ID_ENDPOINT, params, true, null);
+        makePostRequest(Consts.FIREBASE_REGISTRATION_ID_ENDPOINT, params, true, null);
     }
 
     //SETTINGS
@@ -434,7 +376,7 @@ public class NetworkChannel extends Observable
         params.put("subAction", subAction);
         params.put("type",      "mobile");
         params.put("frequency", frequency);
-        makePostRequest(SAVE_MOBILE_NOTIFICATION, params, false, SERVICE_SAVE_NOTIFICATION);
+        makePostRequest(Consts.SAVE_MOBILE_NOTIFICATION, params, false, Consts.SERVICE_SAVE_NOTIFICATION);
     }
 
     //SYNC NOTIFICATION
@@ -484,7 +426,7 @@ public class NetworkChannel extends Observable
 
     public void connectToWebSocket(final String plugin, final String[] channels){
         try {
-            String endPoint = SPOD_ENDPOINT + "/";
+            String endPoint = Consts.SPOD_ENDPOINT + "/";
             IO.Options options = new IO.Options();
             options.port       = 3000;
             options.path = "/realtime_notification";
@@ -539,7 +481,7 @@ public class NetworkChannel extends Observable
                                     }catch (JSONException e) {
                                         e.printStackTrace();
                                     }*/
-                                currentService = SERVICE_SYNC_NOTIFICATION;
+                                currentService = Consts.SERVICE_SYNC_NOTIFICATION;
                                 setChanged();
                                 notifyObservers(args[0]);
                             }
@@ -565,7 +507,7 @@ public class NetworkChannel extends Observable
     public void connectAgoraWebSocket(final String roomId)
     {
         try {
-            String endPoint = SPOD_ENDPOINT + "/";
+            String endPoint = Consts.SPOD_ENDPOINT + "/";
             IO.Options options = new IO.Options();
             options.port       = 3000;
             options.path = "/realtime_notification";
@@ -618,7 +560,7 @@ public class NetworkChannel extends Observable
                                         try{
                                             JSONObject j = (JSONObject)args[0];
                                             if(!j.getString("user_id").equals(UserManager.getInstance().getId())){
-                                                currentService = SERVICE_SYNC_NOTIFICATION;
+                                                currentService = Consts.SERVICE_SYNC_NOTIFICATION;
                                                 setChanged();
                                                 notifyObservers(args[0]);
                                             }
@@ -682,7 +624,7 @@ public class NetworkChannel extends Observable
                                         try{
                                             JSONObject j = (JSONObject)args[0];
                                             if(!j.getString("user_id").equals(UserManager.getInstance().getId())){
-                                                currentService = SERVICE_SYNC_NOTIFICATION;
+                                                currentService = Consts.SERVICE_SYNC_NOTIFICATION;
                                                 setChanged();
                                                 notifyObservers(args[0]);
                                             }

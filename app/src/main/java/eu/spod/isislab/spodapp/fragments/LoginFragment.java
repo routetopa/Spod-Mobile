@@ -20,14 +20,10 @@ import android.widget.TextView;
 
 import eu.spod.isislab.spodapp.services.AuthorizationService;
 import eu.spod.isislab.spodapp.R;
+import eu.spod.isislab.spodapp.utils.Consts;
 import eu.spod.isislab.spodapp.utils.NetworkChannel;
 
 public class LoginFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemSelectedListener {
-
-    public static final String SPOD_MOBILE_PREFERENCES    = "eu.spod.isislab.spodapp.preferences.preferences";
-    public static final String SPOD_ENDPOINT_PREFERENCES  = "eu.spod.isislab.spodapp.preferences.spod_endpoint";
-    public static final String USED_INTENT                = "eu.spod.isislab.spodapp.preferences.USED_INTENT";
-
 
     View asView = null;
     SharedPreferences spodPref;
@@ -38,7 +34,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Ada
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         asView = inflater.inflate(R.layout.login_fragment, container, false);
 
-        spodPref = getActivity().getSharedPreferences(SPOD_MOBILE_PREFERENCES, Context.MODE_PRIVATE);
+        spodPref = getActivity().getSharedPreferences(Consts.SPOD_MOBILE_PREFERENCES, Context.MODE_PRIVATE);
 
         Button lBtn = (Button) asView.findViewById(R.id.login_button);
         lBtn.setOnClickListener(this);
@@ -46,7 +42,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Ada
         ((TextView)asView.findViewById(R.id.create_account)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String url = NetworkChannel.getInstance().getSpodEndpoint() + NetworkChannel.CREATE_ACCOUNT_URL;
+                String url = NetworkChannel.getInstance().getSpodEndpoint() + Consts.CREATE_ACCOUNT_URL;
                 Intent i = new Intent(Intent.ACTION_VIEW);
                 i.setData(Uri.parse(url));
                 startActivity(i);
@@ -56,7 +52,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Ada
         ((TextView)asView.findViewById(R.id.forgot_password)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String url = NetworkChannel.getInstance().getSpodEndpoint() + NetworkChannel.RESET_PASSWORD_URL;
+                String url = NetworkChannel.getInstance().getSpodEndpoint() + Consts.RESET_PASSWORD_URL;
                 Intent i = new Intent(Intent.ACTION_VIEW);
                 i.setData(Uri.parse(url));
                 startActivity(i);
@@ -69,7 +65,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Ada
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
 
-        int spinnerPosition = adapter.getPosition(spodPref.getString(SPOD_ENDPOINT_PREFERENCES, ""));
+        int spinnerPosition = adapter.getPosition(spodPref.getString(Consts.SPOD_ENDPOINT_PREFERENCES, ""));
         spinner.setSelection(spinnerPosition);
 
         spinner.setOnItemSelectedListener(this);
@@ -88,7 +84,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Ada
         switch (v.getId()) {
             case R.id.login_button:
                 SharedPreferences.Editor editor = spodPref.edit();
-                editor.putString(SPOD_ENDPOINT_PREFERENCES, ((Spinner)asView.findViewById(R.id.spod_endpoints_spinner)).getSelectedItem().toString());
+                editor.putString(Consts.SPOD_ENDPOINT_PREFERENCES, ((Spinner)asView.findViewById(R.id.spod_endpoints_spinner)).getSelectedItem().toString());
                 editor.apply();
 
                 NetworkChannel.getInstance().setSpodEndpoint(((Spinner)asView.findViewById(R.id.spod_endpoints_spinner)).getSelectedItem().toString());
@@ -100,7 +96,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Ada
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         SharedPreferences.Editor editor = spodPref.edit();
-        editor.putString(SPOD_ENDPOINT_PREFERENCES, ((Spinner)asView.findViewById(R.id.spod_endpoints_spinner)).getSelectedItem().toString());
+        editor.putString(Consts.SPOD_ENDPOINT_PREFERENCES, ((Spinner)asView.findViewById(R.id.spod_endpoints_spinner)).getSelectedItem().toString());
         editor.apply();
     }
 
@@ -114,9 +110,9 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Ada
             String action = intent.getAction();
             switch (action) {
                 case "com.google.codelabs.appauth.HANDLE_AUTHORIZATION_RESPONSE":
-                    if (!intent.hasExtra(USED_INTENT)) {
+                    if (!intent.hasExtra(Consts.USED_INTENT)) {
                         AuthorizationService.getInstance().handleAuthorizationResponse(intent);
-                        intent.putExtra(USED_INTENT, true);
+                        intent.putExtra(Consts.USED_INTENT, true);
                     }
                     break;
                 default:

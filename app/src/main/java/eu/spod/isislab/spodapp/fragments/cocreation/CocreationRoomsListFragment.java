@@ -31,6 +31,7 @@ import java.util.Observer;
 import eu.spod.isislab.spodapp.adapters.CocreationRoomsAdapter;
 import eu.spod.isislab.spodapp.MainActivity;
 import eu.spod.isislab.spodapp.entities.CocreationRoom;
+import eu.spod.isislab.spodapp.utils.Consts;
 import eu.spod.isislab.spodapp.utils.UserManager;
 import eu.spod.isislab.spodapp.utils.NetworkChannel;
 import eu.spod.isislab.spodapp.R;
@@ -130,7 +131,7 @@ public class CocreationRoomsListFragment extends Fragment implements Observer, V
     public void update(Observable o, Object arg) {
 
         switch(NetworkChannel.getInstance().getCurrentService()){
-            case NetworkChannel.SERVICE_COCREATION_GET_ROOMS:
+            case Consts.SERVICE_COCREATION_GET_ROOMS:
                 ListView listView = (ListView) asView.findViewById(R.id.cocoreation_rooms_list);
 
                 JSONArray response = null;

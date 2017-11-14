@@ -20,6 +20,7 @@ import eu.spod.isislab.spodapp.R;
 import eu.spod.isislab.spodapp.fragments.cocreation.CocreationCommentsFragment;
 import eu.spod.isislab.spodapp.fragments.cocreation.CocreationRoomFragment;
 import eu.spod.isislab.spodapp.fragments.cocreation.CocreationWebContentFragment;
+import eu.spod.isislab.spodapp.utils.Consts;
 import eu.spod.isislab.spodapp.utils.NetworkChannel;
 
 public class CocreationDataRoomFragment extends CocreationRoomFragment implements BottomNavigationView.OnNavigationItemSelectedListener {
@@ -36,7 +37,7 @@ public class CocreationDataRoomFragment extends CocreationRoomFragment implement
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
 
         CocreationWebContentFragment datasetFragment = new CocreationWebContentFragment();
-        datasetFragment.setResourceUrl(NetworkChannel.getInstance().getSpodEndpoint() + NetworkChannel.COCREATION_DATASET_ENDPOINT + room.getSheetId());
+        datasetFragment.setResourceUrl(NetworkChannel.getInstance().getSpodEndpoint() + Consts.COCREATION_DATASET_ENDPOINT + room.getSheetId());
         getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.room_data_container, datasetFragment).addToBackStack("cocreation_data_room_dataset_fragment").commit();
 
         ((MainActivity)getActivity()).setToolbarTitle(room.getName());
@@ -51,7 +52,7 @@ public class CocreationDataRoomFragment extends CocreationRoomFragment implement
         switch (item.getItemId()) {
             case R.id.cocreation_room_data_menu_dataset:
                 CocreationWebContentFragment datasetFragment = new CocreationWebContentFragment();
-                datasetFragment.setResourceUrl(NetworkChannel.getInstance().getSpodEndpoint() + NetworkChannel.COCREATION_DATASET_ENDPOINT + room.getSheetId());
+                datasetFragment.setResourceUrl(NetworkChannel.getInstance().getSpodEndpoint() + Consts.COCREATION_DATASET_ENDPOINT + room.getSheetId());
                 getActivity().getSupportFragmentManager().popBackStack();
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.room_data_container, datasetFragment).addToBackStack("cocreation_data_room_dataset_fragment").commit();
                 break;
@@ -61,7 +62,7 @@ public class CocreationDataRoomFragment extends CocreationRoomFragment implement
                 break;
             case R.id.cocreation_room_data_menu_notes:
                 CocreationWebContentFragment noteFragment = new CocreationWebContentFragment();
-                noteFragment.setResourceUrl(NetworkChannel.getInstance().getSpodEndpoint() + NetworkChannel.COCREATION_DOCUMENT_ENDPOINT + room.getDocs().get(0));
+                noteFragment.setResourceUrl(NetworkChannel.getInstance().getSpodEndpoint() + Consts.COCREATION_DOCUMENT_ENDPOINT + room.getDocs().get(0));
                 getActivity().getSupportFragmentManager().popBackStack();
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.room_data_container, noteFragment).addToBackStack("cocreation_data_room_note_fragment").commit();
                 break;
@@ -91,10 +92,10 @@ public class CocreationDataRoomFragment extends CocreationRoomFragment implement
             {
                 CocreationWebContentFragment webFragment = new CocreationWebContentFragment();
                 switch(NetworkChannel.getInstance().getCurrentService()) {
-                    case NetworkChannel.SERVICE_COCREATION_GET_METADATA:
+                    case Consts.SERVICE_COCREATION_GET_METADATA:
                         webFragment.setTemplate("metadata", res.getString("metadata"), "");
                         break;
-                    case NetworkChannel.SERVICE_COCREATION_GET_DATALETS:
+                    case Consts.SERVICE_COCREATION_GET_DATALETS:
                         webFragment.setTemplate("datalets", res.getString("datalets"), res.getString("datalets_definition"));
                         break;
                 }

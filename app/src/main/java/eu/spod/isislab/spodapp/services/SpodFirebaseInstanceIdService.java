@@ -15,12 +15,10 @@ import java.util.Observer;
 
 import eu.spod.isislab.spodapp.MainActivity;
 import eu.spod.isislab.spodapp.fragments.LoginFragment;
+import eu.spod.isislab.spodapp.utils.Consts;
 import eu.spod.isislab.spodapp.utils.NetworkChannel;
 
 public class SpodFirebaseInstanceIdService extends FirebaseInstanceIdService {
-
-    public static final String SHARED_PREF_FIREBASE_TOKEN = "eu.spod.isislab.spodapp.services.SpodFirebaseInstanceIdService.firebaseToken";
-
     @Override
     public void onTokenRefresh() {
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
@@ -29,10 +27,10 @@ public class SpodFirebaseInstanceIdService extends FirebaseInstanceIdService {
     }
 
     public boolean storeToken(String token){
-        SharedPreferences sharedPreferences = getBaseContext().getSharedPreferences(LoginFragment.SPOD_MOBILE_PREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getBaseContext().getSharedPreferences(Consts.SPOD_MOBILE_PREFERENCES, Context.MODE_PRIVATE);
         sharedPreferences
                 .edit()
-                .putString(SHARED_PREF_FIREBASE_TOKEN, token)
+                .putString(Consts.SHARED_PREF_FIREBASE_TOKEN, token)
                 .apply();
         return true;
     }

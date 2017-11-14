@@ -26,8 +26,8 @@ public class UserManager implements Observer {
     public void init(Context ctx, String id, String username, String avatarImage, String name){
         this.user = new User(id, username, avatarImage, name);
         this.mContext = ctx;
-        String refreshedToken =  this.mContext.getSharedPreferences(LoginFragment.SPOD_MOBILE_PREFERENCES, MainActivity.MODE_PRIVATE)
-                .getString(SpodFirebaseInstanceIdService.SHARED_PREF_FIREBASE_TOKEN,"");
+        String refreshedToken =  this.mContext.getSharedPreferences(Consts.SPOD_MOBILE_PREFERENCES, MainActivity.MODE_PRIVATE)
+                .getString(Consts.SHARED_PREF_FIREBASE_TOKEN,"");
         if(!refreshedToken.isEmpty()) {
             NetworkChannel.getInstance().addObserver(this);
             NetworkChannel.getInstance().addRegistrationId(refreshedToken);

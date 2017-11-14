@@ -32,6 +32,7 @@ import eu.spod.isislab.spodapp.entities.Comment;
 import eu.spod.isislab.spodapp.fragments.CommentFragment;
 import eu.spod.isislab.spodapp.fragments.DataletFragment;
 import eu.spod.isislab.spodapp.fragments.NestedCommentFragment;
+import eu.spod.isislab.spodapp.utils.Consts;
 import eu.spod.isislab.spodapp.utils.NetworkChannel;
 
 public class AgoraNestedCommentFragment extends NestedCommentFragment {
@@ -67,7 +68,7 @@ public class AgoraNestedCommentFragment extends NestedCommentFragment {
     public void update(Observable o, Object arg) {
 
         switch(NetworkChannel.getInstance().getCurrentService()) {
-            case NetworkChannel.SERVICE_AGORA_GET_COMMENTS:
+            case Consts.SERVICE_AGORA_GET_COMMENTS:
 
                 JSONArray response = null;
                 try {
@@ -100,7 +101,7 @@ public class AgoraNestedCommentFragment extends NestedCommentFragment {
                 }
                 adapter.notifyDataSetChanged();
                 break;
-            case NetworkChannel.SERVICE_AGORA_ADD_COMMENT:
+            case Consts.SERVICE_AGORA_ADD_COMMENT:
 
                 try {
                     JSONObject res = new JSONObject((String) arg);
@@ -122,7 +123,7 @@ public class AgoraNestedCommentFragment extends NestedCommentFragment {
                     break;
                 }
                 break;
-            case NetworkChannel.SERVICE_SYNC_NOTIFICATION:
+            case Consts.SERVICE_SYNC_NOTIFICATION:
                 comments.clear();
                 NetworkChannel.getInstance().getAgoraNestedComments(comment.getRoomId(), comment.getId(), "" + (Integer.parseInt(comment.getLevel()) + 1));
                 break;

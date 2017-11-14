@@ -94,28 +94,6 @@ public class SpodNotificationManager {
         try {
             JSONObject notificationBody = new JSONObject(body);
             message = notificationBody.getString("message");
-            JSONObject notificationData = new JSONObject(notificationBody.getString("data"));
-            /*switch(notificationBody.getString("plugin")){
-                case "agora":
-                    //Manage agora notification action
-                    switch(notificationBody.getString("action")){
-                        case "":
-                            break;
-                    }
-
-                    break;
-                case "cocreation":
-                    //Manage cocreation notification actions
-                    switch(notificationBody.getString("action")){
-                        case "cocreation_room_created":
-                            message += mContext.getResources().getString(R.string.cocreation_room_created_notification_message)
-                                    .replace("USERNAME", notificationData.getString("owner_name"))
-                                    .replace("ROOMNAME", notificationData.getString("room_name"));
-                            break;
-                    }
-
-                    break;
-            }*/
         } catch (JSONException e) {
             e.printStackTrace();
         } finally {

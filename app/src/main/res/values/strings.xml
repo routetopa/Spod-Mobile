@@ -137,4 +137,12 @@
         <item>#00BCD4</item>
     </string-array>
 
+    <string-array name="cocreation_room_members_search_spinner">
+        <item>All</item>
+        <item>Joined</item>
+        <item>Pending</item>
+        <item>Not invited</item>
+        <item>Selected</item>
+    </string-array>
+
 </resources>
