@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.text.Html;
+import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -17,10 +18,11 @@ import eu.spod.isislab.spodapp.R;
 
 public class SpodNotificationManager {
 
-    public static final String NOTIFICATION_INTENT_EXTRA_BODY = "NOTIFICATION_INTENT_EXTRA_BODY";
+    public static final String NOTIFICATION_INTENT_EXTRA_BODY  = "NOTIFICATION_INTENT_EXTRA_BODY";
+    public static final String NOTIFICATION_INTENT_EXTRA_TITLE = "NOTIFICATION_INTENT_EXTRA_TITLE";
 
-    public static final int ID_BIG_NOTIFICATION   = 234;
-    public static final int ID_SMALL_NOTIFICATION = 235;
+    private static final int ID_BIG_NOTIFICATION   = 234;
+    private static final int ID_SMALL_NOTIFICATION = 235;
 
     private Context mContext;
 
@@ -65,7 +67,7 @@ public class SpodNotificationManager {
                         mContext,
                         ID_SMALL_NOTIFICATION,
                         intent,
-                        PendingIntent.FLAG_UPDATE_CURRENT
+                        PendingIntent.FLAG_ONE_SHOT
                 );
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mContext);
@@ -76,28 +78,30 @@ public class SpodNotificationManager {
                 .setContentTitle(title)
                 .setSmallIcon(R.drawable.logo)
                 .setLargeIcon(BitmapFactory.decodeResource(mContext.getResources(), R.drawable.logo))
-                .setContentText(Html.fromHtml(getNotificationMessage(body)))
+                .setContentText(Html.fromHtml(this.getNotificationMessage(body)))
                 .setDefaults(Notification.DEFAULT_ALL)
                 .setStyle(new NotificationCompat.BigTextStyle()
-                .bigText(Html.fromHtml(getNotificationMessage(body))))
+                .bigText(Html.fromHtml(this.getNotificationMessage(body))))
                 .build();
 
         notification.flags |= Notification.FLAG_AUTO_CANCEL;
 
         NotificationManager notificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(ID_SMALL_NOTIFICATION, notification);
+        notificationManager.notify((int) System.currentTimeMillis(), notification);
     }
 
-    private String getNotificationMessage(String body){
-
+    private String getNotificationMessage(String body)
+    {
         String message = "";
         try {
             JSONObject notificationBody = new JSONObject(body);
             message = notificationBody.getString("message");
+            message = message.split("\n")[0];
+
+            Log.e("NOTIFICATION MANAGER", "MESSAGE : \"" + message + "\"");
         } catch (JSONException e) {
             e.printStackTrace();
-        } finally {
-            return message;
         }
+        return message;
     }
 }

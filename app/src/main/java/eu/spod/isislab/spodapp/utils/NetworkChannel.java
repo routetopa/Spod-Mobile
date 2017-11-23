@@ -12,6 +12,7 @@ import android.support.design.widget.Snackbar;
 import android.util.Log;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -90,34 +91,36 @@ public class NetworkChannel extends Observable
     }
 
     private void  unavailableNetworkMessage(VolleyError err){
-        if(!isNetworkConnectionAvailable()){
-            Snackbar.make(mainActivity.findViewById(R.id.container), mainActivity.getResources().getString(R.string.unavailable_network_message), Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show();
-        }
+
+        Snackbar.make(mainActivity.findViewById(R.id.container), mainActivity.getResources().getString(R.string.unavailable_network_message), Snackbar.LENGTH_LONG)
+                .setAction("Action", null).show();
+
         err.printStackTrace();
 
     }
 
-    private void makePostRequest(String url, final Map<String, String> params, final boolean splash, String service)
+    private void makePostRequest(String url, final Map<String, String> params, final boolean splash, final String service)
     {
-
-        if(service != null) currentService = service;
-
         final ProgressDialog loading = (splash) ? ProgressDialog.show(mainActivity,"SPOD Mobile",mainActivity.getResources().getString(R.string.wait_network_message),false,false)
                                                 : null;
-        //StringRequest postRequest = new StringRequest(Request.Method.POST, SPOD_ENDPOINT + url,
-        StringRequest postRequest = new StringRequest(Request.Method.POST, ((service != null &&
+        StringRequest postRequest = new StringRequest(Request.Method.POST, Consts.SPOD_ENDPOINT + url,
+       /* StringRequest postRequest = new StringRequest(Request.Method.POST, ((service != null &&
                 (service.equals(Consts.SERVICE_SAVE_NOTIFICATION) ||
                  service.equals(Consts.SERVICE_COCREATION_GET_ROOMS) ||
                  service.equals(Consts.SERVICE_COCREATION_JOIN_ROOM) ||
                  service.equals(Consts.SERVICE_COCREATION_GET_ALL_FRIENDS) ||
-                 service.equals(Consts.SERVICE_COCREATION_INVITE_FRIENDS)))
-                ? "http://172.16.15.77" : Consts.SPOD_ENDPOINT) + url,
+                 service.equals(Consts.SERVICE_COCREATION_INVITE_FRIENDS) ||
+                 service.equals(Consts.SERVICE_MEDIAROOM_ADD_NEW_ROW) ||
+                 service.equals(Consts.SERVICE_COCREATION_GET_SHEET_DATA) ||
+                 service.equals(Consts.SERVICE_FIREBASE_REGISTRATION)
+                ))
+                ? "http://172.16.15.77" : Consts.SPOD_ENDPOINT) + url,*/
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         if(splash) loading.dismiss();
                         setChanged();
+                        if(service != null) currentService = service;
                         notifyObservers(response);
                     }
                 },
@@ -142,22 +145,39 @@ public class NetworkChannel extends Observable
             }
         };
 
+        postRequest.setRetryPolicy(new DefaultRetryPolicy(
+                10000,
+                1/*DefaultRetryPolicy.DEFAULT_MAX_RETRIES*/,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
         mRequestQueue.add(postRequest);
     }
 
-    public void makeMultipartRequest(String url, final Map<String, String> stringParams, final Map<String, DataPart> partParams, final boolean splash, String service)
+    public void makeMultipartRequest(String url, final Map<String, String> stringParams, final Map<String, DataPart> partParams, final boolean splash, final String service)
     {
+        Log.e("MULTIPART", service + " - " + url);
         if(service != null) currentService = service;
 
         final ProgressDialog loading = (splash) ? ProgressDialog.show(mainActivity,"SPOD Mobile",mainActivity.getResources().getString(R.string.wait_network_message),false,false)
                 : null;
 
         VolleyMultipartRequest multipartRequest = new VolleyMultipartRequest(Request.Method.POST, Consts.SPOD_ENDPOINT + url , new Response.Listener<NetworkResponse>() {
+       /* VolleyMultipartRequest multipartRequest = new VolleyMultipartRequest(Request.Method.POST,  ((service != null &&
+                (service.equals(Consts.SERVICE_SAVE_NOTIFICATION) ||
+                        service.equals(Consts.SERVICE_COCREATION_GET_ROOMS) ||
+                        service.equals(Consts.SERVICE_COCREATION_JOIN_ROOM) ||
+                        service.equals(Consts.SERVICE_COCREATION_GET_ALL_FRIENDS) ||
+                        service.equals(Consts.SERVICE_COCREATION_INVITE_FRIENDS) ||
+                        service.equals(Consts.SERVICE_MEDIAROOM_ADD_NEW_ROW) ||
+                        service.equals(Consts.SERVICE_FIREBASE_REGISTRATION)
+                ))
+                ? "http://172.16.15.77" : Consts.SPOD_ENDPOINT) + url, new Response.Listener<NetworkResponse>() {*/
             @Override
             public void onResponse(NetworkResponse response) {
                 String resultResponse = new String(response.data);
                 if(splash)loading.dismiss();
                 setChanged();
+                if(service != null) currentService = service;
                 notifyObservers(resultResponse);
             }
         }, new Response.ErrorListener() {
@@ -178,13 +198,17 @@ public class NetworkChannel extends Observable
             }
         };
 
+        multipartRequest.setRetryPolicy(new DefaultRetryPolicy(
+                10000,
+                1/*DefaultRetryPolicy.DEFAULT_MAX_RETRIES*/,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
         mRequestQueue.add(multipartRequest);
 
     }
 
     public void getUserInfo(final String email, final String username)
     {
-
         Map<String, String> params = new HashMap<>();
         if(!email.isEmpty())
             params.put("email", email);
@@ -242,13 +266,13 @@ public class NetworkChannel extends Observable
         stringParams.put("description", description);
         stringParams.put("location",    location.getLatitude() + "," + location.getLongitude());
         stringParams.put("date",        date);
-        stringParams.put("user",        UserManager.getInstance().getUsername());
+        stringParams.put("user",        UserManager.getInstance().getName());//Realname
 
         Map<String, DataPart> partParams = new HashMap<>();
         byte[] imageBytes = ImageUtils.getInstance().compressBitmap(bitmap, 1, 100);
         partParams.put("image_file", new DataPart(title + ".jpg",  imageBytes , "image/jpeg"));
 
-        makeMultipartRequest(Consts.MEDIAROOM_ADD_NEW_ROW + sheetId, stringParams, partParams, true, null);
+        makeMultipartRequest(Consts.MEDIAROOM_ADD_NEW_ROW + sheetId, stringParams, partParams, true, Consts.SERVICE_MEDIAROOM_ADD_NEW_ROW);
     }
 
     public void getCocreationMetadata(String roomId)
@@ -284,7 +308,8 @@ public class NetworkChannel extends Observable
     {
         Map<String, String> params = new HashMap<>();
         params.put("memberId", memberId );
-        params.put("roomId",  roomId );
+        params.put("roomId",   roomId );
+        params.put("mobile",  "true" );
         makePostRequest(Consts.COCREATION_ROOM_JOIN_ROOM, params, true, Consts.SERVICE_COCREATION_JOIN_ROOM);
     }
 
@@ -363,7 +388,7 @@ public class NetworkChannel extends Observable
         Map<String, String> params = new HashMap<>();
         params.put("registrationId", registrationId);
         params.put("userId",  UserManager.getInstance().getId());
-        makePostRequest(Consts.FIREBASE_REGISTRATION_ID_ENDPOINT, params, true, null);
+        makePostRequest(Consts.FIREBASE_REGISTRATION_ID_ENDPOINT, params, true, Consts.SERVICE_FIREBASE_REGISTRATION);
     }
 
     //SETTINGS

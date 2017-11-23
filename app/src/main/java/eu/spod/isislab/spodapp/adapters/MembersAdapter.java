@@ -16,6 +16,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 
 import java.util.ArrayList;
@@ -24,8 +26,6 @@ import eu.spod.isislab.spodapp.R;
 import eu.spod.isislab.spodapp.entities.User;
 
 public class MembersAdapter extends BaseAdapter {
-
-    public static final String[] MEMBER_TYPES = {"all", "joined", "pending", "not invited", "selected"};
 
     private ArrayList<User> allMembers;
     private ArrayList<User> members;
@@ -86,17 +86,12 @@ public class MembersAdapter extends BaseAdapter {
 
         Glide.with(context)
                 .load(members.get(position).getAvatarImage())
-                .asBitmap()
-                .centerCrop()
-                .into(new BitmapImageViewTarget(holder.avatar) {
-                    @Override
-                    protected void setResource(Bitmap resource) {
-                        RoundedBitmapDrawable circularBitmapDrawable =
-                                RoundedBitmapDrawableFactory.create(context.getResources(), resource);
-                        circularBitmapDrawable.setCircular(true);
-                        holder.avatar.setImageDrawable(circularBitmapDrawable);
-                    }
-                });
+                .apply(new RequestOptions()
+                   .centerCrop()
+                   .circleCrop()
+                        .timeout(10000)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL))
+                .into(holder.avatar);
 
         if(selectedMember.contains(members.get(position))){
             Animation animation = AnimationUtils.loadAnimation(context, R.anim.alpha_scale_animation_press);

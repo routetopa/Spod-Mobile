@@ -48,28 +48,24 @@ public class AgoraRoomFragment extends CommentFragment {
         super.onCreateView(inflater, container, savedInstanceState);
 
         spodPref = getActivity().getSharedPreferences(Consts.SPOD_MOBILE_PREFERENCES, Context.MODE_PRIVATE);
+        initNotificationSwitch(spodPref.getBoolean( NetworkChannel.getInstance().getSpodEndpoint() + Consts.AGORA_ACTION_COMMENT + "_" + room.getId(), false));
 
-        Switch notificationSwitch = (Switch) (asView.findViewById(R.id.notification_switch));
-        notificationSwitch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                NetworkChannel.getInstance().saveMobileNotification(
-                        (((Switch)v).isChecked() ? "true" : "false"),
-                        Consts.AGORA_PLUGIN,
-                        Consts.AGORA_ACTION_COMMENT + "_" + room.getId(),
-                        Consts.AGORA_ACTION_COMMENT,
-                        "" +
+        return asView;
+    }
+
+    @Override
+    public void onNotificationSwitchChange(View v){
+        NetworkChannel.getInstance().saveMobileNotification(
+                (((Switch)v).isChecked() ? "true" : "false"),
+                Consts.AGORA_PLUGIN,
+                Consts.AGORA_ACTION_COMMENT + "_" + room.getId(),
+                Consts.AGORA_ACTION_COMMENT,
+                "" +
                         (spodPref.getInt
                                 (NetworkChannel.getInstance().getSpodEndpoint() + getResources().getResourceEntryName(R.id.settings_agora_comment_room_spinner), 0)
                                 + 1
                         )
-                );
-            }
-        });
-
-        notificationSwitch.setChecked(spodPref.getBoolean( NetworkChannel.getInstance().getSpodEndpoint() + Consts.AGORA_ACTION_COMMENT + "_" + room.getId(), false));
-
-        return asView;
+        );
     }
 
     @Override
@@ -93,6 +89,7 @@ public class AgoraRoomFragment extends CommentFragment {
     @Override
     public void onResume() {
         super.onResume();
+        NetworkChannel.getInstance().connectToWebSocket("agora", new String[]{"realtime_message_" +  room.getId()});
         NetworkChannel.getInstance().addObserver(this);
     }
 

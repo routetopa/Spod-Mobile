@@ -47,28 +47,23 @@ public class CocreationCommentsFragment extends CommentFragment {
         super.onCreateView(inflater, container, savedInstanceState);
 
         spodPref = getActivity().getSharedPreferences(Consts.SPOD_MOBILE_PREFERENCES, Context.MODE_PRIVATE);
-
-        Switch notificationSwitch = (Switch) (asView.findViewById(R.id.notification_switch));
-        notificationSwitch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                NetworkChannel.getInstance().saveMobileNotification(
-                        (((Switch)v).isChecked() ? "true" : "false"),
-                        Consts.COCREATION_PLUGIN,
-                        Consts.COCREATION_ACTION_COMMENT + "_" + room.getId(),
-                        Consts.COCREATION_ACTION_COMMENT,
-                        "" +
-                                (spodPref.getInt
-                                        (NetworkChannel.getInstance().getSpodEndpoint() + getResources().getResourceEntryName(R.id.settings_cocreation_comment_room_spinner), 0)
-                                        + 1
-                                )
-                );
-            }
-        });
-
-        notificationSwitch.setChecked(spodPref.getBoolean( NetworkChannel.getInstance().getSpodEndpoint() + Consts.COCREATION_ACTION_COMMENT + "_" + room.getId(), false));
-
+        initNotificationSwitch(spodPref.getBoolean( NetworkChannel.getInstance().getSpodEndpoint() + Consts.COCREATION_ACTION_COMMENT + "_" + room.getId(), false));
         return asView;
+    }
+
+    @Override
+    public void onNotificationSwitchChange(View v){
+        NetworkChannel.getInstance().saveMobileNotification(
+                (((Switch)v).isChecked() ? "true" : "false"),
+                Consts.COCREATION_PLUGIN,
+                Consts.COCREATION_ACTION_COMMENT + "_" + room.getId(),
+                Consts.COCREATION_ACTION_COMMENT,
+                "" +
+                        (spodPref.getInt
+                                (NetworkChannel.getInstance().getSpodEndpoint() + getResources().getResourceEntryName(R.id.settings_cocreation_comment_room_spinner), 0)
+                                + 1
+                        )
+        );
     }
 
     @Override

@@ -7,13 +7,17 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Switch;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 
 import java.util.ArrayList;
 import java.util.Observable;
@@ -22,7 +26,9 @@ import java.util.Observer;
 import eu.spod.isislab.spodapp.R;
 import eu.spod.isislab.spodapp.adapters.CommentsAdapter;
 import eu.spod.isislab.spodapp.entities.Comment;
+import eu.spod.isislab.spodapp.utils.Consts;
 import eu.spod.isislab.spodapp.utils.EndlessScrollListener;
+import eu.spod.isislab.spodapp.utils.NetworkChannel;
 
 public class CommentFragment extends Fragment implements Observer {
 
@@ -55,8 +61,12 @@ public class CommentFragment extends Fragment implements Observer {
         loader = (LinearLayout) asView.findViewById(R.id.room_comment_loader);
 
         Glide.with(getActivity())
-                .load(R.drawable.jelly_fluid_loader)
                 .asGif()
+                .load(R.drawable.jelly_fluid_loader)
+                .apply(new RequestOptions()
+                        .centerCrop()
+                        .timeout(10000)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL))
                 .into((ImageView)asView.findViewById(R.id.loader_image));
 
         listView = (ListView) asView.findViewById(R.id.room_comment_list);
@@ -129,15 +139,28 @@ public class CommentFragment extends Fragment implements Observer {
         loader.setLayoutParams(params);
     }
 
-    public void init(){}
+    public void init(){ }
 
     public void initAdapter(){}
+
+    public void initNotificationSwitch(boolean checked){
+        Switch notificationSwitch = (Switch) (asView.findViewById(R.id.notification_switch));
+        notificationSwitch.setChecked(checked);
+        ((Switch) (asView.findViewById(R.id.notification_switch))).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                onNotificationSwitchChange(buttonView);
+            }
+        });
+    }
 
     public void addComment(String comment){}
 
     public void getNextCommentPage(){};
 
     public void nestedCommentAction(Comment comment){}
+
+    public void onNotificationSwitchChange(View v){}
 
     @Override
     public void update(Observable o, Object arg) {

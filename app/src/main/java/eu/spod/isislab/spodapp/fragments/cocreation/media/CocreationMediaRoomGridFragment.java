@@ -10,6 +10,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.Observable;
 
 import eu.spod.isislab.spodapp.MainActivity;
@@ -27,12 +31,13 @@ public class CocreationMediaRoomGridFragment extends CocreationRoomFragment impl
     private ImageAdapter gridAdapter;
 
     GridView grid;
+    ViewGroup rootView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         super.onCreateView(inflater,container,savedInstanceState);
-        ViewGroup rootView = (ViewGroup) inflater.inflate(
+        rootView = (ViewGroup) inflater.inflate(
                 R.layout.media_gallery_screen_slider_fragment, container, false);
 
         BottomNavigationView bottomNavigationView = (BottomNavigationView)
@@ -83,6 +88,26 @@ public class CocreationMediaRoomGridFragment extends CocreationRoomFragment impl
                     e.printStackTrace();
                 }
                 break;
+             case Consts.SERVICE_MEDIAROOM_ADD_NEW_ROW:
+                 try {
+                     JSONObject result = new JSONObject((String) arg);
+                     Boolean status = result.getBoolean("status");
+                     String message = result.getString("message");
+
+                     if (status) {
+                         Snackbar.make(rootView, message, Snackbar.LENGTH_LONG)
+                                 .setAction("Action", null).show();
+                         refreshData();
+
+                     } else {
+                         Snackbar.make(rootView, message, Snackbar.LENGTH_LONG)
+                                 .setAction("Action", null).show();
+                     }
+                 }catch (JSONException e){
+                     e.printStackTrace();
+
+                 }
+                 break;
         }
     }
 

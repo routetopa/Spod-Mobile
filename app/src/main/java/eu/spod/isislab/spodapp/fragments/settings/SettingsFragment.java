@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Switch;
@@ -21,11 +22,10 @@ import java.util.Observable;
 import java.util.Observer;
 
 import eu.spod.isislab.spodapp.R;
-import eu.spod.isislab.spodapp.fragments.LoginFragment;
 import eu.spod.isislab.spodapp.utils.Consts;
 import eu.spod.isislab.spodapp.utils.NetworkChannel;
 
-public class SettingsFragment extends Fragment implements Observer, View.OnClickListener
+public class SettingsFragment extends Fragment implements Observer, CompoundButton.OnCheckedChangeListener
 {
     public static final String TAG = "SettingsFragment";
 
@@ -50,8 +50,12 @@ public class SettingsFragment extends Fragment implements Observer, View.OnClick
                        .setAction("Action", null).show();
 
                SharedPreferences.Editor editor = getActivity().getSharedPreferences(Consts.SPOD_MOBILE_PREFERENCES, Context.MODE_PRIVATE).edit();
-               editor.putBoolean(NetworkChannel.getInstance().getSpodEndpoint() + getResources().getResourceEntryName(currentPreferenceSwitch.getId()), currentPreferenceSwitch.isChecked());
-               editor.putInt(NetworkChannel.getInstance().getSpodEndpoint() + getResources().getResourceEntryName(currentFrequencySpinner.getId()), currentFrequencySpinner.getSelectedItemPosition());
+               editor.putBoolean(NetworkChannel.getInstance().getSpodEndpoint() + getResources().getResourceEntryName(
+                       currentPreferenceSwitch.getId()),
+                       currentPreferenceSwitch.isChecked());
+               editor.putInt(NetworkChannel.getInstance().getSpodEndpoint() + getResources().getResourceEntryName(
+                       currentFrequencySpinner.getId()),
+                       currentFrequencySpinner.getSelectedItemPosition());
                editor.apply();
 
                NetworkChannel.getInstance().deleteObserver(this);
@@ -61,8 +65,30 @@ public class SettingsFragment extends Fragment implements Observer, View.OnClick
            }
     }
 
+    private void initUIElements(LinearLayout container)
+    {
+        SharedPreferences spodPref =  getActivity().getSharedPreferences(Consts.SPOD_MOBILE_PREFERENCES, Context.MODE_PRIVATE);
+        int count = container.getChildCount();
+        for (int i = 0; i < count; i++) {
+            View v = container.getChildAt(i);
+            if (v instanceof LinearLayout)
+                initUIElements((LinearLayout)v);
+            if (v instanceof Switch) {
+                ((Switch) v).setOnCheckedChangeListener(this);
+                ((Switch)v).setChecked(spodPref.getBoolean(NetworkChannel.getInstance().getSpodEndpoint() + getResources().getResourceEntryName(v.getId()), false));
+            }
+            if(v instanceof Spinner){
+                ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+                        getActivity(), R.array.settings_menu_spinner, R.layout.settings_spinner_layout);
+                adapter.setDropDownViewResource(R.layout.settings_spinner_layout);
+                ((Spinner)v).setAdapter(adapter);
+                ((Spinner)v).setSelection(spodPref.getInt(NetworkChannel.getInstance().getSpodEndpoint() + getResources().getResourceEntryName(v.getId()), 0));
+            }
+        }
+    }
+
     @Override
-    public void onClick(View v) {
+    public void onCheckedChanged(CompoundButton v, boolean isChecked) {
         String plugin = null, action = null, subAction = "", status;
 
         if(getResources().getResourceEntryName(v.getId()).contains(Consts.COCREATION_PLUGIN)) plugin = Consts.COCREATION_PLUGIN;
@@ -72,10 +98,14 @@ public class SettingsFragment extends Fragment implements Observer, View.OnClick
         status = (currentPreferenceSwitch.isChecked()) ? "true" : "false";
 
         switch(v.getId()){
-            case R.id.settings_cocreation_new_room_toggle:
+            /*case R.id.settings_cocreation_new_room_toggle:
                 action = Consts.COCREATION_ACTION_NEW_ROOM;
                 currentFrequencySpinner =  (Spinner)asView.findViewById(R.id.settings_cocreation_new_room_spinner);
-               break;
+               break;*/
+            case R.id.settings_cocreation_join_toggle:
+                action = Consts.COCREATION_ACTION_JOIN;
+                currentFrequencySpinner =  (Spinner)asView.findViewById(R.id.settings_cocreation_join_spinner);
+                break;
             case R.id.settings_cocreation_comment_room_toggle:
                 action = Consts.COCREATION_ACTION_COMMENT;
                 currentFrequencySpinner =  (Spinner)asView.findViewById(R.id.settings_cocreation_comment_room_spinner);
@@ -107,28 +137,6 @@ public class SettingsFragment extends Fragment implements Observer, View.OnClick
         }
         NetworkChannel.getInstance().addObserver(this);
         NetworkChannel.getInstance().saveMobileNotification(status, plugin, action, subAction, "" + (currentFrequencySpinner.getSelectedItemPosition() + 1));
-    }
 
-    private void initUIElements(LinearLayout container)
-    {
-        SharedPreferences spodPref =  getActivity().getSharedPreferences(Consts.SPOD_MOBILE_PREFERENCES, Context.MODE_PRIVATE);
-        int count = container.getChildCount();
-        for (int i = 0; i < count; i++) {
-            View v = container.getChildAt(i);
-            if (v instanceof LinearLayout)
-                initUIElements((LinearLayout)v);
-            if (v instanceof Switch) {
-                v.setOnClickListener(this);
-                ((Switch)v).setChecked(spodPref.getBoolean(NetworkChannel.getInstance().getSpodEndpoint() + getResources().getResourceEntryName(v.getId()), false));
-            }
-            if(v instanceof Spinner){
-                ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
-                        getActivity(), R.array.settings_menu_spinner, R.layout.settings_spinner_layout);
-                adapter.setDropDownViewResource(R.layout.settings_spinner_layout);
-                ((Spinner)v).setAdapter(adapter);
-                ((Spinner)v).setSelection(spodPref.getInt(NetworkChannel.getInstance().getSpodEndpoint() + getResources().getResourceEntryName(v.getId()), 0));
-            }
-        }
     }
-
 }

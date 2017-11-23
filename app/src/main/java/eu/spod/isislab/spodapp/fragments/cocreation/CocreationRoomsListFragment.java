@@ -141,6 +141,7 @@ public class CocreationRoomsListFragment extends Fragment implements Observer, V
                     response = new JSONArray((String)arg);
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    return;
                 }
                 ArrayList<CocreationRoom> rooms = new ArrayList<>();
 

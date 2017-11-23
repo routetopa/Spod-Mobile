@@ -126,7 +126,7 @@ public class GalleryAddItemFragment extends Fragment implements View.OnClickList
     public void grabImage(ImageView imageView)
     {
         getActivity().getContentResolver().notifyChange(mImageUri, null);
-        ContentResolver cr = getActivity().getContentResolver();
+        //ContentResolver cr = getActivity().getContentResolver();
         try
         {
             ActivityManager.MemoryInfo mi = new ActivityManager.MemoryInfo();
@@ -134,7 +134,7 @@ public class GalleryAddItemFragment extends Fragment implements View.OnClickList
             activityManager.getMemoryInfo(mi);
 
             //bp = android.provider.MediaStore.Images.Media.getBitmap(cr, mImageUri);
-            String x = mImageUri.getPath();
+            //String x = mImageUri.getPath();
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inSampleSize = 4;
             bp = BitmapFactory.decodeFile(mImageUri.getPath(), options);
@@ -144,11 +144,10 @@ public class GalleryAddItemFragment extends Fragment implements View.OnClickList
                 options.inSampleSize = 8;
                 ByteArrayOutputStream bos = new ByteArrayOutputStream();
                 bp.compress(Bitmap.CompressFormat.JPEG, 0, bos);
-                byte[] bitmapdata = bos.toByteArray();
+                /*byte[] bitmapdata = bos.toByteArray();
                 ByteArrayInputStream bs = new ByteArrayInputStream(bitmapdata);
                 Bitmap preview_bitmap = BitmapFactory.decodeStream(bs, null, options);
-
-               /* byte[] baos = ImageUtils.getInstance().compressBitmap(bp, 1, 100);
+                byte[] baos = ImageUtils.getInstance().compressBitmap(bp, 1, 100);
                 Bitmap preview_bitmap = BitmapFactory.decodeByteArray(baos, 0, baos.length);
                 imageView.setImageBitmap(preview_bitmap);*/
 
@@ -218,6 +217,7 @@ public class GalleryAddItemFragment extends Fragment implements View.OnClickList
                     String strDate = sdf.format(c.getTime());
                     //Log.e("ADDPHOTO", "Call network service");
                     NetworkChannel.getInstance().addRowToSheet(sheetId, title, description, strDate, bp);
+                    getActivity().getSupportFragmentManager().popBackStack();
                 }
 
                 break;
@@ -238,7 +238,7 @@ public class GalleryAddItemFragment extends Fragment implements View.OnClickList
                         .setAction("Action", null).show();
 
                 cocreationRoomGridFragment.refreshData();
-                this.getActivity().getSupportFragmentManager().popBackStack();
+                //this.getActivity().getSupportFragmentManager().popBackStack();
 
             }else{
                 Snackbar.make(rootView, message, Snackbar.LENGTH_LONG)

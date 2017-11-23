@@ -52,8 +52,8 @@ public class CocreationWebContentFragment extends Fragment {
                 R.layout.cocoreation_web_content_fragment, container, false);
 
         Glide.with(getActivity())
-                .load(R.drawable.jelly_fluid_loader)
                 .asGif()
+                .load(R.drawable.jelly_fluid_loader)
                 .into((ImageView)rootView.findViewById(R.id.cocoreation_web_content_loader_image));
 
         webView = (WebView)rootView.findViewById(R.id.cocoreation_web_content_webview);

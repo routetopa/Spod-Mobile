@@ -16,6 +16,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 
 import eu.spod.isislab.spodapp.R;
@@ -54,24 +56,23 @@ public class NestedCommentFragment extends CommentFragment {
 
         Glide.with(getActivity())
                 .load(comment.getAvatar_url())
-                .asBitmap()
-                .centerCrop()
-                .into(new BitmapImageViewTarget(ownerImage) {
-                    @Override
-                    protected void setResource(Bitmap resource) {
-                        RoundedBitmapDrawable circularBitmapDrawable =
-                                RoundedBitmapDrawableFactory.create(getActivity().getResources(), resource);
-                        circularBitmapDrawable.setCircular(true);
-                        ownerImage.setImageDrawable(circularBitmapDrawable);
-                    }
-                });
+                .apply(new RequestOptions()
+                        .centerCrop()
+                        .circleCrop()
+                        .timeout(10000)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL))
+                .into(ownerImage);
 
         if(!comment.getDatalet_id().equals("null"))
         {
             ImageView dataletImage = (ImageView) asView.findViewById(R.id.comment_datalet);
+
             Glide.with(getActivity())
                     .load(NetworkChannel.getInstance().getDataletImageStaticUrl(comment.getDatalet_id()))
-                    .fitCenter()
+                    .apply(new RequestOptions()
+                            .fitCenter()
+                            .timeout(10000)
+                            .diskCacheStrategy(DiskCacheStrategy.ALL))
                     .into(dataletImage);
 
             dataletImage.setOnClickListener(new View.OnClickListener() {

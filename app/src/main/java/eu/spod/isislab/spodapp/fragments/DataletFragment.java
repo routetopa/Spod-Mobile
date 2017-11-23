@@ -14,6 +14,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 
 import eu.spod.isislab.spodapp.R;
@@ -40,19 +42,16 @@ public class DataletFragment extends Fragment {
         ((TextView) asView.findViewById(R.id.datalet_comment_date)).setText(comment.getTimestamp());
 
         final ImageView ownerImage = (ImageView) asView.findViewById(R.id.datalet_owner_image);
+
         Glide.with(getActivity())
                 .load(comment.getAvatar_url())
-                .asBitmap()
-                .centerCrop()
-                .into(new BitmapImageViewTarget(ownerImage) {
-                    @Override
-                    protected void setResource(Bitmap resource) {
-                        RoundedBitmapDrawable circularBitmapDrawable =
-                                RoundedBitmapDrawableFactory.create(getActivity().getResources(), resource);
-                        circularBitmapDrawable.setCircular(true);
-                        ownerImage.setImageDrawable(circularBitmapDrawable);
-                    }
-                });
+                .apply(new RequestOptions()
+                        .centerCrop()
+                        .circleCrop()
+                        .timeout(10000)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL))
+                .into(ownerImage);
+
 
         WebView webView = (WebView)asView.findViewById(R.id.datalet_webview);
         webView.getSettings().setUserAgentString("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.79 Safari/537.36");

@@ -14,6 +14,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 
 import org.json.JSONException;
@@ -110,17 +112,12 @@ public class GalleryItemFragment extends Fragment implements View.OnClickListene
 
                 Glide.with(getActivity())
                         .load(user.getString("image"))
-                        .asBitmap()
-                        .centerCrop()
-                        .into(new BitmapImageViewTarget(imageView) {
-                            @Override
-                            protected void setResource(Bitmap resource) {
-                                RoundedBitmapDrawable circularBitmapDrawable =
-                                        RoundedBitmapDrawableFactory.create(getActivity().getResources(), resource);
-                                circularBitmapDrawable.setCircular(true);
-                                imageView.setImageDrawable(circularBitmapDrawable);
-                            }
-                        });
+                        .apply(new RequestOptions()
+                                .centerCrop()
+                                .circleCrop()
+                                .timeout(10000)
+                                .diskCacheStrategy(DiskCacheStrategy.ALL))
+                        .into(imageView);
 
             }
             NetworkChannel.getInstance().deleteObserver(this);

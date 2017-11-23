@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -41,7 +41,7 @@
                 android:textSize="16dp"
                 android:textStyle="bold" />
 
-            <LinearLayout
+            <!--<LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="4dp"
@@ -66,6 +66,39 @@
 
                 <Switch
                     android:id="@+id/settings_cocreation_new_room_toggle"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.20"
+                    android:theme="@style/SwitchTheme" />
+
+
+            </LinearLayout>-->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.70"
+                    android:gravity="left|center_vertical|center_horizontal"
+                    android:padding="8dp"
+                    android:text="@string/settings_cocreation_join_label" />
+
+                <Spinner
+                    android:id="@+id/settings_cocreation_join_spinner"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="0.50"
+                    android:entries="@array/settings_menu_spinner" />
+
+                <Switch
+                    android:id="@+id/settings_cocreation_join_toggle"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="0.20"
@@ -319,4 +352,4 @@
 
     </LinearLayout>
 
-</LinearLayout>
+</ScrollView>

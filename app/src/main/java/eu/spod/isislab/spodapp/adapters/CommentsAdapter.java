@@ -15,6 +15,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 
 import java.util.ArrayList;
@@ -96,24 +98,22 @@ public class CommentsAdapter extends BaseAdapter {
 
         Glide.with(context)
                 .load(comments.get(position).getAvatar_url())
-                .asBitmap()
-                .centerCrop()
-                .into(new BitmapImageViewTarget(holder.ownerImage) {
-                    @Override
-                    protected void setResource(Bitmap resource) {
-                        RoundedBitmapDrawable circularBitmapDrawable =
-                                RoundedBitmapDrawableFactory.create(context.getResources(), resource);
-                        circularBitmapDrawable.setCircular(true);
-                        holder.ownerImage.setImageDrawable(circularBitmapDrawable);
-                    }
-                });
+                .apply(new RequestOptions()
+                        .centerCrop()
+                        .circleCrop()
+                        .timeout(10000)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL))
+                .into(holder.ownerImage);
 
         if(!comments.get(position).getDatalet_id().equals("null"))
         {
-
             Glide.with(context)
                     .load(NetworkChannel.getInstance().getDataletImageStaticUrl(comments.get(position).getDatalet_id()))
-                    .fitCenter()
+                    .apply(new RequestOptions()
+                            .centerCrop()
+                            .fitCenter()
+                            .timeout(10000)
+                            .diskCacheStrategy(DiskCacheStrategy.ALL))
                     .into(holder.dataletImage);
 
             holder.dataletImage.setOnClickListener(new View.OnClickListener() {

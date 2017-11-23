@@ -17,6 +17,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 
 import org.json.JSONException;
@@ -100,17 +102,12 @@ public class CocreationRoomsAdapter extends BaseAdapter implements Observer{
 
         Glide.with(context)
                 .load(rooms.get(position).getOwnerImage())
-                .asBitmap()
-                .centerCrop()
-                .into(new BitmapImageViewTarget(holder.ownerImage) {
-                    @Override
-                    protected void setResource(Bitmap resource) {
-                        RoundedBitmapDrawable circularBitmapDrawable =
-                                RoundedBitmapDrawableFactory.create(context.getResources(), resource);
-                        circularBitmapDrawable.setCircular(true);
-                        holder.ownerImage.setImageDrawable(circularBitmapDrawable);
-                    }
-                });
+                .apply(new RequestOptions()
+                        .centerCrop()
+                        .circleCrop()
+                        .timeout(10000)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL))
+                .into(holder.ownerImage);
 
         if(rooms.get(position).isHasJoined()) {
             rowView.setOnClickListener(new View.OnClickListener() {

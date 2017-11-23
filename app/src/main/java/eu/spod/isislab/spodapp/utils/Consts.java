@@ -2,22 +2,23 @@ package eu.spod.isislab.spodapp.utils;
 
 public class Consts
 {
-    public static final int INTERNET_PERMISSION = 0;
+    public static final int INTERNET_PERMISSION               = 0;
     public static final int ACCESS_COARSE_LOCATION_PERMISSION = 1;
     public static final int WRITE_EXTERNAL_STORAGE_PERMISSION = 2;
     public static final int READ_EXTERNAL_STORAGE_PERMISSION  = 3;
-    public static final int ASK_APPLICAITON_PERMISSIONS = 4;
+    public static final int ASK_APPLICAITON_PERMISSIONS       = 4;
 
     public static final String COCREATION_PLUGIN                    = "cocreation";
     public static final String COCREATION_ACTION_NEW_ROOM           = COCREATION_PLUGIN + "_new_room";
     public static final String COCREATION_ACTION_COMMENT            = COCREATION_PLUGIN + "_comment";
     public static final String COCREATION_ACTION_INVITE             = COCREATION_PLUGIN + "_invite";
     public static final String COCREATION_ACTION_DATASET_PUBLISHED  = COCREATION_PLUGIN + "_dataset_published";
+    public static final String COCREATION_ACTION_JOIN               = COCREATION_PLUGIN + "_join";
     public static final String AGORA_PLUGIN                         = "agora";
     public static final String AGORA_ACTION_NEW_ROOM                = AGORA_PLUGIN + "_new_room";
     public static final String AGORA_ACTION_COMMENT                 = AGORA_PLUGIN + "_add_comment";
     public static final String AGORA_ACTION_MENTION                 = AGORA_PLUGIN + "_mention";
-    public static final String AGORA_ACTION_REPLAY                  = AGORA_PLUGIN + "_replay";
+    public static final String AGORA_ACTION_REPLAY                  = AGORA_PLUGIN + "_reply";
 
     public static final String SPOD_MOBILE_PREFERENCES    = "eu.spod.isislab.spodapp.preferences.preferences";
     public static final String SPOD_ENDPOINT_PREFERENCES  = "eu.spod.isislab.spodapp.preferences.spod_endpoint";
@@ -33,6 +34,7 @@ public class Consts
     public static final String SERVICE_AGORA_GET_PAGED_COMMENTS     = "SERVICE_AGORA_GET_PAGED_COMMENTS";
     public static final String SERVICE_AGORA_ADD_COMMENT            = "SERVICE_AGORA_ADD_COMMENT";
     public static final String SERVICE_COCREATION_GET_SHEET_DATA    = "SERVICE_COCREATION_GET_SHEET_DATA";
+    public static final String SERVICE_MEDIAROOM_ADD_NEW_ROW        = "SERVICE_MEDIAROOM_ADD_NEW_ROW";
     public static final String SERVICE_COCREATION_GET_ROOMS         = "SERVICE_COCREATION_GET_ROOMS";
     public static final String SERVICE_COCREATION_GET_METADATA      = "SERVICE_COCREATION_GET_METADATA";
     public static final String SERVICE_COCREATION_GET_DATALETS      = "SERVICE_COCREATION_GET_DATALETS";
@@ -43,6 +45,7 @@ public class Consts
     public static final String SERVICE_COCREATION_INVITE_FRIENDS    = "SERVICE_COCREATION_INVITE_FRIENDS";
     public static final String SERVICE_SYNC_NOTIFICATION            = "SERVICE_SYNC_NOTIFICATION";
     public static final String SERVICE_SAVE_NOTIFICATION            = "SERVICE_SAVE_NOTIFICATION";
+    public static final String SERVICE_FIREBASE_REGISTRATION        = "SERVICE_FIREBASE_REGISTRATION";
 
     public static final String RESET_PASSWORD_URL                   = "/oauth2/password/reset";
     public static final String CREATE_ACCOUNT_URL                   = "/oauth2/register";

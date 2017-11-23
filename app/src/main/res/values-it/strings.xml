@@ -1,0 +1,149 @@
+<resources>
+    <string name="app_name">SPOD Mobile</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_info">Info</string>
+    <string name="action_sign_out">Sign out</string>
+    <string name="action_settings">Settings</string>
+    <!-- Notification -->
+    <string name="settings_notification_label">Notifications</string>
+    <string name="settings_cocreation_label">CoCreation</string>
+    <string name="settings_cocreation_new_room_label">Creazione di una nuova stanza</string>
+    <string name="settings_cocreation_join_label">Accettazione invito ad una stanza</string>
+    <string name="settings_cocreation_comment_room_label">Commento in una stanza</string>
+    <string name="settings_cocreation_invite_room_label">Invito in una stanza</string>
+    <string name="settings_cocreation_dataset_publication_label">Pubblicazione di un nuovo dataset</string>
+    <string name="settings_agora_label">Agora</string>
+    <string name="settings_agora_new_room_label">Creazione di una nuova stanza</string>
+    <string name="settings_agora_comment_room_label">Commento in un agora</string>
+    <string name="settings_agora_mention_label">Menzionato in un commento</string>
+    <string name="settings_agora_replay_label">Risposta ad un post</string>
+    <string name="comment_notification_label">Voglio ricevere una notifica per un commento</string>
+
+    <string-array name="settings_menu_spinner">
+        <item>Immediatamente</item>
+        <item>Ogni giorno</item>
+        <item>Ogni mese</item>
+    </string-array>
+
+
+    <!-- Messages -->
+    <string name="wait_network_message">Attendere prego ...</string>
+    <string name="unavailable_network_message">La rete non è disponibile!!!</string>
+
+
+    <string name="bar_title">Spod</string>
+    <!-- Login activity strings definitions -->
+    <string name="login_activity_login">Login</string>
+    <string name="login_activity_cancel">Reset</string>
+    <string name="login_fragment_head_message">SPOD</string>
+    <string name="login_fragment_username_hint">email</string>
+    <string name="login_fragment_password_hint">password</string>
+    <string name="login_fragment_forgot_password_string">Dimentiticato la password?</string>
+    <string name="login_fragment_create_account_string">Crea un Account</string>
+
+    <!-- Cocreation section  -->
+    <!--Create new room-->
+    <string name="cocreation_room_head_message">Nuova stanza</string>
+    <string name="cocreation_room_list_message">Stanze di cocreazione</string>
+    <string name="cocreation_room_new_room_name_string">Nome</string>
+    <string name="cocreation_room_new_room_subject_string">Soggetto</string>
+    <string name="cocreation_room_new_room_goal_string">Obiettivo</string>
+    <string name="cocreation_room_new_room_invitation_text_string">Test di invito</string>
+    <string name="cocreation_room_new_room_description_string">Descrizione</string>
+    <string name="cocreation_room_new_room_add_button">Aggiungi una nuova stanza</string>
+    <string name="cocreation_room_data_dataset">Dataset</string>
+    <string name="cocreation_room_data_metadata">Metadata</string>
+    <string name="cocreation_room_data_notes">Note</string>
+    <string name="cocreation_room_data_discussion">Discussione</string>
+    <string name="cocreation_room_data_datalets">Datalets</string>
+    <string name="cocreation_room_data_invite_members">Invita amici</string>
+    <string name="cocreation_room_kwoledge_datalets">Datalets</string>
+    <string name="cocreation_room_kwoledge_explore">Esplora</string>
+    <string name="cocreation_room_kwoledge_ideas">Idee</string>
+    <string name="cocreation_room_kwoledge_outcome">Risultati</string>
+    <string name="cocreation_button_join_label">Accedi</string>
+    <string name="cocreation_bottom_bar_members_add_members">Invita</string>
+    <string name="cocreation_room_add_users_no_selection">Non hai selezionato alcun amico</string>
+
+    <!--Gallery-->
+    <string name="cocreation_room_gallery_add_item_button">Aggiungi una foto</string>
+    <!--New item in a gallery-->
+    <string name="cocreation_room_gallery_add_item_title_string">Titolo</string>
+    <string name="cocreation_room_gallery_add_item_description_string">Qui la descrizione ...</string>
+    <string name="cocreation_room_gallery_add_item_upload_button">Carica</string>
+
+    <!--Agora-->
+    <string name="agora_room_list_message">Stanze di Agora</string>
+    <string name="agora_room_list_views_label">Visite</string>
+    <string name="agora_room_list_comments_label">Commenti</string>
+    <string name="agora_room_list_opendata_label">Opendata</string>
+    <string name="agora_comment_replay_label">rispondi</string>
+    <string name="agora_comment_add_hint">Aggiungi un commento</string>
+    <string name="comment_add_empty_comment_warning">Il commento non può essere vuoto</string>
+
+
+    <!-- Geoservice  -->
+    <string name="service_not_available">Servizio di localizzazione non disponibile</string>
+    <string name="invalid_lat_long_used">Coordinate non valide</string>
+    <string name="no_address_found">Nessun indirizzo trovato</string>
+    <string name="address_found">Indirizzo trovato</string>
+    <string name="google_maps_api_key">AIzaSyCyx35Mv7TJQZuMsIVyLK_n--HinmfphI0</string>
+
+    <!-- DrawOnTopApp message  -->
+    <!-- Main Activity -->
+    <string name="main_activity_notwork_connection_off">Connessione di rete spenta</string>
+    <string name="main_activity_gps_off">GPS off</string>
+    <string name="main_activity_storage_permission_off">Senza i permessi di scrittura sulla tua SDCard non puoi creare nuovi contenuti</string>
+    <!-- Cocreation -->
+    <string name="cocreation_gps_not_available">Posizione GPS non disponibile!!!</string>
+    <string name="cocreation_fill_form_correctly">Completa la form per proseguire!!!</string>
+    <string name="cocreation_room_created">Stanza creata</string>
+
+    <!-- Firebase notificatin : name format => 'PLUGIN_ACTION_notification_message' -->
+    <string name="notification_channel_name">SpodMobileNotificationChannel</string>
+    <string name="notification_channel_description">Spod Mobile Notification Channel</string>
+
+    <string-array name="spod_endpoints_array">
+        <item>spod.routetopa.eu</item>
+        <item>spod.databenc.it</item>
+        <item>prato.routetopa.eu</item>
+        <item>nl-spod.routetopa.eu</item>
+        <item>dublin-spod.routetopa.eu</item>
+        <!--<item>issy.routetopa.eu</item>-->
+        <!--<item>groningen.routetopa.eu</item>-->
+        <!--<item>denhaag.routetopa.eu</item>-->
+        <!--<item>opendata-crc.di.unisa.it</item>-->
+        <!--<item>ddac-spod.routetopa.eu</item>-->
+    </string-array>
+
+    <string-array name="cocreation_search_menu_spinner">
+        <item>Tutte le stanze</item>
+        <item>Stanze Media</item>
+        <item>Stanze Data</item>
+        <item>Stanze Knowledge</item>
+    </string-array>
+
+    <string-array name="cocreation_room_user_status">
+        <item>Accettato</item>
+        <item>In attesa</item>
+        <item>Non invitato</item>
+    </string-array>
+
+    <string-array name="cocreation_room_user_status_colors">
+        <item>#4CAF50</item>
+        <item>#F44336</item>
+        <item>#00BCD4</item>
+    </string-array>
+
+    <string-array name="cocreation_room_members_search_spinner">
+        <item>Tutti</item>
+        <item>Accettato</item>
+        <item>In attesa</item>
+        <item>Non invitato</item>
+        <item>Selezionato</item>
+    </string-array>
+
+</resources>

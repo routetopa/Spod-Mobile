@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity
 
     public void handleNotificationIntent(){
 
-        String fragment_tag = "agora_room_list";
+        String fragment_tag = AgoraRoomsListFragment.TAG;
         Fragment fragment   = new AgoraRoomsListFragment();
 
         if (getIntent().getExtras() != null) {
@@ -94,18 +94,16 @@ public class MainActivity extends AppCompatActivity
                                 }
                                 break;
                             case Consts.COCREATION_PLUGIN:
-                                fragment = new CocreationRoomsListFragment();
+                                fragment     = new CocreationRoomsListFragment();
+                                fragment_tag = CocreationRoomsListFragment.TAG;
                                 switch(notificationBody.getString("action")){
                                     case Consts.COCREATION_ACTION_NEW_ROOM:
-                                        fragment = new CocreationRoomsListFragment();
                                         break;
                                     case Consts.COCREATION_ACTION_COMMENT:
                                         break;
                                     case Consts.COCREATION_ACTION_INVITE:
-                                        fragment = new CocreationRoomsListFragment();
                                         break;
                                     case Consts.COCREATION_ACTION_DATASET_PUBLISHED:
-                                        fragment = new CocreationRoomsListFragment();
                                         break;
                                 }
                                 break;

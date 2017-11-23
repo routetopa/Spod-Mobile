@@ -72,7 +72,7 @@ public class MembersFragment extends Fragment implements Observer,  BottomNaviga
             @Override
             public void afterTextChanged(Editable s) {
                 currentSearchKey = s.toString();
-                adapter.doFilter(currentSearchKey,currentMemberType);
+                if(adapter != null) adapter.doFilter(currentSearchKey,currentMemberType);
             }
         });
 
@@ -82,7 +82,7 @@ public class MembersFragment extends Fragment implements Observer,  BottomNaviga
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 currentMemberType = position;
-                adapter.doFilter(currentSearchKey, currentMemberType );
+                if(adapter != null) adapter.doFilter(currentSearchKey, currentMemberType );
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {}

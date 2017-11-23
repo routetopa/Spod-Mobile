@@ -12,6 +12,8 @@ import android.widget.GridView;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -54,7 +56,7 @@ public class ImageAdapter extends BaseAdapter
                         row.getString("Image"),
                         loc,
                         row.getString("Date"),
-                        row.getString("UserManager"))
+                        row.getString("User"))
                 );
             }catch (Exception e){
                 e.printStackTrace();
@@ -88,6 +90,9 @@ public class ImageAdapter extends BaseAdapter
 
         Glide.with(mContext)
                 .load(items.get(position).getImage())
+                .apply(new RequestOptions()
+                        .timeout(10000)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL))
                 .into(holder.imageView);
 
         holder.imageView.setOnClickListener(new View.OnClickListener() {

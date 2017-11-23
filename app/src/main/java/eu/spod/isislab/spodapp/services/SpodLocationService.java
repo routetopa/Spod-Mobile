@@ -7,6 +7,9 @@ import android.content.pm.PackageManager;
 import android.location.*;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Looper;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.TextView;
@@ -20,7 +23,7 @@ public class SpodLocationService extends IntentService implements LocationListen
     private static Location location        = null;
     private LocationManager locationManager = null;
     private static final float MIN_DIST     = 20;
-    private static final long MIN_PERIOD    = 30000;
+    private static final long MIN_PERIOD    = 3000;
     private static boolean gps_enabled;
     private static boolean network_enabled;
 
@@ -59,10 +62,12 @@ public class SpodLocationService extends IntentService implements LocationListen
                 }
             }
 
+            HandlerThread t = new HandlerThread("LocationServiceThread");
+            t.start();
             if (locationManager.getAllProviders().contains(LocationManager.GPS_PROVIDER))
-               locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_PERIOD, MIN_DIST, this);
+               locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_PERIOD, MIN_DIST, this, t.getLooper());
             if (locationManager.getAllProviders().contains(LocationManager.NETWORK_PROVIDER))
-               locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_PERIOD, MIN_DIST, this);
+               locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_PERIOD, MIN_DIST, this, t.getLooper());
         }
 
     }
@@ -70,7 +75,7 @@ public class SpodLocationService extends IntentService implements LocationListen
     @Override
     public void onLocationChanged(Location location) {
         this.location = location;
-        //Log.e("LOCATION SERVICE", "Lat: " + location.getLatitude() + " Long: " + location.getLongitude());
+        Log.e("LOCATION SERVICE", "Lat: " + location.getLatitude() + " Long: " + location.getLongitude());
     }
 
     @Override
