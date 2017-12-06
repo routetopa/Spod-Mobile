@@ -4,24 +4,29 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.StrictMode;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import java.util.List;
+import java.net.CookieHandler;
+import java.net.CookieManager;
+import java.net.HttpCookie;
 
+import eu.spod.isislab.spodapp.fragments.CocreationRoomFragment;
 import eu.spod.isislab.spodapp.fragments.LoginFragment;
+import eu.spod.isislab.spodapp.fragments.NewsfeedFragment;
 import eu.spod.isislab.spodapp.services.SpodLocationServices;
-import eu.spod.isislab.spodapp.utils.NetworkChannel;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -36,10 +41,21 @@ public class MainActivity extends AppCompatActivity
 
     private boolean internetPermissionOk = false;
 
+    /*static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }*/
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //TODO: rimuovere le seguenti 4 linee
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());
+        CookieManager manager = new CookieManager();
+        CookieHandler.setDefault(manager);
+
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -67,7 +83,7 @@ public class MainActivity extends AppCompatActivity
             }
             //INTERNET PERMISSION
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.INTERNET)) {
-                getSupportFragmentManager().beginTransaction().add(R.id.container, new LoginFragment()).addToBackStack("login").commit();
+                getSupportFragmentManager().beginTransaction().add(R.id.container, new LoginFragment()).addToBackStack("getNewsfeedAuthorization").commit();
             }else{
                 ActivityCompat.requestPermissions(this,
                         new String[]{Manifest.permission.INTERNET}, INTERNET_PERMISSION);
@@ -84,10 +100,11 @@ public class MainActivity extends AppCompatActivity
             }
         }else{
             startService(new Intent(this, SpodLocationServices.class));
-            getSupportFragmentManager().beginTransaction().add(R.id.container, new LoginFragment()).addToBackStack("login").commit();
+            getSupportFragmentManager().beginTransaction().add(R.id.container, new LoginFragment()).addToBackStack("getNewsfeedAuthorization").commit();
         }
 
     }
+
 
     public void setToolbarTitle(String title){
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -138,11 +155,21 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_camera) {
-            // Handle the camera action
+            Handler h = new Handler();
+            Runnable r = new Runnable() {
+                @Override
+                public void run() {
+                    //getSupportFragmentManager().beginTransaction().replace(R.id.container, new NewsfeedFragment()).addToBackStack(NewsfeedUtils.NEWSFEED_FRAGMENT_NAME).commit();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.container, new NewsfeedFragment(), NewsfeedFragment.FRAGMENT_NAME).addToBackStack(NewsfeedFragment.FRAGMENT_NAME).commit();
+
+                }
+            };
+
+            h.post(r);
         } else if (id == R.id.nav_gallery) {
 
         } else if (id == R.id.nav_slideshow) {
-
+            getSupportFragmentManager().beginTransaction().replace(R.id.container, new CocreationRoomFragment()).addToBackStack("getNewsfeedAuthorization").commit();
         } else if (id == R.id.nav_share) {
 
         }
@@ -197,7 +224,7 @@ public class MainActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
         if(internetPermissionOk){
-            getSupportFragmentManager().beginTransaction().replace(R.id.container, new LoginFragment()).addToBackStack("login").commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.container, new LoginFragment()).addToBackStack("getNewsfeedAuthorization").commit();
             internetPermissionOk = false;
         }
     }

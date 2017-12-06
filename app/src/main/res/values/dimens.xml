@@ -5,5 +5,14 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">0dp</dimen>
     <dimen name="activity_vertical_margin">0dp</dimen>
-    <dimen name="fab_margin">4dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="text_margin">16dp</dimen>
+
+    <!-- NEWSFEED DIMENSIONS-->
+    <dimen name="newsfeed_post_content_padding_default">10dp</dimen>
+    <dimen name="newsfeed_post_content_padding_small">5dp</dimen>
+    <dimen name="newsfeed_post_status_text_default">15sp</dimen>
+    <dimen name="newsfeed_post_status_text_big">20sp</dimen>
+    <dimen name="newsfeed_post_content_image_height">300dp</dimen>
+    <dimen name="newsfeed_post_status_text_smallest">12sp</dimen>
 </resources>

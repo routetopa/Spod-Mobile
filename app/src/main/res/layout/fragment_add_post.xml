@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/newsfeed_add_post_header_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="@android:color/holo_blue_light"
+        android:padding="@dimen/newsfeed_post_content_padding_default"
+        android:elevation="5dp">
+
+        <eu.spod.isislab.spodapp.utils.CustomImageViewCircularShape
+            android:id="@+id/newsfeed_add_post_header_user_image"
+            android:layout_width="48dp"
+            android:layout_height="48dp" />
+
+        <TextView
+            android:id="@+id/newsfeed_add_post_header_user_name"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingStart="@dimen/newsfeed_post_content_padding_default"
+            android:textSize="@dimen/newsfeed_post_status_text_big"
+            android:paddingLeft="@dimen/newsfeed_post_content_padding_default"
+            android:paddingRight="@dimen/newsfeed_post_content_padding_default"
+            android:gravity="center_vertical" />
+
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/newsfeed_add_post_header_container">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <EditText
+                android:id="@+id/newsfeed_add_post_content_text"
+                style="@style/FullWidthEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="top"
+                android:hint="@string/newsfeed_insert_text"
+                android:inputType="textMultiLine" />
+
+                <ImageView
+                    android:id="@+id/newsfeed_add_post_add_attachment_imageview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="visible"
+                    android:maxHeight="400dp"/>
+        </LinearLayout>
+    </ScrollView>
+
+    <ImageButton
+        android:id="@+id/newsfeed_add_post_add_attachment_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_menu_camera"
+        android:padding="@dimen/newsfeed_post_content_padding_small"
+        android:background="?selectableItemBackgroundBorderless"
+        android:minHeight="0dp"
+        android:minWidth="0dp"
+        android:layout_gravity="center_vertical|fill_vertical"
+        android:layout_alignParentBottom="true"
+        android:visibility="visible"/>
+</RelativeLayout>

@@ -68,7 +68,7 @@
                 android:background="@drawable/round_text_edit"
                 android:inputType="text"
                 android:id="@+id/username"
-                android:hint="email"
+                android:hint="userId"
                 android:layout_gravity="center_vertical"
                 android:layout_margin="16dp"
                 android:padding="16dp"

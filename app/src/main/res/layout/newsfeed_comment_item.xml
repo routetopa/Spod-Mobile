@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="@dimen/newsfeed_post_content_padding_small"
+    android:paddingRight="@dimen/newsfeed_post_content_padding_small"
+    android:paddingStart="@dimen/newsfeed_post_content_padding_small"
+    android:paddingEnd="@dimen/newsfeed_post_content_padding_small"
+    android:paddingBottom="@dimen/newsfeed_post_content_padding_small">
+
+    <RelativeLayout
+        android:id="@+id/newsfeed_comment_item_header_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/newsfeed_post_content_padding_small"
+        android:orientation="horizontal">
+
+        <eu.spod.isislab.spodapp.utils.CustomImageViewCircularShape
+            android:id="@+id/newsfeed_comment_item_user_image"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:scaleType="centerCrop"
+            android:src="@color/black_overlay"/>
+
+            <TextView
+                android:id="@+id/newsfeed_comment_item_user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Mario Rossi"
+                android:textSize="@dimen/newsfeed_post_status_text_default"
+                android:paddingStart="@dimen/newsfeed_post_content_padding_default"
+                android:paddingLeft="@dimen/newsfeed_post_content_padding_default"
+                android:paddingRight="@dimen/newsfeed_post_content_padding_default"
+                android:paddingEnd="@dimen/newsfeed_post_content_padding_default"
+                android:layout_alignParentTop="true"
+                android:layout_toRightOf="@id/newsfeed_comment_item_user_image"
+                android:layout_toEndOf="@id/newsfeed_comment_item_user_image"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"/>
+
+            <TextView
+                android:id="@+id/newsfeed_comment_item_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/newsfeed_post_status_text_smallest"
+                android:layout_below="@id/newsfeed_comment_item_user_name"
+                android:text="Oggi 20:15"
+                android:paddingLeft="@dimen/newsfeed_post_content_padding_default"
+                android:paddingRight="@dimen/newsfeed_post_content_padding_default"
+                android:textColor="@color/black_overlay"
+                android:layout_toRightOf="@id/newsfeed_comment_item_user_image"
+                android:layout_toEndOf="@id/newsfeed_comment_item_user_image"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"/>
+
+        <ImageButton
+            android:id="@+id/newsfeed_comment_item_context_menu_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/ButtonBorderless"
+            android:src="@drawable/ic_keyboard_arrow_down_darker_gray_24dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:background="?selectableItemBackgroundBorderless"
+            android:minHeight="5dp"
+            android:minWidth="5dp"
+            />
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/newsfeed_comment_item_message_text"
+        android:textSize="@dimen/newsfeed_post_status_text_default"
+        android:paddingLeft="@dimen/newsfeed_post_content_padding_default"
+        android:paddingRight="@dimen/newsfeed_post_content_padding_default"
+        android:paddingTop="0dp"
+        android:text="Commento"/>
+
+    <FrameLayout
+        android:id="@+id/newsfeed_comment_item_attachment_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:paddingTop="@dimen/newsfeed_post_content_padding_default"
+        android:paddingLeft="@dimen/newsfeed_post_content_padding_default"
+        android:paddingRight="@dimen/newsfeed_post_content_padding_default"/>
+
+</LinearLayout>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/newsfeed_post_base_activity_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="visible">
+
+        <TextView
+            android:id="@+id/newsfeed_post_base_activity_string"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:text="Questo è un'altro messaggio di prova, sparirà in men che non si dica"
+            android:paddingTop="@dimen/newsfeed_post_content_padding_small"
+            android:paddingLeft= "@dimen/newsfeed_post_content_padding_small"
+            android:paddingRight="@dimen/newsfeed_post_content_padding_small"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/newsfeed_post_base_user_info_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp">
+
+        <eu.spod.isislab.spodapp.utils.CustomImageViewCircularShape
+            android:id="@+id/newsfeed_post_base_user_image"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:scaleType="centerCrop"
+            android:src="@color/black_overlay"/>
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="99">
+
+            <TextView
+                android:id="@+id/newsfeed_post_base_user_name_action_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/newsfeed_post_status_text_default"
+                android:paddingStart="10dp"
+                android:paddingLeft="10dp"
+                android:text="Mario Rossi"/>
+
+            <TextView
+                android:id="@+id/newsfeed_post_base_time_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/newsfeed_post_status_text_smallest"
+                android:paddingStart="@dimen/newsfeed_post_content_padding_default"
+                android:paddingLeft="@dimen/newsfeed_post_content_padding_default"
+                android:paddingEnd="@dimen/newsfeed_post_content_padding_default"
+                android:textColor="@android:color/darker_gray"
+                android:text="Oggi 20:18"
+                android:layout_below="@id/newsfeed_post_base_user_name_action_text"/>
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

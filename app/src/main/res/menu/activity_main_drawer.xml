@@ -5,7 +5,7 @@
         <item
             android:id="@+id/nav_camera"
             android:icon="@drawable/ic_menu_camera"
-            android:enabled="false"
+            android:enabled="true"
             android:title="What's new" />
         <item
             android:id="@+id/nav_gallery"

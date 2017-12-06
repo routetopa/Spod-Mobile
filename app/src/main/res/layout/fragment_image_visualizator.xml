@@ -1,0 +1,78 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="eu.spod.isislab.spodapp.fragments.ImageVisualizationFragment"
+    android:background="@android:color/black"
+    android:animateLayoutChanges="true">
+
+    <ImageView
+        android:id="@+id/image_visualizator_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitCenter"
+        android:transitionName="@string/image_transition_name"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="bottom"
+        android:background="@android:color/transparent"
+        android:animateLayoutChanges="true">
+
+        <LinearLayout
+            android:id="@+id/image_visualizator_upper_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:background="@color/black_overlay"
+            android:orientation="vertical"
+            android:padding="@dimen/newsfeed_post_content_padding_small"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/image_visualizator_user_name_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/newsfeed_post_status_text_big" />
+
+            <TextView
+                android:id="@+id/image_visualizator_album_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/newsfeed_post_status_text_default" />
+
+            <TextView
+                android:id="@+id/image_visualizator_time_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/newsfeed_post_status_text_smallest" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/image_visualizator_description_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@color/black_overlay"
+            android:orientation="vertical"
+            android:padding="@dimen/newsfeed_post_content_padding_default"
+            android:visibility="gone"
+            android:animateLayoutChanges="true">
+
+            <TextView
+                android:id="@+id/image_visualizator_description_text"
+                android:padding="@dimen/newsfeed_post_content_padding_default"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:textColor="@android:color/white" />
+        </LinearLayout>
+    </RelativeLayout>
+
+
+</FrameLayout>
