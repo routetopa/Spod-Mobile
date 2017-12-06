@@ -65,7 +65,7 @@ public class GalleryItemFragment extends Fragment implements View.OnClickListene
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
         Glide.with(getActivity())
-                .load(image)
+                .load(this.image)
                 .into(imageView);
 
         ((TextView) asView.findViewById(R.id.item_title)).setText(title);
@@ -74,7 +74,7 @@ public class GalleryItemFragment extends Fragment implements View.OnClickListene
         ((TextView) asView.findViewById(R.id.item_date)).setText(date);
         ((ImageView) asView.findViewById(R.id.item_location)).setOnClickListener(this);
          NetworkChannel.getInstance().addObserver(this);
-         NetworkChannel.getInstance().getUserInfo("", UserManager.getInstance().getUsername());
+         NetworkChannel.getInstance().getUserInfo("", /*UserManager.getInstance().getUsername()*/username);
 
         /*TextView address = (TextView) asView.findViewById(R.id.item_location);
         address.setOnClickListener(this);

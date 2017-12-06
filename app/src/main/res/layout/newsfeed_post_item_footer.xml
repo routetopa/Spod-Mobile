@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipChildren="false"
+    android:padding="0dp">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"
+        android:layout_alignParentTop="true"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="0dp"
+        android:layout_margin="0dp"
+        android:clipChildren="false"
+        android:weightSum="1"
+        android:layout_centerHorizontal="true">
+
+        <Button
+            android:id="@+id/newsfeed_post_base_like_button"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            style="?android:attr/borderlessButtonStyle"
+            android:text="Like"
+            android:textSize="15sp"
+            android:textColor="@android:color/darker_gray"
+            android:minHeight="0dp"
+            android:minWidth="0dp"
+            android:layout_weight="0.5"/>
+
+        <Button
+            android:id="@+id/newsfeed_post_base_comments_button"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            style="?android:attr/borderlessButtonStyle"
+            android:text="Comments"
+            android:textSize="15sp"
+            android:textColor="@android:color/darker_gray"
+            android:drawableLeft="@drawable/ic_post_comment_darker_gray_24dp"
+            android:minHeight="0dp"
+            android:minWidth="0dp"
+            android:layout_weight="0.5" />
+
+    </LinearLayout>
+
+</RelativeLayout>

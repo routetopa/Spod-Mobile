@@ -20,6 +20,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import org.json.JSONException;
 import org.json.JSONObject;

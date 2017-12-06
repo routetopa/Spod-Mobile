@@ -46,13 +46,25 @@ public class Consts
     public static final String SERVICE_SYNC_NOTIFICATION            = "SERVICE_SYNC_NOTIFICATION";
     public static final String SERVICE_SAVE_NOTIFICATION            = "SERVICE_SAVE_NOTIFICATION";
     public static final String SERVICE_FIREBASE_REGISTRATION        = "SERVICE_FIREBASE_REGISTRATION";
+    public static final String NEWSFEED_SERVICE_GET_AUTHORIZATION   = "NEWSFEED_SERVICE_GET_AUTHORIZATION";
+    public static final String NEWSFEED_SERVICE_GET_FEED            = "NEWSFEED_SERVICE_GET_FEED";
+    public static final String NEWSFEED_SERVICE_GET_POST            = "NEWSFEED_SERVICE_GET_POST";
+    public static final String NEWSFEED_SERVICE_LIKE_POST           = "NEWSFEED_SERVICE_LIKE_POST";
+    public static final String NEWSFEED_SERVICE_UNLIKE_POST         = "NEWSFEED_SERVICE_UNLIKE_POST";
+    public static final String NEWSFEED_SERVICE_GET_POST_COMMENTS   = "NEWSFEED_SERVICE_GET_POST_COMMENTS";
+    public static final String NEWSFEED_SERVICE_ADD_NEW_STATUS      = "NEWSFEED_SERVICE_ADD_NEW_STATUS";
+    public static final String NEWSFEED_SERVICE_GET_PHOTOS          = "NEWSFEED_SERVICE_GET_PHOTOS";
+    public static final String NEWSFEED_SERVICE_ADD_COMMENT         = "NEWSFEED_SERVICE_ADD_COMMENT";
+    public static final String NEWSFEED_SERVICE_NEWSFEED_DELETE     = "NEWSFEED_SERVICE_NEWSFEED_DELETE";
+    public static final String NEWSFEED_SERVICE_NEWSFEED_FLAG       = "NEWSFEED_SERVICE_NEWSFEED_FLAG";
+    public static final String NEWSFEED_SERVICE_GET_LIKES_LIST      = "NEWSFEED_SERVICE_GET_LIKES_LIST";
 
     public static final String RESET_PASSWORD_URL                   = "/oauth2/password/reset";
     public static final String CREATE_ACCOUNT_URL                   = "/oauth2/register";
     public static final String LOGOUT_URL                           = "/login";
     public static final String COCREATION_DATASET_ENDPOINT          = "/ethersheet/s/";
     public static final String COCREATION_DOCUMENT_ENDPOINT         = "/etherpad/p/";
-    public static final String DEEP_ENDPOINT                        = "http://deep.routetopa.eu/deep_1_19";
+    public static final String DEEP_ENDPOINT                        = "http://deep.routetopa.eu/deep_1_20";
 
     public static String SPOD_ENDPOINT                             = "";
     //private static final String POST_LOGIN_HANDLER                  = "/base/user/ajax-sign-in/";//"/openid/ajax.php";;
@@ -78,6 +90,17 @@ public class Consts
     public static final String AGORA_ROOM_GET_NESTED_COMMENTS      = "/agora/ajax/get-nested-comment-json/";
     public static final String DATALET_STATIC_IMAGE_URL            = "/ow_plugins/ode/datalet_images/datalet_#.png";
     public static final String DATALET_STATIC_URL                  = "/share_datalet/#";
+    //newsfeed
+    public static final String NEWSFEED_GET_AUTHORIZATION       = "/extfeed/api/get-authorization/";
+    public static final String NEWSFEED_GET_POSTS               = "/extfeed/api/get-feed/";
+    public static final String NEWSFEED_POST_GET_ITEM           = "/extfeed/api/get-item/";
+    public static final String NEWSFEED_POST_ADD_STATUS         = "/extfeed/api/status-update/";
+    public static final String NEWSFEED_POST_LIKE               = "/extfeed/api/add-like/";
+    public static final String NEWSFEED_POST_UNLIKE             = "/extfeed/api/remove-like/";
+    public static final String NEWSFEED_GET_COMMENTS            = "/extfeed/api/comments/";
+    public static final String NEWSFEED_POST_ADD_COMMENT        = "/extfeed/api/add-comment/";
+    public static final String NEWSFEED_GET_LIKES_LIST          = "/extfeed/api/likes-list";
+    public static final String NEWSFEED_GET_PHOTOS              = "/extfeed/api/photos-info/";
     //Sync notification
     public static final String SYNC_NOTIFICATION_ENDPOINT             = "/realtime_notification";
     public static final String COCREATION_SYNC_NOTIFICATION_ENDPOINT  = "/ethersheet/#/pubsub/";

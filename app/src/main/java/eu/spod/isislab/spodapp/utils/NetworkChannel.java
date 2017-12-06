@@ -30,6 +30,7 @@ import com.github.nkzawa.socketio.client.Socket;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -151,6 +152,18 @@ public class NetworkChannel extends Observable
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
         mRequestQueue.add(postRequest);
+    }
+
+    public void stopFeedRequest() {
+        mRequestQueue.cancelAll(new RequestQueue.RequestFilter() {
+            @Override
+            public boolean apply(Request<?> request) {
+                if(Consts.NEWSFEED_GET_POSTS.equals(request.getUrl())) {
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
     public void makeMultipartRequest(String url, final Map<String, String> stringParams, final Map<String, DataPart> partParams, final boolean splash, final String service)
@@ -381,6 +394,130 @@ public class NetworkChannel extends Observable
         params.put("body",    description);
         params.put("userId",  UserManager.getInstance().getId());
         makePostRequest(Consts.AGORA_ADD_ROOM, params, true, Consts.SERVICE_AGORA_ADD_COMMENT);
+    }
+
+    //NEWSFEED
+    public void getNewsfeedAuthorization(String feedType, String feedId)
+    {
+        Map<String, String> params = new HashMap<>();
+        params.put("ft", feedType);
+        params.put("fi", feedId);
+        makePostRequest(Consts.NEWSFEED_GET_AUTHORIZATION, params, true, Consts.NEWSFEED_SERVICE_GET_AUTHORIZATION);
+    }
+
+    public void loadNextPosts(String feedType, String feedId, int offset, int count)
+    {
+        Map<String, String> params = new HashMap<>();
+        params.put("ft",    feedType);
+        params.put("fi",    ""+feedId);
+        params.put("offset", ""+offset);
+        params.put("count",  ""+count);
+        makePostRequest(Consts.NEWSFEED_GET_POSTS, params, true, Consts.NEWSFEED_SERVICE_GET_FEED);
+    }
+
+    public void getPost(String feedType, String feedId, String entityType, int entityId) {
+        Map<String, String> params = new HashMap<>();
+        params.put("etype", entityType);
+        params.put("eid", String.valueOf(entityId));
+        params.put("ftype", feedType);
+        params.put("fid", String.valueOf(feedId));
+        makePostRequest(Consts.NEWSFEED_POST_GET_ITEM, params, true, Consts.NEWSFEED_SERVICE_GET_POST);
+
+    }
+
+    public void sendStatus(String feedType, String feedId, String message, final byte[] attachment, final String fileName) {
+        String send = null;
+        try {
+            send = new String(message.getBytes(), "ISO-8859-1");  //Charset conversion
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        switch (feedType) {
+            case "site": case "my":
+                feedType = "user";
+                break;
+        }
+
+        Map<String, String> params = new HashMap<>();
+        params.put("ftype", feedType);
+        params.put("fid", feedId);
+        params.put("message", send);
+
+        Map<String, DataPart> partParams = new HashMap<>();
+        if(attachment != null) {
+            partParams.put("attachment", new DataPart(fileName, attachment, "image/jpeg"));
+        }
+
+        makeMultipartRequest(Consts.NEWSFEED_POST_ADD_STATUS, params, partParams, true, Consts.NEWSFEED_SERVICE_ADD_NEW_STATUS);
+    }
+
+    public void likePost(final String entityType, final int entityId) {
+        Map<String, String> params = new HashMap<>();
+        params.put("entityType", entityType);
+        params.put("entityId", String.valueOf(entityId));
+        makePostRequest(Consts.NEWSFEED_POST_LIKE, params, true, Consts.NEWSFEED_SERVICE_LIKE_POST);
+
+    }
+
+    public void unlikePost(final String entityType, final int entityId) {
+        Map<String, String> params = new HashMap<>();
+        params.put("entityType", entityType);
+        params.put("entityId", String.valueOf(entityId));
+        makePostRequest(Consts.NEWSFEED_POST_UNLIKE, params, true, Consts.NEWSFEED_SERVICE_UNLIKE_POST);
+    }
+
+    public void getPostComments(String entityType, int entityId, int page, int count){
+        Map<String, String> params = new HashMap<>();
+        params.put("etype", entityType);
+        params.put("eid", ""+entityId);
+
+        if(page >= 0 && count > 0) {
+            params.put("page", ""+page);
+            params.put("count", ""+count);
+        }
+
+        makePostRequest(Consts.NEWSFEED_GET_COMMENTS, params, true, Consts.NEWSFEED_SERVICE_GET_POST_COMMENTS);
+    }
+
+    public void addComment(String entityType, int entityId, String pluginKey, int ownerId, String message, final byte[] attachment, final String fileName) {
+        String send = null;
+        try {
+            send = new String(message.getBytes(), "ISO-8859-1");  //Charset conversion
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+
+        Map<String, String> params = new HashMap<>();
+        params.put("etype", entityType);
+        params.put("eid", String.valueOf(entityId));
+        params.put("pkey", pluginKey);
+        params.put("ownerId", String.valueOf(ownerId));
+        params.put("message", send);
+
+        Map<String, DataPart> partParams = new HashMap<>();
+        if(attachment != null) {
+            partParams.put("attachment", new DataPart(fileName, attachment, "image/jpeg"));
+        }
+
+        makeMultipartRequest(Consts.NEWSFEED_POST_ADD_COMMENT, params, partParams, true, Consts.NEWSFEED_SERVICE_ADD_COMMENT);
+    }
+
+    public void getPhotos(int[] photoIds) {
+        Map<String, String> params = new HashMap<>();
+        for (int photoId : photoIds) {
+            params.put("ids[" + photoId + "]", "" + photoId);
+        }
+        makePostRequest(Consts.NEWSFEED_GET_PHOTOS, params, true, Consts.NEWSFEED_SERVICE_GET_PHOTOS);
+    }
+
+    public void deleteContent(String actionUrl, final Map<String, String> actionParams){
+        makePostRequest(actionUrl, actionParams, true, Consts.NEWSFEED_SERVICE_NEWSFEED_DELETE);
+    }
+
+    public void flagContent(String actionUrl, final Map<String, String> actionParams){
+        makePostRequest(actionUrl, actionParams, true, Consts.NEWSFEED_SERVICE_NEWSFEED_FLAG);
     }
 
     //FIREBASE NOTIFICATION

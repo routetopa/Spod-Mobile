@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:name="eu.spod.isislab.spodapp.fragments.PostCommentsFragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="eu.spod.isislab.spodapp.fragments.PostCommentsFragment"
+    android:orientation="vertical">
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/newsfeed_postcomments_swipe_refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="70">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <RelativeLayout
+                android:id="@+id/newsfeed_no_comments_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:layout_gravity="center">
+
+                <ImageView
+                    android:id="@+id/comments_dot"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/ic_comment_dots_128dp"
+                    android:padding="@dimen/newsfeed_post_content_padding_default"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:text="@string/newsfeed_no_comments"
+                    android:layout_below="@id/comments_dot"
+                    android:textAlignment="center" />
+            </RelativeLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/newsfeed_comments_container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:listitem="@layout/newsfeed_comment_item"/>
+
+
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="7dp"
+                android:src="@drawable/gradient_shadow"
+                android:background="#00000000"
+                android:layout_gravity="bottom"/>
+        </FrameLayout>
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+    <!-- Send comment box -->
+    <android.support.v7.widget.CardView
+        android:id="@+id/newsfeed_comment_editor_card_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="@android:color/darker_gray">
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <GridLayout
+                android:id="@+id/newsfeed_comment_editor_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:padding="@dimen/newsfeed_post_content_padding_small"
+                android:columnCount="5"
+                android:rowCount="1">
+
+                <eu.spod.isislab.spodapp.utils.CustomImageViewCircularShape
+                    android:id="@+id/newsfeed_comment_editor_user_image"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_column="0"
+                    android:layout_columnSpan="1"/>
+
+                <EditText
+                    android:id="@+id/newsfeed_comment_editor_edit_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/newsfeed_write_comment"
+                    android:layout_column="1"
+                    android:layout_columnSpan="3"
+                    android:layout_gravity="fill"
+                    style="@style/FullWidthEditText"/>
+
+                <ImageButton
+                    android:id="@+id/newsfeed_comment_editor_add_attachment_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_menu_camera"
+                    android:padding="@dimen/newsfeed_post_content_padding_small"
+                    android:background="?selectableItemBackgroundBorderless"
+                    android:minHeight="0dp"
+                    android:minWidth="0dp"
+                    android:layout_column="4"
+                    android:layout_columnSpan="1"
+                    android:layout_gravity="center_vertical|fill_vertical"/>
+            </GridLayout>
+
+            <ImageView
+                android:id="@+id/newsfeed_comment_editor_attachment_image_view"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_below="@id/newsfeed_comment_editor_layout"
+                android:layout_marginLeft="@dimen/newsfeed_post_content_padding_small"
+                android:layout_marginStart="@dimen/newsfeed_post_content_padding_small"
+                android:visibility="gone"
+                android:src="@drawable/user_placeholder"
+                android:longClickable="true"/>
+
+            <Button
+                android:id="@+id/newsfeed_comment_editor_send_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/newsfeed_send_text"
+                style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                android:layout_gravity="end"
+                android:visibility="gone"
+                android:enabled="false"
+                android:layout_below="@id/newsfeed_comment_editor_layout"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true" />
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+
+</LinearLayout>
+
+
+

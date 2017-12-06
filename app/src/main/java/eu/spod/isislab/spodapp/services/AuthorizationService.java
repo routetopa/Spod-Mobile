@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.DrawerLayout;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.TextView;
 
 import net.openid.appauth.AuthState;
 import net.openid.appauth.AuthorizationException;
@@ -206,6 +207,10 @@ public class AuthorizationService implements Observer {
 
                         JSONObject user = new JSONObject(res.getString("user"));
                         UserManager.getInstance().init(context, user.getString("id"), user.getString("username"), user.getString("image"), user.getString("name"));
+
+                        ((TextView)((MainActivity)context).findViewById(R.id.drawer_spod_endpoint)).setText(
+                                context.getSharedPreferences(Consts.SPOD_MOBILE_PREFERENCES, Context.MODE_PRIVATE).getString(Consts.SPOD_ENDPOINT_PREFERENCES, "spod.routetopa.eu")
+                        );
 
                         ((MainActivity)context).drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
                         ((MainActivity)context).getSupportFragmentManager().popBackStack();

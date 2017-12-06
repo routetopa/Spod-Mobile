@@ -84,6 +84,32 @@
     <string name="agora_comment_add_hint">Add a comment</string>
     <string name="comment_add_empty_comment_warning">The comment cannot be empty</string>
 
+    <!--Newfeed-->
+    <string name="image_transition_name">image_transition</string>
+    <string name="newsfeed_base_post_comments_string">Comments</string>
+    <string name="newsfeed_base_post_likes_string">Likes</string>
+    <string name="newsfeed_send_text">SEND</string>
+    <string name="newsfeed_empty_field">This field cannot be empty</string>
+    <string name="newsfeed_empty_field_or_attachment">Please insert a message or an attachment</string>
+    <string name="newsfeed_no_comments">No comments here\nBe the first to write a comment!</string>
+    <string name="newsfeed_write_comment">Write a comment</string>
+    <string name="newsfeed_pick_from_gallery">Pick from gallery</string>
+    <string name="newsfeed_take_photo">Take a photo</string>
+    <string name="newsfeed_choose_image">Select an image</string>
+    <string name="newsfeed_delete_attachment_message">Are you sure to delete this attachment?</string>
+    <string name="newsfeed_delete_confirm">Are you sure to delete this?</string>
+    <string name="newsfeed_insert_text">Insert text here</string>
+    <string name="newsfeed_select_reason">Select reason</string>
+    <string name="newsfeed_flag_spam">Spam</string>
+    <string name="newsfeed_flag_offence">Offence</string>
+    <string name="newsfeed_flag_illegal">Illegal</string>
+    <string name="newsfeed_slow_connection">Something goes wrong</string>
+    <string name="newsfeed_retry">Retry</string>
+    <string name="newsfeed_load_more">Load More</string>
+    <string name="newsfeed_like_button_tip">Tip: Click on Like button to like this post\nor long click to see who liked it</string>
+    <string name="newsfeed_title">Newsfeed</string>
+    <string name="newsfeed_view_more">View More</string>
+    <string name="newsfeed_view_less">View Less</string>
 
     <!-- Geoservice  -->
     <string name="service_not_available">Geoservice not available</string>

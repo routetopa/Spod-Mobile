@@ -4,8 +4,12 @@ import android.app.ActivityManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.graphics.drawable.GradientDrawable;
+import android.hardware.Camera;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
@@ -19,6 +23,7 @@ import android.support.v4.app.Fragment;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.Surface;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
@@ -54,6 +59,7 @@ public class GalleryAddItemFragment extends Fragment implements View.OnClickList
     ViewGroup rootView;
     Bitmap bp = null;
     String sheetId;
+    int rotation = 0, orientation = Configuration.ORIENTATION_PORTRAIT;
 
     CocreationMediaRoomGridFragment cocreationRoomGridFragment;
 
@@ -92,6 +98,8 @@ public class GalleryAddItemFragment extends Fragment implements View.OnClickList
             /*bp = (Bitmap) data.getExtras().get("data");
             image.setImageBitmap(bp);
             image.setScaleType(ImageView.ScaleType.FIT_XY);*/
+            this.rotation = getActivity().getWindowManager().getDefaultDisplay().getRotation();
+            this.orientation = getActivity().getResources().getConfiguration().orientation;
             this.grabImage(image);
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -126,31 +134,22 @@ public class GalleryAddItemFragment extends Fragment implements View.OnClickList
     public void grabImage(ImageView imageView)
     {
         getActivity().getContentResolver().notifyChange(mImageUri, null);
-        //ContentResolver cr = getActivity().getContentResolver();
         try
         {
             ActivityManager.MemoryInfo mi = new ActivityManager.MemoryInfo();
             ActivityManager activityManager = (ActivityManager)getActivity(). getSystemService(Context.ACTIVITY_SERVICE);
             activityManager.getMemoryInfo(mi);
 
-            //bp = android.provider.MediaStore.Images.Media.getBitmap(cr, mImageUri);
-            //String x = mImageUri.getPath();
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inSampleSize = 4;
             bp = BitmapFactory.decodeFile(mImageUri.getPath(), options);
+            //bp = this.rotateBitmap(bp);
 
             if(bp.getByteCount() > mi.availMem){
                 options = new BitmapFactory.Options();
                 options.inSampleSize = 8;
                 ByteArrayOutputStream bos = new ByteArrayOutputStream();
                 bp.compress(Bitmap.CompressFormat.JPEG, 0, bos);
-                /*byte[] bitmapdata = bos.toByteArray();
-                ByteArrayInputStream bs = new ByteArrayInputStream(bitmapdata);
-                Bitmap preview_bitmap = BitmapFactory.decodeStream(bs, null, options);
-                byte[] baos = ImageUtils.getInstance().compressBitmap(bp, 1, 100);
-                Bitmap preview_bitmap = BitmapFactory.decodeByteArray(baos, 0, baos.length);
-                imageView.setImageBitmap(preview_bitmap);*/
-
             }else {
                 imageView.setImageBitmap(bp);
             }
@@ -160,6 +159,29 @@ public class GalleryAddItemFragment extends Fragment implements View.OnClickList
             Snackbar.make(rootView, "Failed to load the image!", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show();
         }
+    }
+
+    public Bitmap rotateBitmap(Bitmap source)
+    {
+        int angle;
+        switch (rotation) {
+            case Surface.ROTATION_90:
+                angle = -90;
+                break;
+            case Surface.ROTATION_180:
+                angle = 180;
+                break;
+            case Surface.ROTATION_270:
+                angle = 90;
+                break;
+            default:
+                angle = 0;
+                break;
+        }
+
+        Matrix matrix = new Matrix();
+        matrix.postRotate(angle);
+        return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
     }
 
     private void getPhoto()

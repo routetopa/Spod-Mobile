@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/newsfeed_comment_item_attachment_link_image"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:src="@drawable/ic_link_darker_gray_24dp"
+            android:scaleType="centerCrop"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/newsfeed_comment_item_attachment_link_image"
+            android:layout_toRightOf="@id/newsfeed_comment_item_attachment_link_image"
+            android:orientation="vertical"
+            android:layout_centerVertical="true">
+
+            <TextView
+                android:id="@+id/newsfeed_comment_item_attachment_link_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Title"
+                android:textSize="@dimen/newsfeed_post_status_text_default"
+                android:paddingLeft="@dimen/newsfeed_post_content_padding_small"
+                android:paddingStart="@dimen/newsfeed_post_content_padding_small"
+                android:paddingRight="@dimen/newsfeed_post_content_padding_small" />
+            <TextView
+                android:id="@+id/newsfeed_comment_item_attachment_link_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Description"
+                android:textSize="@dimen/newsfeed_post_status_text_smallest"
+                android:paddingLeft="@dimen/newsfeed_post_content_padding_small"
+                android:paddingStart="@dimen/newsfeed_post_content_padding_small"
+                android:paddingRight="@dimen/newsfeed_post_content_padding_small" />
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>

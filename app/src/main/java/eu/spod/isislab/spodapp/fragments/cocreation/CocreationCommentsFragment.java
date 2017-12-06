@@ -122,7 +122,7 @@ public class CocreationCommentsFragment extends CommentFragment {
 
                 try {
                     JSONArray response = new JSONArray((String)arg);
-
+                    comments.clear();
                     for (int i=0; i < response.length(); i++)
                     {
                         JSONObject j = response.getJSONObject(i);
