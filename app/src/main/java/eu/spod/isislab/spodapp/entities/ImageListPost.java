@@ -8,12 +8,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import static eu.spod.isislab.spodapp.NewsfeedJSONHelper.*;
-import static eu.spod.isislab.spodapp.NewsfeedJSONHelper.PHOTO_ID;
-import static eu.spod.isislab.spodapp.NewsfeedJSONHelper.PHOTO_PREVIEW_DOMENSIONS;
-import static eu.spod.isislab.spodapp.NewsfeedJSONHelper.PHOTO_PREVIEW_URL;
-import static eu.spod.isislab.spodapp.NewsfeedJSONHelper.PHOTO_TITLE;
-import static eu.spod.isislab.spodapp.NewsfeedJSONHelper.convertToIntArray;
+import static eu.spod.isislab.spodapp.utils.NewsfeedJSONHelper.*;
+import static eu.spod.isislab.spodapp.utils.NewsfeedJSONHelper.PHOTO_ID;
+import static eu.spod.isislab.spodapp.utils.NewsfeedJSONHelper.PHOTO_PREVIEW_DOMENSIONS;
+import static eu.spod.isislab.spodapp.utils.NewsfeedJSONHelper.PHOTO_PREVIEW_URL;
+import static eu.spod.isislab.spodapp.utils.NewsfeedJSONHelper.PHOTO_TITLE;
+import static eu.spod.isislab.spodapp.utils.NewsfeedJSONHelper.convertToIntArray;
 
 public class ImageListPost extends Post {
 

@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -255,7 +256,7 @@ public class NewsfeedCommentsAdapter extends RecyclerView.Adapter<NewsfeedCommen
 
         Glide.with(mContext)
                 .load(c.getAvatarUrl())
-                .placeholder(R.drawable.user_placeholder)
+                .apply(new RequestOptions().placeholder(R.drawable.user_placeholder))
                 .into(holder.userAvatarImageView);
 
         int type = getItemViewType(position);
@@ -307,7 +308,7 @@ public class NewsfeedCommentsAdapter extends RecyclerView.Adapter<NewsfeedCommen
 
                 Glide.with(mContext)
                         .load(attachment.get("thumbnail_url"))
-                        .placeholder(R.drawable.ic_link_darker_gray_24dp)
+                        .apply(new RequestOptions().placeholder(R.drawable.ic_link_darker_gray_24dp))
                         .listener(painter)
                         .into(image);
 
@@ -322,7 +323,7 @@ public class NewsfeedCommentsAdapter extends RecyclerView.Adapter<NewsfeedCommen
                 ImageView dataletPreview = (ImageView) holder.attachmentContainer.getChildAt(0);
                 Glide.with(mContext)
                         .load(attachment.get("previewImage"))
-                        .placeholder(R.drawable.ic_pie_chart_24dp)
+                        .apply(new RequestOptions().placeholder(R.drawable.ic_pie_chart_24dp))
                         .into(dataletPreview);
                 dataletPreview.setOnClickListener(new View.OnClickListener() {
                     @Override

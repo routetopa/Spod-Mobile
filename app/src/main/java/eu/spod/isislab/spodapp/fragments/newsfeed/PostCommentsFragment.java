@@ -50,17 +50,16 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 
-import eu.spod.isislab.spodapp.CompressBitmapTask;
-import eu.spod.isislab.spodapp.ContextActionMenuItem;
-import eu.spod.isislab.spodapp.FullscreenActivity;
-import eu.spod.isislab.spodapp.NewsfeedComment;
-import eu.spod.isislab.spodapp.NewsfeedJSONHelper;
-import eu.spod.isislab.spodapp.NewsfeedUtils;
+import eu.spod.isislab.spodapp.utils.CompressBitmapTask;
+import eu.spod.isislab.spodapp.entities.ContextActionMenuItem;
+import eu.spod.isislab.spodapp.activities.FullscreenActivity;
+import eu.spod.isislab.spodapp.entities.NewsfeedComment;
+import eu.spod.isislab.spodapp.utils.NewsfeedJSONHelper;
+import eu.spod.isislab.spodapp.utils.NewsfeedUtils;
 import eu.spod.isislab.spodapp.R;
 import eu.spod.isislab.spodapp.adapters.NewsfeedCommentsAdapter;
 import eu.spod.isislab.spodapp.adapters.NewsfeedPostsAdapter;
 import eu.spod.isislab.spodapp.utils.NetworkChannel;
-import eu.spod.isislab.spodapp.utils.User;
 
 public class PostCommentsFragment extends Fragment implements Observer, PopupMenu.OnMenuItemClickListener, NewsfeedCommentsAdapter.CommentsAdapterInteractionListener {
 

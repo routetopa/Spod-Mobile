@@ -21,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
 import java.io.File;
 import java.io.IOException;
@@ -77,7 +78,7 @@ public class AddPostFragment extends DialogFragment implements PopupMenu.OnMenuI
 
         Glide.with(getContext())
                 .load(UserManager.getInstance().getAvatarImage())
-                .placeholder(R.drawable.user_placeholder)
+                .apply(new RequestOptions().placeholder(R.drawable.user_placeholder))
                 .into(mUserImageView);
 
 

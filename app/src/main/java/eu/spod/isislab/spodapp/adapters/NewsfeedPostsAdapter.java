@@ -38,25 +38,25 @@ import com.bumptech.glide.Glide;
 import java.util.ArrayList;
 import java.util.List;
 
-import eu.spod.isislab.spodapp.ContentPost;
-import eu.spod.isislab.spodapp.ContextActionMenuItem;
-import eu.spod.isislab.spodapp.DataletPost;
-import eu.spod.isislab.spodapp.GlidePalette;
-import eu.spod.isislab.spodapp.ImageListPost;
-import eu.spod.isislab.spodapp.ImagePost;
-import eu.spod.isislab.spodapp.JsonImage;
-import eu.spod.isislab.spodapp.NewsfeedJSONHelper;
-import eu.spod.isislab.spodapp.NewsfeedPostModel;
-import eu.spod.isislab.spodapp.NewsfeedPostNetworkInterface;
-import eu.spod.isislab.spodapp.NewsfeedUtils;
-import eu.spod.isislab.spodapp.Post;
+import eu.spod.isislab.spodapp.entities.ContentPost;
+import eu.spod.isislab.spodapp.entities.ContextActionMenuItem;
+import eu.spod.isislab.spodapp.entities.DataletPost;
+import eu.spod.isislab.spodapp.utils.GlidePalette;
+import eu.spod.isislab.spodapp.entities.ImageListPost;
+import eu.spod.isislab.spodapp.entities.ImagePost;
+import eu.spod.isislab.spodapp.entities.JsonImage;
+import eu.spod.isislab.spodapp.utils.NewsfeedJSONHelper;
+import eu.spod.isislab.spodapp.utils.NewsfeedPostModel;
+import eu.spod.isislab.spodapp.utils.NewsfeedPostNetworkInterface;
+import eu.spod.isislab.spodapp.utils.NewsfeedUtils;
+import eu.spod.isislab.spodapp.entities.Post;
 import eu.spod.isislab.spodapp.R;
-import eu.spod.isislab.spodapp.Tooltip;
+import eu.spod.isislab.spodapp.utils.Tooltip;
 import eu.spod.isislab.spodapp.fragments.LoginFragment;
-import eu.spod.isislab.spodapp.fragments.NewsfeedFragment;
+import eu.spod.isislab.spodapp.fragments.newsfeed.NewsfeedFragment;
 import eu.spod.isislab.spodapp.utils.CustomImageViewCircularShape;
 
-import static eu.spod.isislab.spodapp.NewsfeedUtils.htmlToSpannedText;
+import static eu.spod.isislab.spodapp.utils.NewsfeedUtils.htmlToSpannedText;
 
 
 public class NewsfeedPostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements NewsfeedPostNetworkInterface{

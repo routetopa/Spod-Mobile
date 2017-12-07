@@ -30,9 +30,9 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
-import eu.spod.isislab.spodapp.NewsfeedImageInfo;
-import eu.spod.isislab.spodapp.NewsfeedJSONHelper;
-import eu.spod.isislab.spodapp.NewsfeedUtils;
+import eu.spod.isislab.spodapp.entities.NewsfeedImageInfo;
+import eu.spod.isislab.spodapp.utils.NewsfeedJSONHelper;
+import eu.spod.isislab.spodapp.utils.NewsfeedUtils;
 import eu.spod.isislab.spodapp.R;
 import eu.spod.isislab.spodapp.utils.NetworkChannel;
 

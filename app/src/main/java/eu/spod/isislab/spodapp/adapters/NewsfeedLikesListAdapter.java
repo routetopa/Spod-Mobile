@@ -15,12 +15,8 @@ import com.bumptech.glide.Glide;
 
 import java.util.List;
 
-import eu.spod.isislab.spodapp.NewsfeedLike;
+import eu.spod.isislab.spodapp.entities.NewsfeedLike;
 import eu.spod.isislab.spodapp.R;
-
-/**
- * Created by vinnun on 27/11/2017.
- */
 
 public class NewsfeedLikesListAdapter extends ArrayAdapter<NewsfeedLike> {
 
