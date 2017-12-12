@@ -3,6 +3,8 @@ package eu.spod.isislab.spodapp.utils;
 import eu.spod.isislab.spodapp.adapters.NewsfeedPostsAdapter;
 
 public interface NewsfeedPostNetworkInterface {
+    void nRequestAuthorization();
+
     void nLoadFeedPage(boolean resetList);
 
     void nRefreshPost(String entityType, int entityId, NewsfeedPostsAdapter.AdapterUpdateType updateType);

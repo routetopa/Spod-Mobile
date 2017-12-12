@@ -68,7 +68,7 @@
                 android:layout_weight=".80"
                 android:layout_height="40dp"
                 android:id="@+id/item_title"
-                android:text="Item title"
+                android:text="Item description"
                 android:textStyle="bold|italic"
                 android:textSize="16dp"
                 android:paddingLeft="8dp"

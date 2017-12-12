@@ -3,24 +3,24 @@ package eu.spod.isislab.spodapp.entities;
 import java.io.Serializable;
 
 public class JsonImage implements Serializable {
-    private int id;
-    private String title;
+    private String id;
+    private String description;
     private int[] previewDimensions;
     private String previewUrl;
 
-    public JsonImage(int id, String title, int[] dimensions, String previewUrl) {
+    public JsonImage(String id, String description, int[] dimensions, String previewUrl) {
         this.id = id;
-        this.title = title;
+        this.description = description;
         this.previewDimensions = dimensions;
         this.previewUrl = previewUrl;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public String getTitle() {
-        return title;
+    public String getDescription() {
+        return description;
     }
 
     public int getPreviewWidth() {

@@ -19,7 +19,22 @@ public class CompressBitmapTask extends AsyncTask<Bitmap, Void, byte[]> {
 
     @Override
     protected byte[] doInBackground(Bitmap... bitmaps) {
-        return ImageUtils.getInstance().compressBitmap(bitmaps[0], 1, 100);
+        byte[] compressBitmap;
+        int sampleSize = 1;
+        int quality = 100;
+        while (true) {
+            try {
+                compressBitmap = ImageUtils.getInstance().compressBitmap(bitmaps[0], sampleSize, quality);
+                break;
+            } catch (OutOfMemoryError e) {
+                e.printStackTrace();
+                sampleSize = sampleSize * 2;
+                quality = (int)(quality / 1.2);
+            }
+        }
+
+        bitmaps[0].recycle();
+        return compressBitmap;
     }
 
     @Override

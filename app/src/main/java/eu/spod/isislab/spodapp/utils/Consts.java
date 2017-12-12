@@ -55,8 +55,9 @@ public class Consts
     public static final String NEWSFEED_SERVICE_ADD_NEW_STATUS      = "NEWSFEED_SERVICE_ADD_NEW_STATUS";
     public static final String NEWSFEED_SERVICE_GET_PHOTOS          = "NEWSFEED_SERVICE_GET_PHOTOS";
     public static final String NEWSFEED_SERVICE_ADD_COMMENT         = "NEWSFEED_SERVICE_ADD_COMMENT";
-    public static final String NEWSFEED_SERVICE_NEWSFEED_DELETE     = "NEWSFEED_SERVICE_NEWSFEED_DELETE";
-    public static final String NEWSFEED_SERVICE_NEWSFEED_FLAG       = "NEWSFEED_SERVICE_NEWSFEED_FLAG";
+    public static final String NEWSFEED_SERVICE_DELETE_POST         = "NEWSFEED_SERVICE_DELETE_POST";
+    public static final String NEWSFEED_SERVICE_DELETE_COMMENT      = "NEWSFEED_SERVICE_DELETE_COMMENT";
+    public static final String NEWSFEED_SERVICE_FLAG_CONTENT        = "NEWSFEED_SERVICE_FLAG_CONTENT";
     public static final String NEWSFEED_SERVICE_GET_LIKES_LIST      = "NEWSFEED_SERVICE_GET_LIKES_LIST";
 
     public static final String RESET_PASSWORD_URL                   = "/oauth2/password/reset";
@@ -99,8 +100,11 @@ public class Consts
     public static final String NEWSFEED_POST_UNLIKE             = "/extfeed/api/remove-like/";
     public static final String NEWSFEED_GET_COMMENTS            = "/extfeed/api/comments/";
     public static final String NEWSFEED_POST_ADD_COMMENT        = "/extfeed/api/add-comment/";
-    public static final String NEWSFEED_GET_LIKES_LIST          = "/extfeed/api/likes-list";
+    public static final String NEWSFEED_GET_LIKES_LIST          = "/extfeed/api/likes-list/";
     public static final String NEWSFEED_GET_PHOTOS              = "/extfeed/api/photos-info/";
+    public static final String NEWSFEED_DELETE_COMMENT          = "/extfeed/api/delete-comment/";
+    public static final String NEWSFEED_DELETE_POST             = "/extfeed/api/delete-post/";
+    public static final String NEWSFEED_FLAG_CONTENT            = "/extfeed/api/flag-content/";
     //Sync notification
     public static final String SYNC_NOTIFICATION_ENDPOINT             = "/realtime_notification";
     public static final String COCREATION_SYNC_NOTIFICATION_ENDPOINT  = "/ethersheet/#/pubsub/";

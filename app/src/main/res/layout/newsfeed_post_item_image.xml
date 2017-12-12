@@ -33,11 +33,11 @@
 
         <ImageView
             android:id="@+id/newsfeed_image_content_imageview"
-            android:transitionName="@string/image_transition_name"
+            android:transitionName="@string/newsfeed_image_transition_name"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
+            android:layout_height="wrap_content"
+            android:minHeight="250dp"
             android:visibility="visible"
-            android:src="@drawable/bg"
             android:paddingTop="@dimen/newsfeed_post_content_padding_small"/>
 
         <include

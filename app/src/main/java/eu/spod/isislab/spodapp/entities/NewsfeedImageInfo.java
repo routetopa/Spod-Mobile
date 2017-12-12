@@ -1,11 +1,9 @@
 package eu.spod.isislab.spodapp.entities;
 
-/**
- * Created by vinnun on 01/12/2017.
- */
+import java.io.Serializable;
 
-public class NewsfeedImageInfo {
-    private int id;
+public class NewsfeedImageInfo implements Serializable{
+    private String id;
     private String description;
     private long time;
     private String userName;
@@ -14,7 +12,7 @@ public class NewsfeedImageInfo {
     private int albumId;
     private String url;
 
-    public NewsfeedImageInfo(int id, String description, long time, String userName, int userId, String albumName, int albumId, String url) {
+    public NewsfeedImageInfo(String id, String description, long time, String userName, int userId, String albumName, int albumId, String url) {
         this.id = id;
         this.description = description;
         this.time = time;
@@ -25,7 +23,7 @@ public class NewsfeedImageInfo {
         this.url = url;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 

@@ -34,6 +34,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
+import com.bumptech.glide.request.RequestOptions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +43,7 @@ import java.util.List;
 import eu.spod.isislab.spodapp.entities.ContentPost;
 import eu.spod.isislab.spodapp.entities.ContextActionMenuItem;
 import eu.spod.isislab.spodapp.entities.DataletPost;
+import eu.spod.isislab.spodapp.utils.Consts;
 import eu.spod.isislab.spodapp.utils.GlidePalette;
 import eu.spod.isislab.spodapp.entities.ImageListPost;
 import eu.spod.isislab.spodapp.entities.ImagePost;
@@ -52,14 +55,13 @@ import eu.spod.isislab.spodapp.utils.NewsfeedUtils;
 import eu.spod.isislab.spodapp.entities.Post;
 import eu.spod.isislab.spodapp.R;
 import eu.spod.isislab.spodapp.utils.Tooltip;
-import eu.spod.isislab.spodapp.fragments.LoginFragment;
 import eu.spod.isislab.spodapp.fragments.newsfeed.NewsfeedFragment;
-import eu.spod.isislab.spodapp.utils.CustomImageViewCircularShape;
+
 
 import static eu.spod.isislab.spodapp.utils.NewsfeedUtils.htmlToSpannedText;
 
 
-public class NewsfeedPostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements NewsfeedPostNetworkInterface{
+public class NewsfeedPostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements NewsfeedPostNetworkInterface {
     private boolean mFirstRun = false;
 
     private NewsfeedPostModel mPosts;
@@ -98,7 +100,7 @@ public class NewsfeedPostsAdapter extends RecyclerView.Adapter<RecyclerView.View
 
         TextView activityString;
         LinearLayout userInfoContainer;
-        CustomImageViewCircularShape userImageView;
+        ImageView userImageView;
         TextView userNameActionTextView;
         TextView timeTextView;
         Button likeButton;
@@ -114,7 +116,7 @@ public class NewsfeedPostsAdapter extends RecyclerView.Adapter<RecyclerView.View
             upperActivityContainer = (LinearLayout) headerView.findViewById(R.id.newsfeed_post_base_activity_container);
             activityString = (TextView) headerView.findViewById(R.id.newsfeed_post_base_activity_string);
             userInfoContainer = (LinearLayout) headerView.findViewById(R.id.newsfeed_post_base_user_info_container);
-            userImageView = (CustomImageViewCircularShape) headerView.findViewById(R.id.newsfeed_post_base_user_image);
+            userImageView = (ImageView) headerView.findViewById(R.id.newsfeed_post_base_user_image);
             userNameActionTextView = (TextView) headerView.findViewById(R.id.newsfeed_post_base_user_name_action_text);
             timeTextView = (TextView) headerView.findViewById(R.id.newsfeed_post_base_time_text);
             likeButton = (Button) footerView.findViewById(R.id.newsfeed_post_base_like_button);
@@ -210,7 +212,7 @@ public class NewsfeedPostsAdapter extends RecyclerView.Adapter<RecyclerView.View
         mNetworkCommunication = mPosts;
         mHasFooter = false;
 
-        mFirstRun = mContext.getSharedPreferences(LoginFragment.SPOD_MOBILE_PREFERENCES, Context.MODE_PRIVATE)
+        mFirstRun = mContext.getSharedPreferences(Consts.SPOD_MOBILE_PREFERENCES, Context.MODE_PRIVATE)
                 .getBoolean(NewsfeedFragment.NEWSFEED_SHARED_PREF_FIRST_RUN, false);
 
         Log.d(TAG, "NewsfeedPostsAdapter: firstRun="+mFirstRun);
@@ -530,7 +532,9 @@ public class NewsfeedPostsAdapter extends RecyclerView.Adapter<RecyclerView.View
 
         Glide.with(mContext)
                 .load(owner.getAvatarUrl())
-                .placeholder(R.drawable.user_placeholder)
+                .apply(new RequestOptions()
+                        .placeholder(R.drawable.user_placeholder)
+                        .circleCrop())
                 .into(holder.userImageView);
     }
 
@@ -577,7 +581,6 @@ public class NewsfeedPostsAdapter extends RecyclerView.Adapter<RecyclerView.View
         spannableMore.setSpan(new ClickableSpan() {
             @Override
             public void onClick(View view) {
-                Log.d(TAG, "onClick: ");
                 target.setText(spannableLess);
             }
         }, truncatedStr.length() + 1, spannableMore.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -632,23 +635,32 @@ public class NewsfeedPostsAdapter extends RecyclerView.Adapter<RecyclerView.View
         spanText(post.getStatus(), h.statusTextView);
 
         String imageSrc = post.getImagePreviewUrl();
-        h.contentImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        h.contentImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
 
-        int w =  post.getImagePreviewWidth();
+
+        //int w =  NewsfeedUtils.pxToDp(mContext, post.getImagePreviewWidth());
+        //int he = NewsfeedUtils.pxToDp(mContext, post.getImagePreviewHeight());
+
+        int w = post.getImagePreviewWidth();
         int he = post.getImagePreviewHeight();
 
         GradientDrawable placeholder = new GradientDrawable();
         placeholder.setSize(w,he);
         placeholder.setColors(new int[]{android.R.color.white, android.R.color.white});
+
         Glide.with(mContext)
                 .load(imageSrc)
-                .placeholder(placeholder)
+                .apply(new RequestOptions()
+                        .placeholder(placeholder)
+                        .fitCenter())
+                .transition(new DrawableTransitionOptions()
+                        .crossFade())
                 .into(h.contentImageView);
 
         h.contentImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mListener.onPostImageClicked(post.getImage(), h.contentImageView);
+                mListener.onPostImageClicked(post, h.contentImageView);
             }
         });
     }
@@ -667,29 +679,35 @@ public class NewsfeedPostsAdapter extends RecyclerView.Adapter<RecyclerView.View
         for (final JsonImage image : images) {
             final ImageView content = new ImageView(mContext);
             content.setLayoutParams((new LinearLayout.LayoutParams(size, size)));
-            content.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            //content.setScaleType(ImageView.ScaleType.CENTER_CROP);
             content.setPadding(0,0,5,0);
-            ViewCompat.setTransitionName(content, NewsfeedUtils.getStringResource(mContext, R.string.image_transition_name));
+            ViewCompat.setTransitionName(content, NewsfeedUtils.getStringResource(mContext, R.string.newsfeed_image_transition_name));
             content.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mListener.onPostImageClicked(image, content);
+                    mListener.onPostImageClicked(post, image.getId(), content);
                 }
             });
 
-            Glide.with(mContext).load(image.getPreviewUrl()).into(content);
+            Glide.with(mContext)
+                    .load(image.getPreviewUrl())
+                    .apply(new RequestOptions().centerCrop())
+                    .transition(new DrawableTransitionOptions()
+                            .crossFade())
+                    .into(content);
+
             h.imageListContainer.addView(content);
         }
     }
 
     private int getMaxHeightSize(List<JsonImage> images) {
-        int size = 400; //the size is at least of 400
+        int size = 200; //the size is at least of 200px
         for (JsonImage image : images) {
             if(image.getPreviewHeight() > size) {
                 size = image.getPreviewHeight();
             }
         }
-        return size;
+        return NewsfeedUtils.pxToDp(mContext, size);
     }
 
     private void bindImageContentViewHolder(final ContentImageViewHolder h, final int position) {
@@ -706,15 +724,21 @@ public class NewsfeedPostsAdapter extends RecyclerView.Adapter<RecyclerView.View
 
         if(post.hasImage()) {
             String url = post.getPreferredPreviewImageUrl();
+            final GlidePalette painter = GlidePalette.painter()
+                    .paintBackground(h.linkInfoContainer, GlidePalette.PaletteType.VIBRANT)
+                    .paintText(h.linkTitleTextView, GlidePalette.PaletteType.VIBRANT, GlidePalette.ColorType.TITLE)
+                    .paintText(h.linkDescriptionTextView, GlidePalette.PaletteType.VIBRANT, GlidePalette.ColorType.BODY);
+
             Glide.with(mContext)
                     .load(url)
-                    .placeholder(R.drawable.ic_link_darker_gray_24dp) //.placeholder(NewsfeedUtils.getDrawableResource(mContext, R.drawable.ic_link_darker_gray_24dp))
-                    .listener(
-                            GlidePalette.painter()
-                                    .paintBackground(h.linkInfoContainer, GlidePalette.PaletteType.VIBRANT)
-                                    .paintText(h.linkTitleTextView, GlidePalette.PaletteType.VIBRANT, GlidePalette.ColorType.TITLE)
-                                    .paintText(h.linkDescriptionTextView, GlidePalette.PaletteType.VIBRANT, GlidePalette.ColorType.BODY)
-                    )
+                    .apply(new RequestOptions()
+                            .placeholder(R.drawable.ic_link_darker_gray))
+                    .listener(painter)
+                    .error(Glide.with(mContext)
+                            .load(R.drawable.ic_link_darker_gray)
+                            .listener(painter))
+                    .transition(new DrawableTransitionOptions()
+                            .crossFade())
                     .into(h.linkPreviewImageView);
         } else {
             Drawable drawable = NewsfeedUtils.getDrawableResource(mContext, getContextPlaceholderResource(post), null);
@@ -727,8 +751,17 @@ public class NewsfeedPostsAdapter extends RecyclerView.Adapter<RecyclerView.View
             h.linkInfoContainer.setBackground(black);
         }
 
-        h.linkTitleTextView.setText(htmlToSpannedText(post.getLinkTitle()));
-        h.linkDescriptionTextView.setText(htmlToSpannedText(post.getLinkDescription()));
+        String linkTitle = NewsfeedUtils.truncateString(post.getLinkTitle(), 100);
+        String linkDescription = NewsfeedUtils.truncateString(post.getLinkDescription(), 200);
+
+        h.linkTitleTextView.setText(htmlToSpannedText(linkTitle));
+
+        if(linkDescription != null) {
+            h.linkDescriptionTextView.setVisibility(View.VISIBLE);
+            h.linkDescriptionTextView.setText(htmlToSpannedText(linkDescription));
+        } else {
+            h.linkDescriptionTextView.setVisibility(View.GONE);
+        }
 
         View.OnClickListener listener = new View.OnClickListener() {
             @Override
@@ -744,7 +777,7 @@ public class NewsfeedPostsAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     private int getContextPlaceholderResource(ContentPost p) {
         if(!p.hasRouting()) {
-            return R.drawable.ic_link_darker_gray_24dp;
+            return R.drawable.ic_link_darker_gray;
         }
 
         switch (p.getRouteName()) {
@@ -753,7 +786,7 @@ public class NewsfeedPostsAdapter extends RecyclerView.Adapter<RecyclerView.View
             case "groups-view":
                 return R.drawable.ic_people_outline_darker_gray_24dp;
             default:
-                return R.drawable.ic_link_darker_gray_24dp;
+                return R.drawable.ic_link_darker_gray;
         }
     }
 
@@ -775,7 +808,10 @@ public class NewsfeedPostsAdapter extends RecyclerView.Adapter<RecyclerView.View
 
         Glide.with(mContext)
                 .load(p.getPreviewImage())
-                .placeholder(placeholder)
+                .apply(new RequestOptions()
+                        .placeholder(placeholder))
+                .transition(new DrawableTransitionOptions()
+                        .crossFade())
                 .into(h.dataletPreviewImageView);
     }
 
@@ -805,11 +841,16 @@ public class NewsfeedPostsAdapter extends RecyclerView.Adapter<RecyclerView.View
         mPosts.setModelListener(listener);
     }
 
-    //NETWORK COMMUNICATIONS BRIDGE
+    //MODEL NETWORK COMMUNICATIONS BRIDGE
     @Override
     public void nLoadFeedPage(boolean resetList) {
         setFooterType(FooterType.LOADING);
         mNetworkCommunication.nLoadFeedPage(resetList);
+    }
+
+    @Override
+    public void nRequestAuthorization() {
+        mNetworkCommunication.nRequestAuthorization();
     }
 
     @Override
@@ -844,13 +885,14 @@ public class NewsfeedPostsAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     public interface PostsAdapterInteractionListener{
         void onCommentsButtonClicked(Post post, int position);
-        void onLikeButtonLongClicked(Post p);
+        void onLikeButtonLongClicked(Post post);
 
-        void onPostImageClicked(JsonImage image, ImageView postImageView);
-        void onDataletImageClicked(DataletPost p);
+        void onPostImageClicked(ImagePost post, ImageView postImageView);
+        void onPostImageClicked(ImageListPost post, String selectedImageId, ImageView postImageView);
+        void onDataletImageClicked(DataletPost post);
 
         void onContextActionMenuItemClicked(int position, ContextActionMenuItem.ContextActionType actionType);
 
-        void onContentLinkClicked(ContentPost p);
+        void onContentLinkClicked(ContentPost post);
     }
 }

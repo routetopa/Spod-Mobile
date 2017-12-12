@@ -10,10 +10,11 @@
     android:paddingEnd="@dimen/newsfeed_post_content_padding_small">
 
 
-   <eu.spod.isislab.spodapp.utils.CustomImageViewCircularShape
+   <ImageView
        android:id="@+id/newsfeed_likes_list_item_icon"
-       android:layout_width="24dp"
-       android:layout_height="24dp"/>
+       android:layout_width="30dp"
+       android:layout_height="30dp"
+       android:src="@drawable/user_placeholder"/>
 
     <TextView
         android:id="@+id/newsfeed_likes_list_item_text"
@@ -21,6 +22,8 @@
         android:layout_height="wrap_content"
         android:textSize="@dimen/newsfeed_post_status_text_default"
         android:paddingStart="?attr/listPreferredItemPaddingLeft"
-        android:paddingLeft="?attr/listPreferredItemPaddingLeft" />
+        android:paddingLeft="?attr/listPreferredItemPaddingLeft"
+        android:paddingEnd="?attr/listPreferredItemPaddingRight"
+        android:paddingRight="?attr/listPreferredItemPaddingRight" />
 
 </LinearLayout>

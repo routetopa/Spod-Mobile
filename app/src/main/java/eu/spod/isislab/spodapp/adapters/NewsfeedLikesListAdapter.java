@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
 import java.util.List;
 
@@ -42,6 +43,9 @@ public class NewsfeedLikesListAdapter extends ArrayAdapter<NewsfeedLike> {
 
         Glide.with(getContext())
                 .load(like.getAvatarUrl())
+                .apply(new RequestOptions()
+                        .placeholder(R.drawable.user_placeholder)
+                        .circleCrop())
                 .into(avatarImage);
 
         userDisplay.setText(like.getDisplayUserName());

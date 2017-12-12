@@ -1,5 +1,6 @@
 package eu.spod.isislab.spodapp.utils;
 
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.res.Resources;
 import android.database.Cursor;
@@ -21,10 +22,6 @@ import java.util.regex.Pattern;
 
 import eu.spod.isislab.spodapp.entities.ContextActionMenuItem;
 
-/**
- * Created by vinnun on 20/10/2017.
- */
-
 public class NewsfeedUtils {
 
     public static final int GET_POST_LIMIT_NUMBER = 20;
@@ -35,7 +32,7 @@ public class NewsfeedUtils {
 
     private static Pattern mHtmlPattern = Pattern.compile("<(\"[^\"]*\"|'[^']*'|[^'\">])*>"); //for check if a string is a html string
 
-    public static boolean isAndroidApiGreaterThan(int sdkInt) {
+    private static boolean isAndroidApiGreaterThan(int sdkInt) {
         return Build.VERSION.SDK_INT >= sdkInt;
     }
 
@@ -52,6 +49,11 @@ public class NewsfeedUtils {
 
     public static String getStringResource(Context ctx, int id) {
         return ctx.getResources().getString(id);
+    }
+
+    public static String getStringByResourceName(Context ctx, String packageName, String prefix, String key) {
+        int stringId = ctx.getResources().getIdentifier(prefix+key, "string", packageName);
+        return NewsfeedUtils.getStringResource(ctx, stringId);
     }
 
     public static Drawable getDrawableResource(Context ctx, int id, @Nullable Resources.Theme theme) {
@@ -122,21 +124,6 @@ public class NewsfeedUtils {
         String path = cursor.getString(0);
         cursor.close();
 
-        /*String documentId = cursor.getString(0);
-        String mimeType = cursor.getString(4);
-
-        documentId = documentId.substring(documentId.lastIndexOf(":") + 1);
-        cursor.close();
-
-        //Get content path
-        cursor = ctx.getContentResolver().query(
-                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                null, MediaStore.Images.Media._ID + " = ? ", new String[]{documentId}, null);
-        cursor.moveToFirst();
-        Log.d("BlaBla", "uriToPath: " + DatabaseUtils.dumpCurrentRowToString(cursor));
-        String path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
-        cursor.close();
-*/
         return path;
     }
 
@@ -149,19 +136,23 @@ public class NewsfeedUtils {
     }
 
 
-    public static Bitmap loadBitmap(String path) {
+    public static Bitmap loadBitmap(Context ctx, String path) {
         Bitmap bitmap;
 
         try {
             bitmap = BitmapFactory.decodeFile(path);
         } catch (OutOfMemoryError error) {
-            //Log.e(TAG, "sendComment: " + error.getMessage(), error);
-            //Log.d(TAG, "sendComment: File too large. Trying to load scaled");
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inSampleSize = 2;
             bitmap = BitmapFactory.decodeFile(path, options);
         }
 
         return bitmap;
+    }
+
+    public static int pxToDp(Context ctx, int px) {
+        float density = ctx.getResources().getDisplayMetrics().density;
+
+        return (int) (px * density);
     }
 }

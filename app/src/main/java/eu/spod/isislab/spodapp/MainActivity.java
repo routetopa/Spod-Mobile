@@ -28,6 +28,7 @@ import org.json.JSONObject;
 import eu.spod.isislab.spodapp.fragments.cocreation.MembersFragment;
 import eu.spod.isislab.spodapp.fragments.cocreation.data.CocreationDataRoomFragment;
 import eu.spod.isislab.spodapp.fragments.cocreation.knowledge.CocreationKnowledgeRoomFragment;
+import eu.spod.isislab.spodapp.fragments.newsfeed.NewsfeedFragment;
 import eu.spod.isislab.spodapp.fragments.settings.SettingsFragment;
 import eu.spod.isislab.spodapp.services.AuthorizationService;
 import eu.spod.isislab.spodapp.fragments.agora.AgoraRoomsListFragment;
@@ -251,6 +252,12 @@ public class MainActivity extends AppCompatActivity
 
         switch(id){
             case R.id.nav_whatsnew:
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.container, new NewsfeedFragment(), NewsfeedFragment.FRAGMENT_NAME)
+                        .addToBackStack(NewsfeedFragment.FRAGMENT_NAME)
+                        .commit();
+
                 break;
             case R.id.nav_agora:
                 getSupportFragmentManager()

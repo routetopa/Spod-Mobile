@@ -24,9 +24,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="@dimen/newsfeed_post_status_text_default"
-            android:text="Ciao sono un messaggio di prova non fare caso a me sparirò molto presto"
             android:padding="@dimen/newsfeed_post_content_padding_default"
             android:clickable="true"
+            android:focusable="true"
             android:linksClickable="true"/>
 
         <include

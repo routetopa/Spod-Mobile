@@ -15,12 +15,11 @@ import eu.spod.isislab.spodapp.entities.ContextActionMenuItem;
 import eu.spod.isislab.spodapp.entities.DataletPost;
 import eu.spod.isislab.spodapp.entities.ImageListPost;
 import eu.spod.isislab.spodapp.entities.ImagePost;
+import eu.spod.isislab.spodapp.entities.JsonImage;
 import eu.spod.isislab.spodapp.entities.NewsfeedComment;
 import eu.spod.isislab.spodapp.entities.NewsfeedImageInfo;
 import eu.spod.isislab.spodapp.entities.NewsfeedLike;
 import eu.spod.isislab.spodapp.entities.Post;
-
-import static eu.spod.isislab.spodapp.utils.NewsfeedJSONHelper.Formats.*;
 
 public class NewsfeedJSONHelper {
 
@@ -63,7 +62,7 @@ public class NewsfeedJSONHelper {
 
     //format 'image' and 'image_list' keys
     public static final String PHOTO_ID                    = "photoId";
-    public static final String PHOTO_TITLE                 = "photoTitle";
+    public static final String PHOTO_DESCRIPTION           = "photoDescription";
     public static final String PHOTO_PREVIEW_DOMENSIONS    = "photoPreviewDimensions";
     public static final String PHOTO_URL                   = "photoUrl";
     public static final String PHOTO_PREVIEW_URL           = "photoPreviewUrl";
@@ -89,11 +88,6 @@ public class NewsfeedJSONHelper {
     //ActionMenu keys
     public static final String ACTION_TYPE                = "actionType";
     public static final String PARAMS                     = "params";
-    public static final String PARAM_OPTIONS              = "paramOptions";
-    public static final String PARAM_TARGET               = "target";
-    public static final String OPTIONS                    = "options";
-    private static final String ACTION_URL                = "actionUrl";
-
 
     /*COMMENT KEYS*/
     public static final String COMMENT_ENTITY_ID          = "commentEntityId";
@@ -152,18 +146,20 @@ public class NewsfeedJSONHelper {
 
         switch (format) {
             case Formats.FORMAT_IMAGE:
-                p = new ImagePost(id, entityType, entityId, pluginKey, timestamp, format, userId, userIds, content);
+                JsonImage image = createJsonImage(content);
+                p = new ImagePost(id, entityType, entityId, pluginKey, timestamp, format, userId, userIds, image);
                 break;
             case Formats.FORMAT_IMAGE_LIST:
                 JSONArray imagesJsonArray = content.getJSONArray(PHOTO_LIST);
+                List<JsonImage> imageList = createJsonImageList(imagesJsonArray);
                 int count = content.getInt(COUNT);
                 int[] ids = convertToIntArray(content.getJSONArray(ID_LIST));
-                p = new ImageListPost(id, entityType, entityId, pluginKey, timestamp, format, userId, userIds, imagesJsonArray, count, ids);
+                p = new ImageListPost(id, entityType, entityId, pluginKey, timestamp, format, userId, userIds, imageList, count, ids);
                 break;
             case Formats.FORMAT_CONTENT_IMAGE:
             case Formats.FORMAT_CONTENT:
                 String title = content.getString(TITLE);
-                String description = content.getString(DESCRIPTION);
+                String description = optString(content, DESCRIPTION);
                 String url = content.getString(URL);
                 JSONObject encodedUrl = content.optJSONObject(URL_ENCODED);
                 String thumbnailUrl = content.optString(THUMBNAIL);
@@ -208,6 +204,28 @@ public class NewsfeedJSONHelper {
         return p;
     }
 
+    private static JsonImage createJsonImage(JSONObject imageObject) throws JSONException {
+
+            String photoId = optString(imageObject, PHOTO_ID);
+            String title = optString(imageObject, PHOTO_DESCRIPTION);
+            int[] dimensions = convertToIntArray(imageObject.getJSONArray(PHOTO_PREVIEW_DOMENSIONS));
+            String previewUrl = imageObject.getString(PHOTO_PREVIEW_URL);
+
+            return new JsonImage(photoId, title, dimensions, previewUrl);
+
+    }
+
+    public static List<JsonImage> createJsonImageList(JSONArray array) throws JSONException {
+        List<JsonImage> toReturn = new ArrayList<>(array.length());
+
+        for (int i = 0; i<array.length(); i++) {
+            JSONObject imageObject = array.getJSONObject(i);
+            toReturn.add(createJsonImage(imageObject));
+        }
+
+        return toReturn;
+    }
+
     public static NewsfeedComment createComment(JSONObject comment) throws JSONException {
         int id = comment.getInt(ID);
         int commentEntityId = comment.getInt(COMMENT_ENTITY_ID);
@@ -240,24 +258,9 @@ public class NewsfeedJSONHelper {
             JSONObject item = contextActionMenu.getJSONObject(i);
             String label = item.getString(LABEL);
             String actionType = item.getString(ACTION_TYPE);
-            String actionUrl = item.getString(ACTION_URL);
             Map<String, String> params = convertToMap(item.getJSONObject(PARAMS));
 
-            JSONObject paramOptions = item.optJSONObject(PARAM_OPTIONS);
-
-            ContextActionMenuItem menuItem = new ContextActionMenuItem(actionType, label, actionUrl, params);
-
-            if(paramOptions != null) {
-                String optionParamTarget = paramOptions.getString(PARAM_TARGET);
-                JSONObject optionsSelection = paramOptions.getJSONObject(OPTIONS);
-                List<String> options = new ArrayList<>(optionsSelection.length());
-                Iterator<String> optionKeys = optionsSelection.keys();
-                while (optionKeys.hasNext()) {
-                    String key = optionKeys.next();
-                    options.add(key);
-                }
-                menuItem.setOptions(optionParamTarget, options);
-            }
+            ContextActionMenuItem menuItem = new ContextActionMenuItem(actionType, label, params);
             items.add(menuItem);
         }
 
@@ -296,7 +299,7 @@ public class NewsfeedJSONHelper {
     }
 
     public static NewsfeedImageInfo createImageInfo(JSONObject jsonImage) throws JSONException {
-        int id = jsonImage.getInt(ID);
+        String id = optString(jsonImage, ID);
         String description = optString(jsonImage, DESCRIPTION);
         long time = jsonImage.getLong(TIME);
         String userName = optString(jsonImage, USER_DISPLAY_NAME);

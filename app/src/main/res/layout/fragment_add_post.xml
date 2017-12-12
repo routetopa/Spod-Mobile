@@ -12,7 +12,7 @@
         android:padding="@dimen/newsfeed_post_content_padding_default"
         android:elevation="5dp">
 
-        <eu.spod.isislab.spodapp.utils.CustomImageViewCircularShape
+        <ImageView
             android:id="@+id/newsfeed_add_post_header_user_image"
             android:layout_width="48dp"
             android:layout_height="48dp" />

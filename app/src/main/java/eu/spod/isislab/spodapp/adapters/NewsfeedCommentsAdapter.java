@@ -17,6 +17,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.RequestOptions;
 
 import java.util.ArrayList;
@@ -109,7 +111,6 @@ public class NewsfeedCommentsAdapter extends RecyclerView.Adapter<NewsfeedCommen
 
             handler.post(r);
         }
-
     }
 
     public int findItemPosition(int id) {
@@ -211,8 +212,8 @@ public class NewsfeedCommentsAdapter extends RecyclerView.Adapter<NewsfeedCommen
     private ImageView generateImageView() {
         ImageView imageView = new ImageView(mContext);
         imageView.setAdjustViewBounds(true);
-        imageView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 400));
-        imageView.setMaxHeight(500);
+        imageView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, NewsfeedUtils.pxToDp(mContext, 200)));
+        imageView.setMaxHeight(NewsfeedUtils.pxToDp(mContext, 300));
         imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
         imageView.setPadding(0,0,0,0);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -228,7 +229,7 @@ public class NewsfeedCommentsAdapter extends RecyclerView.Adapter<NewsfeedCommen
             return;
         }
 
-       NewsfeedComment c = mValues.get(position);
+        NewsfeedComment c = mValues.get(position);
 
         Spanned spanned = NewsfeedUtils.htmlToSpannedText(c.getMessage());
         if (spanned.length() == 0) {
@@ -256,7 +257,9 @@ public class NewsfeedCommentsAdapter extends RecyclerView.Adapter<NewsfeedCommen
 
         Glide.with(mContext)
                 .load(c.getAvatarUrl())
-                .apply(new RequestOptions().placeholder(R.drawable.user_placeholder))
+                .apply(new RequestOptions()
+                        .placeholder(R.drawable.user_placeholder)
+                        .circleCrop())
                 .into(holder.userAvatarImageView);
 
         int type = getItemViewType(position);
@@ -281,12 +284,18 @@ public class NewsfeedCommentsAdapter extends RecyclerView.Adapter<NewsfeedCommen
                     @Override
                     public void onClick(View view) {
                         if (mListener != null) {
-                           mListener.onImageClicked(c, imageView);
+                            mListener.onImageClicked(c, imageView);
                         }
                     }
                 });
                 Glide.with(mContext)
                         .load(attachment.get("url"))
+                        .apply(new RequestOptions()
+                                .optionalCircleCrop()
+                                .transform(new RoundedCorners(20))
+                                )
+                        .transition(new DrawableTransitionOptions()
+                                .crossFade())
                         .into(imageView);
                 break;
             case "link":
@@ -308,8 +317,11 @@ public class NewsfeedCommentsAdapter extends RecyclerView.Adapter<NewsfeedCommen
 
                 Glide.with(mContext)
                         .load(attachment.get("thumbnail_url"))
-                        .apply(new RequestOptions().placeholder(R.drawable.ic_link_darker_gray_24dp))
+                        .apply(new RequestOptions()
+                                .placeholder(R.drawable.ic_link_darker_gray)
+                                .error(R.drawable.ic_link_darker_gray))
                         .listener(painter)
+                        .transition(new DrawableTransitionOptions().crossFade())
                         .into(image);
 
                 vi.setOnClickListener(new View.OnClickListener() {
@@ -323,7 +335,8 @@ public class NewsfeedCommentsAdapter extends RecyclerView.Adapter<NewsfeedCommen
                 ImageView dataletPreview = (ImageView) holder.attachmentContainer.getChildAt(0);
                 Glide.with(mContext)
                         .load(attachment.get("previewImage"))
-                        .apply(new RequestOptions().placeholder(R.drawable.ic_pie_chart_24dp))
+                        .apply(new RequestOptions()
+                                .placeholder(R.drawable.ic_pie_chart_24dp))
                         .into(dataletPreview);
                 dataletPreview.setOnClickListener(new View.OnClickListener() {
                     @Override

@@ -1,9 +1,5 @@
 package eu.spod.isislab.spodapp.entities;
 
-/**
- * Created by vinnun on 27/11/2017.
- */
-
 public class NewsfeedLike {
 
     private int userId;

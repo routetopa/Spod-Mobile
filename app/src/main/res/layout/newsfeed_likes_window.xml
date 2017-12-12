@@ -23,6 +23,7 @@
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
             app:contentInsetStartWithNavigation="0dp"
             style="@style/LikesToolbar"/>
+
     </android.support.v7.widget.ActionBarContainer>
 
     <FrameLayout

@@ -2,6 +2,7 @@ package eu.spod.isislab.spodapp.fragments.newsfeed;
 
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,6 +11,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -42,32 +44,36 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.CookieHandler;
+import java.net.CookieManager;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 
-import eu.spod.isislab.spodapp.utils.CompressBitmapTask;
+import eu.spod.isislab.spodapp.MainActivity;
+import eu.spod.isislab.spodapp.R;
+import eu.spod.isislab.spodapp.activities.FullscreenActivity;
+import eu.spod.isislab.spodapp.adapters.NewsfeedLikesListAdapter;
+import eu.spod.isislab.spodapp.adapters.NewsfeedPostsAdapter;
 import eu.spod.isislab.spodapp.entities.ContentPost;
 import eu.spod.isislab.spodapp.entities.ContextActionMenuItem;
 import eu.spod.isislab.spodapp.entities.DataletPost;
-import eu.spod.isislab.spodapp.activities.FullscreenActivity;
+import eu.spod.isislab.spodapp.entities.ImageListPost;
+import eu.spod.isislab.spodapp.entities.ImagePost;
 import eu.spod.isislab.spodapp.entities.JsonImage;
-import eu.spod.isislab.spodapp.utils.NewsfeedJSONHelper;
+import eu.spod.isislab.spodapp.entities.NewsfeedImageInfo;
 import eu.spod.isislab.spodapp.entities.NewsfeedLike;
+import eu.spod.isislab.spodapp.entities.Post;
+import eu.spod.isislab.spodapp.utils.CompressBitmapTask;
+import eu.spod.isislab.spodapp.utils.Consts;
+import eu.spod.isislab.spodapp.utils.NetworkChannel;
+import eu.spod.isislab.spodapp.utils.NewsfeedJSONHelper;
 import eu.spod.isislab.spodapp.utils.NewsfeedPostModel;
 import eu.spod.isislab.spodapp.utils.NewsfeedPostNetworkInterface;
 import eu.spod.isislab.spodapp.utils.NewsfeedUtils;
-import eu.spod.isislab.spodapp.entities.Post;
-import eu.spod.isislab.spodapp.R;
-import eu.spod.isislab.spodapp.adapters.NewsfeedLikesListAdapter;
-import eu.spod.isislab.spodapp.adapters.NewsfeedPostsAdapter;
-import eu.spod.isislab.spodapp.fragments.LoginFragment;
-import eu.spod.isislab.spodapp.utils.NetworkChannel;
 
-public class NewsfeedFragment extends Fragment implements Observer, NewsfeedPostsAdapter.PostsAdapterInteractionListener, NewsfeedPostModel.NewsfeedPostModelListener{
+public class NewsfeedFragment extends Fragment implements NewsfeedPostsAdapter.PostsAdapterInteractionListener, NewsfeedPostModel.NewsfeedPostModelListener {
 
     private static final String TAG = "NewsfeedFragment";
     public static final String FRAGMENT_NAME = "NewsfeedFragment";
@@ -97,15 +103,17 @@ public class NewsfeedFragment extends Fragment implements Observer, NewsfeedPost
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        //TODO: remove t
+        CookieManager manager = new CookieManager();
+        CookieHandler.setDefault(manager);
+
         View v = inflater.inflate(R.layout.fragment_newsfeed, container, false);
 
         mPostsList = (RecyclerView) v.findViewById(R.id.newsfeed_post_container);
         mAddButton = (FloatingActionButton) v.findViewById(R.id.newsfeed_add_post_fab);
         mSwipeToRefresh = (SwipeRefreshLayout) v.findViewById(R.id.newsfeed_post_list_swipe_refresh_layout);
 
-        //mPostsAdapter = new NewsfeedPostsAdapter(this.getContext(), this, NewsfeedUtils.FEED_TYPE_MY, ""+1); //TODO: replace 1 with getUser.getID;
-
-        mPostsAdapter = new NewsfeedPostsAdapter(this.getContext(), this, mFeedType, mFeedId); //TODO: replace 1 with getUser.getID;
+        mPostsAdapter = new NewsfeedPostsAdapter(this.getContext(), this, NewsfeedUtils.FEED_TYPE_MY, ""+4); //TODO: replace 1 with getUser.getID;
 
         mPostsAdapter.setModelListener(this);
         mNetworkInterface = mPostsAdapter;
@@ -155,17 +163,21 @@ public class NewsfeedFragment extends Fragment implements Observer, NewsfeedPost
             }
         });
 
-        mSwipeToRefresh.setColorSchemeResources(R.color.indigo, R.color.soft_green, R.color.colorPrimary, R.color.colorAccent);
+        mSwipeToRefresh.setColorSchemeResources(R.color.colorPrimary, R.color.colorPrimaryDark, R.color.indigo);
         return v;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
         Log.d(TAG, "onActivityCreated: ");
-        NetworkChannel.getInstance().getNewsfeedAuthorization(mFeedType, mFeedId); //TODO: remove this LINE
-        NetworkChannel.getInstance().addObserver(this);
-        //nLoadFeedPage(true); TODO: uncomment this!!!!!!!
+        ((MainActivity)getActivity()).setToolbarTitle(getString(R.string.newsfeed_title));
+        if(mFirstRun) {
+            mSharedPref.edit().putBoolean(NEWSFEED_SHARED_PREF_FIRST_RUN, false).apply();
+        }
+
+        mPostsAdapter.nRequestAuthorization();
+
+        super.onActivityCreated(savedInstanceState);
     }
 
 
@@ -182,11 +194,12 @@ public class NewsfeedFragment extends Fragment implements Observer, NewsfeedPost
                 return;
             }
             if(attachmentUri != null) {
+                final ProgressDialog loading = ProgressDialog.show(getContext(), "SPOD Mobile", getContext().getString(R.string.wait_network_message), false, false);
                 try {
                     Bitmap attachment;
                     String fileName;
                     String path = NewsfeedUtils.uriToPath(getContext(), attachmentUri);
-                    attachment = NewsfeedUtils.loadBitmap(path);
+                    attachment = NewsfeedUtils.loadBitmap(getContext(), path);
 
                     if(attachment == null) {
                         throw new IOException();
@@ -200,11 +213,13 @@ public class NewsfeedFragment extends Fragment implements Observer, NewsfeedPost
                     compressTask.setResultHandler(new CompressBitmapTask.ResultHandler() {
                         @Override
                         public void onCompress(byte[] result) {
+                            loading.dismiss();
                             mNetworkInterface.nSendPost(message, result, finalFileName);
                         }
                     });
 
                     compressTask.execute(attachment);
+                    attachment = null;
                 }catch (IOException e) {
                     Toast.makeText(getContext(), "Failed attachment loading", Toast.LENGTH_LONG).show();
                     e.printStackTrace();
@@ -219,27 +234,24 @@ public class NewsfeedFragment extends Fragment implements Observer, NewsfeedPost
     public void onAttach(Context context) {
         super.onAttach(context);
         Log.d(TAG, "onAttach: ");
-        getActivity().setTitle(getString(R.string.newsfeed_title));
+        getActivity().setTitle(R.string.newsfeed_title);
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         Log.d(TAG, "onCreate: ");
-        super.onCreate(savedInstanceState);
-        mSharedPref = getContext().getSharedPreferences(LoginFragment.SPOD_MOBILE_PREFERENCES, Context.MODE_PRIVATE);
+        mSharedPref = getContext().getSharedPreferences(Consts.SPOD_MOBILE_PREFERENCES, Context.MODE_PRIVATE);
         if(!mSharedPref.contains(NEWSFEED_SHARED_PREF_FIRST_RUN)) {
             mSharedPref.edit().putBoolean(NEWSFEED_SHARED_PREF_FIRST_RUN, true).apply();
             mFirstRun = true;
         }
+        super.onCreate(savedInstanceState);
     }
 
     @Override
     public void onDestroy() {
         Log.d(TAG, "onDestroy: ");
         super.onDestroy();
-        if(mFirstRun) {
-            mSharedPref.edit().putBoolean(NEWSFEED_SHARED_PREF_FIRST_RUN, false).apply();
-        }
     }
 
     @Override
@@ -252,7 +264,7 @@ public class NewsfeedFragment extends Fragment implements Observer, NewsfeedPost
     public void onPause() {
         super.onPause();
         Log.d(TAG, "onPause: ");
-        NetworkChannel.getInstance().deleteObserver(this);
+        //NetworkChannel.getInstance().deleteObserver(this);
 
     }
 
@@ -261,81 +273,19 @@ public class NewsfeedFragment extends Fragment implements Observer, NewsfeedPost
         mPostsAdapter.nLoadFeedPage(reset);
     }
 
-    @Override
-    public void update(Observable observable, Object o) {
-        Log.d(TAG, "update: " + o.toString());
-
-        boolean handled = true;
-        switch (NetworkChannel.getInstance().getCurrentService()) {
-            case NetworkChannel.NEWSFEED_SERVICE_GET_AUTHORIZATION:
-                try {
-                    JSONObject res = new JSONObject((String) o);
-                     /** Code for check user's authorization to view/write on current feed. In this case is useless because user always can view (and write on) its personal feed */
-                    /*String errorMessage = NewsfeedJSONHelper.getErrorMessage((String) o);
-                    if(errorMessage != null) {
-                        onError(NetworkChannel.getInstance().getCurrentService(), errorMessage);
-                        break;
-                    }
-
-                    boolean canView = NewsfeedJSONHelper.isAuthorized(res, NewsfeedJSONHelper.VIEW);
-                    boolean canWrite = NewsfeedJSONHelper.isAuthorized(res, NewsfeedJSONHelper.WRITE);
-
-                    if(!canView) {
-                        String reason = NewsfeedJSONHelper.getErrorMessage(res.getJSONObject(NewsfeedJSONHelper.VIEW).toString());
-                        mAddButton.setVisibility(View.GONE);
-                    } else {
-                        loadNextPage(false);
-                    }
-
-                    if(!canWrite) {
-                        String reason = NewsfeedJSONHelper.getErrorMessage(res.getJSONObject(NewsfeedJSONHelper.WRITE).toString());
-                        mAddButton.setVisibility(View.GONE);
-                    }*/
-
-                    String login = res.getString("login"); //TODO: remove this
-                    Toast.makeText(getContext(), login, Toast.LENGTH_LONG).show();
-                    loadNextPage(false);
-                } catch (JSONException e) {
-                    handled = false;
-                    e.printStackTrace();
-                }
-                break;
-            case NetworkChannel.NEWSFEED_SERVICE_GET_LIKES_LIST:
-                String errorMessage = NewsfeedJSONHelper.getErrorMessage(((String) o));
-
-                if(errorMessage != null) {
-                    onError(NetworkChannel.NEWSFEED_SERVICE_GET_LIKES_LIST, errorMessage);
-                    break;
-                }
-
-                try {
-                    JSONArray likes = new JSONArray(((String) o));
-                    ArrayList<NewsfeedLike> likesList = NewsfeedJSONHelper.createLikesList(likes);
-                    populateLikesWindow(likesList);
-                } catch (JSONException e) {
-                    Log.w(TAG, "Invalid likes list", e);
-                    handled = false;
-                }
-                break;
-            default:
-                handled = false;
-                break;
-        }
-
-        if(handled) {
-          /*  isLoadingPosts = false;
-
-            if(mSwipeToRefresh.isRefreshing()) {
-                mSwipeToRefresh.setRefreshing(false);
-                mAddButton.show();
-            }*/
-
-            NetworkChannel.getInstance().deleteObserver(this);
-        }
-    }
-
     public void refreshPost(String entityType, int entityId, NewsfeedPostsAdapter.AdapterUpdateType updateType) {
         mPostsAdapter.nRefreshPost(entityType, entityId, updateType);
+    }
+
+    private void showLikesWindow(String entityType, String entityId) {
+        DisplayMetrics dm = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
+
+        float widthOffset = NewsfeedUtils.pxToDp(getContext(), 50); //px to dp conversion
+        float heightOffset = NewsfeedUtils.pxToDp(getContext(), 150);
+
+        LikesPopupWindow likesPopupWindow = new LikesPopupWindow(getContext(), mSwipeToRefresh, dm.widthPixels - (int) widthOffset, dm.heightPixels - (int) heightOffset);
+        likesPopupWindow.show(entityType, entityId);
     }
 
     //LISTENERS FOR RECYCLERVIEW INTERACTION
@@ -365,35 +315,49 @@ public class NewsfeedFragment extends Fragment implements Observer, NewsfeedPost
         if(isLoadingPosts) {
             mNetworkInterface.nStopPendingRequest();
         }
-        showLikesWindow();
-        NetworkChannel.getInstance().getLikesList(p.getEntityType(), ""+p.getEntityId());
-        NetworkChannel.getInstance().addObserver(this);
+        showLikesWindow(p.getEntityType(), ""+p.getEntityId());
     }
 
     @Override
-    public void onPostImageClicked(JsonImage image, ImageView postImageView) {
+    public void onPostImageClicked(ImagePost post, ImageView postImageView) {
         if(isLoadingPosts) {
             mNetworkInterface.nStopPendingRequest();
         }
 
+        JsonImage image = post.getImage();
+        Post.User user = post.getUserInfo(post.getUserId());
+        NewsfeedImageInfo imageInfo = new NewsfeedImageInfo(image.getId(), image.getDescription(), post.getTimestamp(), user.getName(), user.getUserId(), null, -1, null);
         Intent intent = new Intent(getContext(), FullscreenActivity.class);
         intent.putExtra(FullscreenActivity.URI_ARGUMENT, Uri.parse(image.getPreviewUrl()));
-        intent.putExtra(FullscreenActivity.CURRENT_IMAGE_ID_ARGUMENT, image.getId());
-        intent.putExtra(FullscreenActivity.IMAGES_ARGUMENT, new int[] {image.getId()});
+        intent.putExtra(FullscreenActivity.CURRENT_IMAGE_INFO_ARGUMENT, imageInfo);
+        intent.putExtra(FullscreenActivity.IMAGES_ARGUMENT, new String[] {image.getId()}); //TODO: implement visualization of multiple images
         intent.putExtra(FullscreenActivity.FRAGMENT_TYPE_ARGUMENT, FullscreenActivity.FRAGMENT_TYPE_IMAGE);
 
-        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), postImageView, NewsfeedUtils.getStringResource(getActivity(), R.string.image_transition_name));
+        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), postImageView, NewsfeedUtils.getStringResource(getActivity(), R.string.newsfeed_image_transition_name));
 
         startActivity(intent, options.toBundle());
         getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+    }
 
-/*        ImageVisualizationFragment imageVisualizationFragment = ImageVisualizationFragment.newInstance(image.getId(), Uri.parse(image.getPreviewUrl()), new int[]{image.getId()});
+    @Override
+    public void onPostImageClicked(ImageListPost post, String selectedImageId, ImageView postImageView) {
+        if(isLoadingPosts) {
+            mNetworkInterface.nStopPendingRequest();
+        }
 
-        getFragmentManager().beginTransaction()
-                .addToBackStack(ImageVisualizationFragment.FRAGMENT_NAME)
-                .addSharedElement(postImageView, ViewCompat.getTransitionName(postImageView))
-                .(R.id.container, imageVisualizationFragment)
-                .commit();*/
+        JsonImage image = post.getImageById(selectedImageId);
+        Post.User user = post.getUserInfo(post.getUserId());
+        NewsfeedImageInfo imageInfo = new NewsfeedImageInfo(image.getId(), image.getDescription(), post.getTimestamp(), user.getName(), user.getUserId(), null, -1, null);
+        Intent intent = new Intent(getContext(), FullscreenActivity.class);
+        intent.putExtra(FullscreenActivity.URI_ARGUMENT, Uri.parse(image.getPreviewUrl()));
+        intent.putExtra(FullscreenActivity.CURRENT_IMAGE_INFO_ARGUMENT, imageInfo);
+        intent.putExtra(FullscreenActivity.IMAGES_ARGUMENT, post.getIdList()); //TODO: implement visualization of multiple images
+        intent.putExtra(FullscreenActivity.FRAGMENT_TYPE_ARGUMENT, FullscreenActivity.FRAGMENT_TYPE_IMAGE);
+
+        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), postImageView, NewsfeedUtils.getStringResource(getActivity(), R.string.newsfeed_image_transition_name));
+
+        startActivity(intent, options.toBundle());
+        getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
     @Override
@@ -417,9 +381,9 @@ public class NewsfeedFragment extends Fragment implements Observer, NewsfeedPost
         final ContextActionMenuItem item = p.getContextActionMenuItem(actionType);
 
         switch (item.getActionType()) {
-            case DELETE:
+            case DELETE_POST:
                 new AlertDialog.Builder(this.getContext())
-                        .setTitle(R.string.newsfeed_delete_confirm)
+                        .setMessage(R.string.newsfeed_delete_confirm)
                         .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
@@ -434,32 +398,26 @@ public class NewsfeedFragment extends Fragment implements Observer, NewsfeedPost
                         })
                         .show();
                 break;
-            case FLAG:
-                final List<String> options = item.getOptions();
-                final Map<String, String> optionsLabelKey = new HashMap<>(options.size());
-                for (String key : options) {
-                    int stringId = getResources().getIdentifier("newsfeed_flag_"+key, "string", getActivity().getPackageName());
-                    String label = NewsfeedUtils.getStringResource(getContext(), stringId);
-                    optionsLabelKey.put(label, key);
-                }
+            case FLAG_CONTENT:
+                final String[] reasonKeys = getResources().getStringArray(R.array.newsfeed_flag_reason);
+                final String[] reasonsLabel = new String[reasonKeys.length];
 
-                final String[] optionsLabel = optionsLabelKey.keySet().toArray(new String[3]);
+                for(int i = 0; i<reasonKeys.length; i++) {
+                    reasonsLabel[i] = NewsfeedUtils.getStringByResourceName(getContext(), getActivity().getPackageName(), "newsfeed_", reasonKeys[i]);
+                }
 
                 final ArrayAdapter<String> chooseList = new ArrayAdapter<>(
                         getContext(),
                         android.R.layout.simple_list_item_1,
-                        optionsLabel
+                        reasonsLabel
                 );
                 new AlertDialog.Builder(getContext())
                         .setTitle(R.string.newsfeed_select_reason)
                         .setSingleChoiceItems(chooseList, 0, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                String reasonLabel = optionsLabel[i];
-                                String reason = optionsLabelKey.get(reasonLabel);
-
+                                String reason = reasonKeys[i];
                                 dialogInterface.dismiss();
-
                                 mNetworkInterface.nFlagContent(position, reason);
                             }
                         })
@@ -477,65 +435,6 @@ public class NewsfeedFragment extends Fragment implements Observer, NewsfeedPost
         startActivity(browserIntent);
     }
 
-
-    private void showLikesWindow() {
-        if(mLikesWindow == null) {
-            View view = getActivity().getLayoutInflater().inflate(R.layout.newsfeed_likes_window, null);
-
-            Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar2);
-
-            toolbar.setNavigationIcon(R.drawable.ic_arrow_back_24dp);
-            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    mLikesWindow.dismiss();
-                }
-            });
-            toolbar.setSubtitle(NewsfeedUtils.getStringResource(getContext(), R.string.newsfeed_base_post_likes_string));
-
-            DisplayMetrics dm = new DisplayMetrics();
-            getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
-            float widthOffset = 50 * dm.density; //px to dp conversion
-            float heightOffset = 150 * dm.density;
-
-            mLikesWindow = new PopupWindow(view, dm.widthPixels - (int) widthOffset, dm.heightPixels - (int) heightOffset);
-
-            mLikesWindow.setFocusable(true);
-            mLikesWindow.setBackgroundDrawable(null);
-            mLikesWindow.setTouchable(true);
-            mLikesWindow.setOutsideTouchable(true);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                mLikesWindow.setElevation(5.0f);
-            }
-            mLikesWindow.setAnimationStyle(android.R.style.Animation_Dialog);
-        }
-
-        View view = mLikesWindow.getContentView();
-        ListView list = (ListView) view.findViewById(R.id.newsfeed_likes_window_list_view);
-        ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.newsfeed_likes_window_progress_bar);
-
-        list.setVisibility(View.GONE);
-        progressBar.setVisibility(View.VISIBLE);
-
-        mLikesWindow.showAtLocation(mSwipeToRefresh, Gravity.CENTER, 0, 0);
-        mLikesWindow.update();
-    }
-
-    private void populateLikesWindow(List<NewsfeedLike> likes) {
-        if(mLikesWindow != null){
-            View view = mLikesWindow.getContentView();
-            ListView list = (ListView) view.findViewById(R.id.newsfeed_likes_window_list_view);
-            ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.newsfeed_likes_window_progress_bar);
-
-            list.setVisibility(View.VISIBLE);
-            progressBar.setVisibility(View.GONE);
-            NewsfeedLikesListAdapter adapter = new NewsfeedLikesListAdapter(getContext(), 0, likes);
-            list.setAdapter(adapter);
-
-            mLikesWindow.update();
-        }
-    }
-
     //MESSAGES FROM MODEL
     @Override
     public void onContentLoadingStarted(boolean resetList) {
@@ -545,6 +444,25 @@ public class NewsfeedFragment extends Fragment implements Observer, NewsfeedPost
         }
 
         isLoadingPosts = true;
+    }
+
+    @Override
+    public void onAuthorizationResult(boolean canView, boolean canWrite) {
+        if(canView) {
+            Handler h = new Handler();
+            h.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    loadNextPage(true);
+                }
+            }, 500);
+        } else {
+
+        }
+
+        if(!canWrite) {
+            mAddButton.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -578,7 +496,13 @@ public class NewsfeedFragment extends Fragment implements Observer, NewsfeedPost
 
     @Override
     public void onError(String service, String message) {
-        Toast.makeText(getContext(), service + ": " + message, Toast.LENGTH_LONG).show();
+        //Toast.makeText(getContext(), service + ": " + message, Toast.LENGTH_LONG).show();
+        Log.e(TAG, service + ": " + message);
+    }
+
+    @Override
+    public void onError(int resource) {
+        Toast.makeText(getContext(), resource, Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -592,18 +516,4 @@ public class NewsfeedFragment extends Fragment implements Observer, NewsfeedPost
                 }).show();
     }
 
-    /*@Override
-    public void onLikeButtonClicked(Post p, int position) {
-        NetworkChannel.getInstance().addObserver(this);
-        lastPostUpdated = p;
-        lastPostUpdatedPosition = position;
-
-        if(!p.isLiked()) {
-            p.setLiked(true);
-            NetworkChannel.getInstance().nLikeUnlikePost(p.getEntityType(), p.getEntityId());
-        } else {
-            p.setLiked(false);
-            NetworkChannel.getInstance().unlikePost(p.getEntityType(), p.getEntityId());
-        }
-    }*/
 }

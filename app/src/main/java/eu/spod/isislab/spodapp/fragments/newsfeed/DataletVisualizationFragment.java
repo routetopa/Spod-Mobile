@@ -82,11 +82,21 @@ public class DataletVisualizationFragment extends Fragment {
         //dataletVebView.getSettings().setLoadWithOverviewMode(true);
         //dataletVebView.getSettings().setSupportZoom(true);
         //dataletVebView.getSettings().setBuiltInZoomControls(true);
-        dataletVebView.getSettings().setJavaScriptEnabled(true);
+        //dataletVebView.getSettings().setJavaScriptEnabled(true);
         //dataletVebView.getSettings().setGeolocationEnabled(false);
         //dataletVebView.getSettings().setLoadsImagesAutomatically(true);
 
+        dataletVebView.getSettings().setUserAgentString("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.79 Safari/537.36");
+        dataletVebView.getSettings().setJavaScriptEnabled(true);
+        dataletVebView.getSettings().setLoadWithOverviewMode(true);
+        dataletVebView.getSettings().setUseWideViewPort(true);
 
+        dataletVebView.getSettings().setSupportZoom(true);
+        dataletVebView.getSettings().setBuiltInZoomControls(true);
+        dataletVebView.getSettings().setDisplayZoomControls(false);
+
+        dataletVebView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
+        dataletVebView.setScrollbarFadingEnabled(false);
 
         /*dataletVebView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override

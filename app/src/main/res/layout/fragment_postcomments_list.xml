@@ -4,7 +4,7 @@
     android:name="eu.spod.isislab.spodapp.fragments.PostCommentsFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="eu.spod.isislab.spodapp.fragments.PostCommentsFragment"
+    tools:context="eu.spod.isislab.spodapp.fragments.newsfeed.PostCommentsFragment"
     android:orientation="vertical">
 
     <android.support.v4.widget.SwipeRefreshLayout
@@ -80,7 +80,7 @@
                 android:columnCount="5"
                 android:rowCount="1">
 
-                <eu.spod.isislab.spodapp.utils.CustomImageViewCircularShape
+                <ImageView
                     android:id="@+id/newsfeed_comment_editor_user_image"
                     android:layout_width="50dp"
                     android:layout_height="50dp"

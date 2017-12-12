@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="eu.spod.isislab.spodapp.fragments.NewsfeedFragment">
+    tools:context="eu.spod.isislab.spodapp.fragments.newsfeed.NewsfeedFragment">
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/newsfeed_post_list_swipe_refresh_layout"
@@ -29,7 +29,8 @@
         android:tint="@android:color/white"
         android:layout_margin="@dimen/fab_margin"
         app:layout_behavior="eu.spod.isislab.spodapp.utils.FABHideOnScroll"
-        android:clickable="true"/>
+        android:clickable="true"
+        android:focusable="true"/>
 
     <!-- app:srcCompat="@drawable/ic_add_black_24dp" -->
 

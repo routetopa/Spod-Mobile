@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "25.0.3"
+    //buildToolsVersion "25.0.3"
     defaultConfig {
         applicationId "eu.spod.isislab.spodapp"
         minSdkVersion 16
@@ -48,7 +48,7 @@ dependencies {
     compile 'com.google.android.gms:play-services-location:10.0.0'*/
 
     compile 'com.android.support:appcompat-v7:25.2.0'
-    compile 'com.android.support:design:25.2.0'
+    compile 'com.android.support:design:25.0.1'
 
 
     compile 'org.apache.httpcomponents:httpcore:4.3.2'
@@ -64,11 +64,10 @@ dependencies {
     testCompile 'junit:junit:4.12'
 
     //newsfeed
-    compile 'com.android.support:cardview-v7:25.0.1'
-    compile 'com.android.support:recyclerview-v7:25.0.1'
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    compile 'com.android.support:palette-v7:25.3.1'
+    compile 'com.android.support:cardview-v7:25.4.0'
+    compile 'com.android.support:recyclerview-v7:25.4.0'
+    compile 'com.android.support:palette-v7:25.4.0'
 }
 
 
-apply plugin: 'com.google.gms.google-services'
+//apply plugin: 'com.google.gms.google-services'

@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 
+import eu.spod.isislab.spodapp.R;
 import eu.spod.isislab.spodapp.adapters.NewsfeedPostsAdapter;
 
 import eu.spod.isislab.spodapp.entities.ContextActionMenuItem;
@@ -33,6 +34,8 @@ public class NewsfeedPostModel implements Observer, NewsfeedPostNetworkInterface
 
     private String mCurrentFeedType;
     private String mCurrentFeedId;
+    private boolean mCurrentUserCanView = false;
+    private boolean mCurrentUserCanWrite = false;
 
     private int mCurrentPage = -1;
     private int mPostPageCount = NewsfeedUtils.DEFAULT_ITEM_PER_PAGE_COUNT;
@@ -48,7 +51,7 @@ public class NewsfeedPostModel implements Observer, NewsfeedPostNetworkInterface
 
         @Override
         public void onFinish() {
-            NetworkChannel.getInstance().stopFeedRequest();
+            NetworkChannel.getInstance().stopRequest(Consts.NEWSFEED_GET_POSTS);
             NetworkChannel.getInstance().deleteObserver(NewsfeedPostModel.this);
 
             mCurrentPage = mCurrentPage - 1; //current page not loaded, so we return to previous page
@@ -102,7 +105,9 @@ public class NewsfeedPostModel implements Observer, NewsfeedPostNetworkInterface
 
         handler.post(r);
 
-        mAdapter.setHasFooter(true);
+        if(posts.size() == mPostPageCount) {
+            mAdapter.setHasFooter(true);
+        }
     }
 
     public Post get(int position) {
@@ -167,7 +172,39 @@ public class NewsfeedPostModel implements Observer, NewsfeedPostNetworkInterface
         String currentService = NetworkChannel.getInstance().getCurrentService();
 
         switch (currentService) {
-            case NetworkChannel.NEWSFEED_SERVICE_GET_FEED:
+            case Consts.NEWSFEED_SERVICE_GET_AUTHORIZATION:
+                try {
+                    JSONObject res = new JSONObject((String) o);
+                    /* Code for check user's authorization to view/write on current feed.*/
+                    String errorMessage = NewsfeedJSONHelper.getErrorMessage((String) o);
+                    if(errorMessage != null) {
+                        mModelListener.onError(NetworkChannel.getInstance().getCurrentService(), errorMessage);
+                        break;
+                    }
+
+                    mCurrentUserCanView = NewsfeedJSONHelper.isAuthorized(res, NewsfeedJSONHelper.VIEW);
+                    mCurrentUserCanWrite = NewsfeedJSONHelper.isAuthorized(res, NewsfeedJSONHelper.WRITE);
+
+                    if(!mCurrentUserCanView) {
+                        String reason = NewsfeedJSONHelper.getErrorMessage(res.getJSONObject(NewsfeedJSONHelper.VIEW).toString());
+                        mModelListener.onError(currentService, "You cannot see this feed. Reason: " + reason);
+                    }
+
+                    if(!mCurrentUserCanWrite) {
+                        String reason = NewsfeedJSONHelper.getErrorMessage(res.getJSONObject(NewsfeedJSONHelper.WRITE).toString());
+                        mModelListener.onError(currentService, "You cannot write on this feed. Reason: " + reason);
+                    }
+
+                    String login = res.getString("login"); //TODO: remove this
+                    mModelListener.onError(currentService, login);
+
+                    mModelListener.onAuthorizationResult(mCurrentUserCanView, mCurrentUserCanWrite);
+                } catch (JSONException e) {
+                    handled = false;
+                    e.printStackTrace();
+                }
+                break;
+            case Consts.NEWSFEED_SERVICE_GET_FEED:
                 JSONArray jsonPostsArray;
                 try {
                     jsonPostsArray = new JSONArray(response);
@@ -175,6 +212,7 @@ public class NewsfeedPostModel implements Observer, NewsfeedPostNetworkInterface
                     String errorMessage = NewsfeedJSONHelper.getErrorMessage(response);
 
                     if(errorMessage != null) {
+                        mRequestTimer.cancel();
                         mModelListener.onError(currentService, errorMessage);
                     } else {
                         handled = false;
@@ -211,7 +249,7 @@ public class NewsfeedPostModel implements Observer, NewsfeedPostNetworkInterface
                     mAdapter.notifyDataSetChanged();
                 }
                 break;
-            case NetworkChannel.NEWSFEED_SERVICE_GET_POST:
+            case Consts.NEWSFEED_SERVICE_GET_POST:
                 try {
                     String errorMessage = NewsfeedJSONHelper.getErrorMessage(response);
                     if(errorMessage != null) {
@@ -232,7 +270,7 @@ public class NewsfeedPostModel implements Observer, NewsfeedPostNetworkInterface
                     handled = false;
                 }
                 break;
-            case NetworkChannel.NEWSFEED_SERVICE_ADD_NEW_STATUS:
+            case Consts.NEWSFEED_SERVICE_ADD_NEW_STATUS:
                 String errorMessage = NewsfeedJSONHelper.getErrorMessage(response);
                 if(errorMessage != null) {
                     mModelListener.onError(currentService, errorMessage);
@@ -250,8 +288,8 @@ public class NewsfeedPostModel implements Observer, NewsfeedPostNetworkInterface
                     handled = false;
                 }
                 break;
-            case NetworkChannel.NEWSFEED_SERVICE_LIKE_POST:
-            case NetworkChannel.NEWSFEED_SERVICE_UNLIKE_POST:
+            case Consts.NEWSFEED_SERVICE_LIKE_POST:
+            case Consts.NEWSFEED_SERVICE_UNLIKE_POST:
                 try {
                     JSONObject jsonLikeResponse = new JSONObject(response);
                     boolean result = jsonLikeResponse.getBoolean(NewsfeedJSONHelper.RESULT);
@@ -290,7 +328,6 @@ public class NewsfeedPostModel implements Observer, NewsfeedPostNetworkInterface
     private void updatePostAtPosition(final int position, final Post post, final NewsfeedPostsAdapter.AdapterUpdateType updateType) {
 
         replaceAtPosition(post, position, updateType);
-        //mPostsList.getAdapter().notifyItemChanged(position, updateType);
 
         lastPostUpdated = null;
         lastPostUpdatedPosition = -1;
@@ -298,8 +335,21 @@ public class NewsfeedPostModel implements Observer, NewsfeedPostNetworkInterface
     }
 
     //METHODS FOR NETWORK COMMUNICATION
+
+
+    @Override
+    public void nRequestAuthorization() {
+        NetworkChannel.getInstance().addObserver(this);
+        NetworkChannel.getInstance().getNewsfeedAuthorization(mCurrentFeedType, mCurrentFeedId);
+    }
+
     @Override
     public void nLoadFeedPage(boolean resetList) {
+        if(!mCurrentUserCanView) {
+            mModelListener.onError(R.string.newsfeed_view_not_authorized);
+            return;
+        }
+
         mRequestTryCount++;
         mModelListener.onContentLoadingStarted(resetList);
 
@@ -334,10 +384,13 @@ public class NewsfeedPostModel implements Observer, NewsfeedPostNetworkInterface
 
     @Override
     public void nSendPost(String message, byte[] attachment, String filename) {
-        Log.d(TAG, "nSendPost: " + mCurrentFeedType);
+        if(!mCurrentUserCanWrite) {
+            mModelListener.onError(R.string.newsfeed_write_not_authorized);
+            return;
+        }
+
         NetworkChannel.getInstance().sendStatus(mCurrentFeedType, mCurrentFeedId, message, attachment, filename);
         NetworkChannel.getInstance().addObserver(this);
-        Log.d(TAG, "nSendPost: " + mCurrentFeedType);
     }
 
     @Override
@@ -368,9 +421,9 @@ public class NewsfeedPostModel implements Observer, NewsfeedPostNetworkInterface
         }
 
         Post p = get(position);
-        ContextActionMenuItem action = p.getContextActionMenuItem(ContextActionMenuItem.ContextActionType.DELETE);
+        ContextActionMenuItem action = p.getContextActionMenuItem(ContextActionMenuItem.ContextActionType.DELETE_POST);
 
-        NetworkChannel.getInstance().deleteContent(action.getActionUrl(), action.getParams());
+        NetworkChannel.getInstance().deletePost(action.getParams());
         NetworkChannel.getInstance().addObserver(this);
 
         remove(position);
@@ -383,11 +436,10 @@ public class NewsfeedPostModel implements Observer, NewsfeedPostNetworkInterface
         }
 
         Post p = get(position);
-        ContextActionMenuItem action = p.getContextActionMenuItem(ContextActionMenuItem.ContextActionType.FLAG);
+        ContextActionMenuItem action = p.getContextActionMenuItem(ContextActionMenuItem.ContextActionType.FLAG_CONTENT);
         Map<String, String> params = action.getParams();
-        params.put(action.getParamOptionsTarget(), reason);
 
-        NetworkChannel.getInstance().flagContent(action.getActionUrl(), params);
+        NetworkChannel.getInstance().flagContent(params, reason);
         NetworkChannel.getInstance().addObserver(this);
     }
 
@@ -395,7 +447,7 @@ public class NewsfeedPostModel implements Observer, NewsfeedPostNetworkInterface
     public void nStopPendingRequest() {
         if(mIsLoading) {
             mCurrentPage = mCurrentPage - 1;
-            NetworkChannel.getInstance().stopFeedRequest();
+            NetworkChannel.getInstance().stopRequest(Consts.NEWSFEED_GET_POSTS);
             mRequestTimer.cancel();
             mModelListener.onContentLoadStopped();
             mIsLoading = false;
@@ -404,10 +456,12 @@ public class NewsfeedPostModel implements Observer, NewsfeedPostNetworkInterface
 
 
     public interface NewsfeedPostModelListener {
+        void onAuthorizationResult(boolean canView, boolean canWrite);
         void onContentLoadingStarted(boolean resetList);
         void onContentLoaded(boolean scrollOnTop);
         void onContentLoadStopped();
         void onError(String service, String message);
+        void onError(int resource);
         void onFeedLoadingTimeout();
     }
 

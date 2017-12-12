@@ -104,7 +104,7 @@ public class NetworkChannel extends Observable
     {
         final ProgressDialog loading = (splash) ? ProgressDialog.show(mainActivity,"SPOD Mobile",mainActivity.getResources().getString(R.string.wait_network_message),false,false)
                                                 : null;
-        StringRequest postRequest = new StringRequest(Request.Method.POST, Consts.SPOD_ENDPOINT + url,
+        //StringRequest postRequest = new StringRequest(Request.Method.POST, Consts.SPOD_ENDPOINT + url,
        /* StringRequest postRequest = new StringRequest(Request.Method.POST, ((service != null &&
                 (service.equals(Consts.SERVICE_SAVE_NOTIFICATION) ||
                  service.equals(Consts.SERVICE_COCREATION_GET_ROOMS) ||
@@ -116,6 +116,9 @@ public class NetworkChannel extends Observable
                  service.equals(Consts.SERVICE_FIREBASE_REGISTRATION)
                 ))
                 ? "http://172.16.15.77" : Consts.SPOD_ENDPOINT) + url,*/
+
+                StringRequest postRequest = new StringRequest(Request.Method.POST,
+                (service != null && service.contains("NEWSFEED")) ? "http://172.16.15.137/oxwall" + url : Consts.SPOD_ENDPOINT + url, //TODO: remove this
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -136,6 +139,10 @@ public class NetworkChannel extends Observable
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> headers = new HashMap<>();
                 headers.put("X-Requested-With", "XMLHttpRequest");
+
+                if(params.containsKey("ow_login")) {
+                    headers.put("Cookie", params.get("ow_login")); //TODO: remove this
+                }
                 return headers;
             }
 
@@ -154,11 +161,13 @@ public class NetworkChannel extends Observable
         mRequestQueue.add(postRequest);
     }
 
-    public void stopFeedRequest() {
+    public void stopRequest(String requestUrlConst) {
+        final String url = Consts.SPOD_ENDPOINT + requestUrlConst;
+
         mRequestQueue.cancelAll(new RequestQueue.RequestFilter() {
             @Override
             public boolean apply(Request<?> request) {
-                if(Consts.NEWSFEED_GET_POSTS.equals(request.getUrl())) {
+                if(request.getUrl().equals(url)) {
                     return true;
                 }
                 return false;
@@ -174,7 +183,7 @@ public class NetworkChannel extends Observable
         final ProgressDialog loading = (splash) ? ProgressDialog.show(mainActivity,"SPOD Mobile",mainActivity.getResources().getString(R.string.wait_network_message),false,false)
                 : null;
 
-        VolleyMultipartRequest multipartRequest = new VolleyMultipartRequest(Request.Method.POST, Consts.SPOD_ENDPOINT + url , new Response.Listener<NetworkResponse>() {
+        //VolleyMultipartRequest multipartRequest = new VolleyMultipartRequest(Request.Method.POST, Consts.SPOD_ENDPOINT + url , new Response.Listener<NetworkResponse>() {
        /* VolleyMultipartRequest multipartRequest = new VolleyMultipartRequest(Request.Method.POST,  ((service != null &&
                 (service.equals(Consts.SERVICE_SAVE_NOTIFICATION) ||
                         service.equals(Consts.SERVICE_COCREATION_GET_ROOMS) ||
@@ -185,6 +194,9 @@ public class NetworkChannel extends Observable
                         service.equals(Consts.SERVICE_FIREBASE_REGISTRATION)
                 ))
                 ? "http://172.16.15.77" : Consts.SPOD_ENDPOINT) + url, new Response.Listener<NetworkResponse>() {*/
+        VolleyMultipartRequest multipartRequest = new VolleyMultipartRequest(Request.Method.POST,
+                (service != null && service.contains("NEWSFEED")) ? "http://172.16.15.137/oxwall" + url : Consts.SPOD_ENDPOINT + url,
+                new Response.Listener<NetworkResponse>() {
             @Override
             public void onResponse(NetworkResponse response) {
                 String resultResponse = new String(response.data);
@@ -402,6 +414,14 @@ public class NetworkChannel extends Observable
         Map<String, String> params = new HashMap<>();
         params.put("ft", feedType);
         params.put("fi", feedId);
+
+        //TODO: remove this
+        if(feedId.equals("1")) {
+            params.put("ow_login", "ow_login=b6de8fe38f64d5a8f40dacc4673acb58");
+        } else if(feedId.equals("4")) {
+            params.put("ow_login", "ow_login=865728aa3ba7e334664f7df8a726faf8");
+        }
+
         makePostRequest(Consts.NEWSFEED_GET_AUTHORIZATION, params, true, Consts.NEWSFEED_SERVICE_GET_AUTHORIZATION);
     }
 
@@ -412,16 +432,16 @@ public class NetworkChannel extends Observable
         params.put("fi",    ""+feedId);
         params.put("offset", ""+offset);
         params.put("count",  ""+count);
-        makePostRequest(Consts.NEWSFEED_GET_POSTS, params, true, Consts.NEWSFEED_SERVICE_GET_FEED);
+        makePostRequest(Consts.NEWSFEED_GET_POSTS, params, false, Consts.NEWSFEED_SERVICE_GET_FEED);
     }
 
     public void getPost(String feedType, String feedId, String entityType, int entityId) {
         Map<String, String> params = new HashMap<>();
         params.put("etype", entityType);
         params.put("eid", String.valueOf(entityId));
-        params.put("ftype", feedType);
-        params.put("fid", String.valueOf(feedId));
-        makePostRequest(Consts.NEWSFEED_POST_GET_ITEM, params, true, Consts.NEWSFEED_SERVICE_GET_POST);
+        params.put("ft", feedType);
+        params.put("fi", String.valueOf(feedId));
+        makePostRequest(Consts.NEWSFEED_POST_GET_ITEM, params, false, Consts.NEWSFEED_SERVICE_GET_POST);
 
     }
 
@@ -452,19 +472,27 @@ public class NetworkChannel extends Observable
         makeMultipartRequest(Consts.NEWSFEED_POST_ADD_STATUS, params, partParams, true, Consts.NEWSFEED_SERVICE_ADD_NEW_STATUS);
     }
 
+    public void getLikesList(String entityType, String entityId) {
+        final HashMap<String, String> params = new HashMap<>(3);
+        params.put("etype", entityType);
+        params.put("eid", entityId);
+
+        makePostRequest(Consts.NEWSFEED_GET_LIKES_LIST, params, false, Consts.NEWSFEED_SERVICE_GET_LIKES_LIST);
+    }
+
     public void likePost(final String entityType, final int entityId) {
         Map<String, String> params = new HashMap<>();
-        params.put("entityType", entityType);
-        params.put("entityId", String.valueOf(entityId));
-        makePostRequest(Consts.NEWSFEED_POST_LIKE, params, true, Consts.NEWSFEED_SERVICE_LIKE_POST);
+        params.put("etype", entityType);
+        params.put("eid", String.valueOf(entityId));
+        makePostRequest(Consts.NEWSFEED_POST_LIKE, params, false, Consts.NEWSFEED_SERVICE_LIKE_POST);
 
     }
 
     public void unlikePost(final String entityType, final int entityId) {
         Map<String, String> params = new HashMap<>();
-        params.put("entityType", entityType);
-        params.put("entityId", String.valueOf(entityId));
-        makePostRequest(Consts.NEWSFEED_POST_UNLIKE, params, true, Consts.NEWSFEED_SERVICE_UNLIKE_POST);
+        params.put("etype", entityType);
+        params.put("eid", String.valueOf(entityId));
+        makePostRequest(Consts.NEWSFEED_POST_UNLIKE, params, false, Consts.NEWSFEED_SERVICE_UNLIKE_POST);
     }
 
     public void getPostComments(String entityType, int entityId, int page, int count){
@@ -477,7 +505,7 @@ public class NetworkChannel extends Observable
             params.put("count", ""+count);
         }
 
-        makePostRequest(Consts.NEWSFEED_GET_COMMENTS, params, true, Consts.NEWSFEED_SERVICE_GET_POST_COMMENTS);
+        makePostRequest(Consts.NEWSFEED_GET_COMMENTS, params, false, Consts.NEWSFEED_SERVICE_GET_POST_COMMENTS);
     }
 
     public void addComment(String entityType, int entityId, String pluginKey, int ownerId, String message, final byte[] attachment, final String fileName) {
@@ -504,20 +532,26 @@ public class NetworkChannel extends Observable
         makeMultipartRequest(Consts.NEWSFEED_POST_ADD_COMMENT, params, partParams, true, Consts.NEWSFEED_SERVICE_ADD_COMMENT);
     }
 
-    public void getPhotos(int[] photoIds) {
+    public void getPhotos(String[] photoIds) {
         Map<String, String> params = new HashMap<>();
-        for (int photoId : photoIds) {
+        for (String photoId : photoIds) {
             params.put("ids[" + photoId + "]", "" + photoId);
         }
-        makePostRequest(Consts.NEWSFEED_GET_PHOTOS, params, true, Consts.NEWSFEED_SERVICE_GET_PHOTOS);
+        makePostRequest(Consts.NEWSFEED_GET_PHOTOS, params, false, Consts.NEWSFEED_SERVICE_GET_PHOTOS);
     }
 
-    public void deleteContent(String actionUrl, final Map<String, String> actionParams){
-        makePostRequest(actionUrl, actionParams, true, Consts.NEWSFEED_SERVICE_NEWSFEED_DELETE);
+    public void deleteComment(Map<String, String> commentParams){
+        makePostRequest(Consts.NEWSFEED_DELETE_COMMENT, commentParams, true, Consts.NEWSFEED_SERVICE_DELETE_COMMENT);
     }
 
-    public void flagContent(String actionUrl, final Map<String, String> actionParams){
-        makePostRequest(actionUrl, actionParams, true, Consts.NEWSFEED_SERVICE_NEWSFEED_FLAG);
+    public void deletePost(Map<String, String> actionParams){
+        makePostRequest(Consts.NEWSFEED_DELETE_POST, actionParams, true, Consts.NEWSFEED_SERVICE_DELETE_POST);
+    }
+
+    public void flagContent(Map<String, String> params, final String reason){
+        params.put("reason", reason);
+
+        makePostRequest(Consts.NEWSFEED_FLAG_CONTENT, params, true, Consts.NEWSFEED_SERVICE_FLAG_CONTENT);
     }
 
     //FIREBASE NOTIFICATION

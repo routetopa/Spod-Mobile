@@ -21,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.RequestOptions;
 
 import java.io.File;
@@ -78,7 +79,10 @@ public class AddPostFragment extends DialogFragment implements PopupMenu.OnMenuI
 
         Glide.with(getContext())
                 .load(UserManager.getInstance().getAvatarImage())
-                .apply(new RequestOptions().placeholder(R.drawable.user_placeholder))
+                .apply(new RequestOptions()
+                        .placeholder(R.drawable.user_placeholder)
+                        .circleCrop())
+                .transition(new DrawableTransitionOptions().crossFade())
                 .into(mUserImageView);
 
 
@@ -145,8 +149,12 @@ public class AddPostFragment extends DialogFragment implements PopupMenu.OnMenuI
         }
 
         if (mCurrentAttachmentUri != null) {
-            Glide.with(getContext())
+            Glide.with(this)
                     .load(mCurrentAttachmentUri)
+                    .apply(new RequestOptions()
+                            .centerInside())
+                    .transition(new DrawableTransitionOptions()
+                            .crossFade())
                     .into(mAttachmentImageView);
             mAttachmentImageView.setVisibility(View.VISIBLE);
             mAddAttachmentButton.setVisibility(View.GONE);

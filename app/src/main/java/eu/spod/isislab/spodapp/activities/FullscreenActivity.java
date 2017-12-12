@@ -11,6 +11,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import eu.spod.isislab.spodapp.R;
+import eu.spod.isislab.spodapp.entities.NewsfeedImageInfo;
 import eu.spod.isislab.spodapp.fragments.newsfeed.DataletVisualizationFragment;
 import eu.spod.isislab.spodapp.fragments.newsfeed.ImageVisualizationFragment;
 
@@ -39,7 +40,7 @@ public class FullscreenActivity extends AppCompatActivity {
     public static final String FRAGMENT_TYPE_ARGUMENT = "eu.spod.isislab.spodapp.FullscreenActivity.fragment_type_argument";
     public static final String URI_ARGUMENT = "eu.spod.isislab.spodapp.FullscreenActivity.uri_argument";
     public static final String IMAGES_ARGUMENT = "eu.spod.isislab.spodapp.FullscreenActivity.image_argument";
-    public static final String CURRENT_IMAGE_ID_ARGUMENT = "eu.spod.isislab.spodapp.FullscreenActivity.current_image_id_argument";
+    public static final String CURRENT_IMAGE_INFO_ARGUMENT = "eu.spod.isislab.spodapp.FullscreenActivity.current_image_info_argument";
 
     public static final int FRAGMENT_TYPE_IMAGE = 0;
     public static final int FRAGMENT_TYPE_DATALET = 1;
@@ -127,10 +128,10 @@ public class FullscreenActivity extends AppCompatActivity {
             case FRAGMENT_TYPE_IMAGE:
                 mFullscreenModeEnabled = false;
 
-                int currentImageId = getIntent().getIntExtra(CURRENT_IMAGE_ID_ARGUMENT, -1);
-                int[] images = getIntent().getIntArrayExtra(IMAGES_ARGUMENT);
+                NewsfeedImageInfo currentImage = (NewsfeedImageInfo) getIntent().getSerializableExtra(CURRENT_IMAGE_INFO_ARGUMENT);
+                String[] images = getIntent().getStringArrayExtra(IMAGES_ARGUMENT);
                 Uri imageUrl = getIntent().getParcelableExtra(URI_ARGUMENT);
-                fragment = ImageVisualizationFragment.newInstance(currentImageId, imageUrl, images);
+                fragment = ImageVisualizationFragment.newInstance(imageUrl, currentImage, images);
                 backstackString = ImageVisualizationFragment.FRAGMENT_NAME;
                 break;
             case FRAGMENT_TYPE_DATALET:

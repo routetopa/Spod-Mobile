@@ -36,6 +36,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -54,12 +55,14 @@ import eu.spod.isislab.spodapp.utils.CompressBitmapTask;
 import eu.spod.isislab.spodapp.entities.ContextActionMenuItem;
 import eu.spod.isislab.spodapp.activities.FullscreenActivity;
 import eu.spod.isislab.spodapp.entities.NewsfeedComment;
+import eu.spod.isislab.spodapp.utils.Consts;
 import eu.spod.isislab.spodapp.utils.NewsfeedJSONHelper;
 import eu.spod.isislab.spodapp.utils.NewsfeedUtils;
 import eu.spod.isislab.spodapp.R;
 import eu.spod.isislab.spodapp.adapters.NewsfeedCommentsAdapter;
 import eu.spod.isislab.spodapp.adapters.NewsfeedPostsAdapter;
 import eu.spod.isislab.spodapp.utils.NetworkChannel;
+import eu.spod.isislab.spodapp.utils.UserManager;
 
 public class PostCommentsFragment extends Fragment implements Observer, PopupMenu.OnMenuItemClickListener, NewsfeedCommentsAdapter.CommentsAdapterInteractionListener {
 
@@ -131,8 +134,6 @@ public class PostCommentsFragment extends Fragment implements Observer, PopupMen
         mAttachmentImageView = (ImageView) contentView.findViewById(R.id.newsfeed_comment_editor_attachment_image_view);
 
         RecyclerView.LayoutManager lm = new LinearLayoutManager(mContext);
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mCommentsList.getContext(), DividerItemDecoration.VERTICAL);
-        mCommentsList.addItemDecoration(dividerItemDecoration);
 
         mCommentsList.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -169,7 +170,7 @@ public class PostCommentsFragment extends Fragment implements Observer, PopupMen
 
         initCommentEditor();
 
-        mSwipeRefreshLayout.setColorSchemeResources(R.color.indigo, R.color.soft_green, R.color.colorPrimary, R.color.colorAccent);
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorPrimaryDark, R.color.indigo);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -177,8 +178,10 @@ public class PostCommentsFragment extends Fragment implements Observer, PopupMen
             }
         });
         Glide.with(mContext)
-                .load(User.getInstance().getAvatarImage())
-                .placeholder(R.drawable.user_placeholder)
+                .load(UserManager.getInstance().getAvatarImage())
+                .apply(new RequestOptions()
+                        .placeholder(R.drawable.user_placeholder)
+                        .circleCrop())
                 .into(userImageView);
 
         return contentView;
@@ -296,6 +299,7 @@ public class PostCommentsFragment extends Fragment implements Observer, PopupMen
         if(reset) {
             mSwipeRefreshLayout.setRefreshing(true);
             mNewsfeedCommentsAdapter.clearList();
+            mNewsfeedCommentsAdapter.setHasFooter(false);
             mCurrentPage = -1;
         }
 
@@ -314,10 +318,10 @@ public class PostCommentsFragment extends Fragment implements Observer, PopupMen
 
         String fileName;
         if (currentAttachedImageUri != null) {
-            final ProgressDialog loading = ProgressDialog.show(mContext, "SPOD Mobile", "Please wait...", false, false);
+            final ProgressDialog loading = ProgressDialog.show(mContext, "SPOD Mobile", mContext.getString(R.string.wait_network_message), false, false);
             try {
                 String path = NewsfeedUtils.uriToPath(mContext, currentAttachedImageUri);
-                Bitmap bitmap = NewsfeedUtils.loadBitmap(path);
+                Bitmap bitmap = NewsfeedUtils.loadBitmap(getContext(), path);
 
                 if(bitmap == null) {
                     throw new IOException();
@@ -338,10 +342,11 @@ public class PostCommentsFragment extends Fragment implements Observer, PopupMen
                 });
 
                 compressTask.execute(bitmap);
+                bitmap = null;
             } catch (IOException e) {
                 loading.dismiss();
                 Log.e(TAG, "sendComment: " + e.getMessage(), e);
-                Toast.makeText(mContext, "Failed image loading", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "Failed image loading", Toast.LENGTH_SHORT).show(); //TODO: add to string.xml
                 return;
             }
         } else {
@@ -406,7 +411,7 @@ public class PostCommentsFragment extends Fragment implements Observer, PopupMen
         Log.d(TAG, "update: " + o);
         boolean handled = false;
         switch (NetworkChannel.getInstance().getCurrentService()) {
-            case NetworkChannel.NEWSFEED_SERVICE_GET_POST_COMMENTS:
+            case Consts.NEWSFEED_SERVICE_GET_POST_COMMENTS:
                 mSwipeRefreshLayout.setRefreshing(false);
                 ArrayList<NewsfeedComment> commentsList = null;
                 try {
@@ -417,12 +422,12 @@ public class PostCommentsFragment extends Fragment implements Observer, PopupMen
                 }
 
                 if(commentsList != null && commentsList.size() == 0) {
-                        mNewsfeedCommentsAdapter.setHasFooter(false);
-                        mNewsfeedCommentsAdapter.notifyItemChanged(mNewsfeedCommentsAdapter.getItemCount());
+                    mNewsfeedCommentsAdapter.setHasFooter(false);
+                    mNewsfeedCommentsAdapter.notifyItemChanged(mNewsfeedCommentsAdapter.getItemCount());
                 }
                 if (commentsList != null && commentsList.size() > 0) {
                     mNewsfeedCommentsAdapter.appendData(commentsList);
-                    if(commentsList.size() >= 10) {
+                    if(commentsList.size() >= mPageItemCount) {
                         mNewsfeedCommentsAdapter.setHasFooter(true);
                     }
                 } else if(mNewsfeedCommentsAdapter.getItemCount() == 0) {
@@ -433,7 +438,7 @@ public class PostCommentsFragment extends Fragment implements Observer, PopupMen
                 isLoadingPosts = false;
                 handled = true;
                 break;
-            case NetworkChannel.NEWSFEED_SERVICE_ADD_COMMENT:
+            case Consts.NEWSFEED_SERVICE_ADD_COMMENT:
                 try {
                     JSONObject response = new JSONObject((String) o);
                     NewsfeedComment comment = NewsfeedJSONHelper.createComment(response);
@@ -449,7 +454,7 @@ public class PostCommentsFragment extends Fragment implements Observer, PopupMen
                 }
                 handled = true;
                 break;
-            case NetworkChannel.NEWSFEED_SERVICE_NEWSFEED_DELETE:
+            case Consts.NEWSFEED_SERVICE_DELETE_COMMENT:
                 updateNewsfeedFragment(mCurrentEntityType, mCurrentEntityId);
                 break;
         }
@@ -469,7 +474,7 @@ public class PostCommentsFragment extends Fragment implements Observer, PopupMen
         Intent intent = new Intent(mContext, FullscreenActivity.class);
         intent.putExtra(FullscreenActivity.URI_ARGUMENT, uri);
         intent.putExtra(FullscreenActivity.FRAGMENT_TYPE_ARGUMENT, FullscreenActivity.FRAGMENT_TYPE_IMAGE);
-        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), view, NewsfeedUtils.getStringResource(getActivity(), R.string.image_transition_name));
+        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), view, NewsfeedUtils.getStringResource(getActivity(), R.string.newsfeed_image_transition_name));
 
         startActivity(intent, options.toBundle());
         getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
@@ -486,7 +491,11 @@ public class PostCommentsFragment extends Fragment implements Observer, PopupMen
             case R.id.newsfeed_photo_attachment_add_menu_camera:
                 try {
                     File tempDir = getActivity().getExternalCacheDir();
+                    if(tempDir == null) {
+                        tempDir = getActivity().getCacheDir();
+                    }
                     tempDir = new File(tempDir.getAbsolutePath());
+
                     File tmpPhoto = File.createTempFile("photo", ".jpg", tempDir);
                     Intent captureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                     currentAttachedImageUri = Uri.fromFile(tmpPhoto);
@@ -514,13 +523,13 @@ public class PostCommentsFragment extends Fragment implements Observer, PopupMen
         final ContextActionMenuItem item = comment.getContextActionMenuItem(actionType);
 
         switch (item.getActionType()) {
-            case DELETE:
+            case DELETE_COMMENT:
                 new AlertDialog.Builder(this.getContext())
-                        .setTitle(R.string.newsfeed_delete_confirm)
+                        .setMessage(R.string.newsfeed_delete_confirm)
                         .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                NetworkChannel.getInstance().deleteContent(item.getActionUrl(), item.getParams());
+                                NetworkChannel.getInstance().deleteComment(item.getParams());
                                 NetworkChannel.getInstance().addObserver(PostCommentsFragment.this);
                                 mNewsfeedCommentsAdapter.deleteItemAtPosition(mNewsfeedCommentsAdapter.findItemPosition(comment.getId()));
                             }
@@ -533,34 +542,27 @@ public class PostCommentsFragment extends Fragment implements Observer, PopupMen
                         })
                         .show();
                 break;
-            case FLAG:
-                final List<String> options = item.getOptions();
-                final Map<String, String> optionsLabelKey = new HashMap<>(options.size());
-                for (String key : options) {
-                    int stringId = getResources().getIdentifier("newsfeed_flag_"+key, "string", getActivity().getPackageName());
-                    String label = NewsfeedUtils.getStringResource(getContext(), stringId);
-                    optionsLabelKey.put(label, key);
-                }
+            case FLAG_CONTENT:
+                final String[] reasonKeys = getResources().getStringArray(R.array.newsfeed_flag_reason);
+                final String[] reasonsLabel = new String[reasonKeys.length];
 
-                final String[] optionsLabel = optionsLabelKey.keySet().toArray(new String[3]);
+                for(int i = 0; i<reasonKeys.length; i++) {
+                    reasonsLabel[i] = NewsfeedUtils.getStringByResourceName(getContext(), getActivity().getPackageName(), "newsfeed_", reasonKeys[i]);
+                }
 
                 final ArrayAdapter<String> chooseList = new ArrayAdapter<>(
                         getContext(),
                         android.R.layout.simple_list_item_1,
-                        optionsLabel
+                        reasonsLabel
                 );
                 new AlertDialog.Builder(getContext())
                         .setTitle(R.string.newsfeed_select_reason)
                         .setSingleChoiceItems(chooseList, 0, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                String reasonLabel = optionsLabel[i];
-                                String reason = optionsLabelKey.get(reasonLabel);
-
-                                Map<String, String> params = item.getParams();
-                                params.put(item.getParamOptionsTarget(), reason);
+                                String reason = reasonKeys[i];
                                 dialogInterface.dismiss();
-                                NetworkChannel.getInstance().flagContent(item.getActionUrl(), params);
+                                NetworkChannel.getInstance().flagContent(item.getParams(), reason);
                                 NetworkChannel.getInstance().addObserver(PostCommentsFragment.this);
                             }
                         })

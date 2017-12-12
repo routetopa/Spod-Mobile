@@ -2,6 +2,7 @@ package eu.spod.isislab.spodapp.fragments.newsfeed;
 
 
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -11,7 +12,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
-import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,18 +19,23 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 
 import eu.spod.isislab.spodapp.entities.NewsfeedImageInfo;
+import eu.spod.isislab.spodapp.utils.Consts;
 import eu.spod.isislab.spodapp.utils.NewsfeedJSONHelper;
 import eu.spod.isislab.spodapp.utils.NewsfeedUtils;
 import eu.spod.isislab.spodapp.R;
@@ -41,13 +46,13 @@ public class ImageVisualizationFragment extends Fragment implements Observer {
     public static final String FRAGMENT_NAME = "ImageVisualizationFragment";
 
     private static final String ARG_IMAGE_IDS = "image_ids";
-    private static final String ARG_CURRENT_IMAGE_URI = "current_image_url";
-    private static final String ARG_CURRENT_IMAGE_ID = "current_image_id";
+    private static final String ARG_CURRENT_IMAGE = "current_image";
+    private static final String ARG_CURRENT_IMAGE_URI = "current_image_uri";
 
     private static final String TAG = "ImageVisualizationFr";
-    private int[] imageIds;
-    private Uri uri;
-    private int currentImageId;
+    private String[] imageIds;
+    private NewsfeedImageInfo currentImage;
+    private Uri currentImageUri;
 
     private ImageView mImageContainer;
     private TextView mUserNameText;
@@ -59,18 +64,18 @@ public class ImageVisualizationFragment extends Fragment implements Observer {
 
     private ActionBar mActionBar;
 
-    private SparseArray<NewsfeedImageInfo> mImages;
+    private Map<String, NewsfeedImageInfo> mImages;
 
     private boolean mUiVisible;
 
     public ImageVisualizationFragment() {}
 
-    public static ImageVisualizationFragment newInstance(int currentImageId, Uri uri, int[] images) {
+    public static ImageVisualizationFragment newInstance(Uri currentImageURI, NewsfeedImageInfo localImageInfo, String[] images) {
         ImageVisualizationFragment fragment = new ImageVisualizationFragment();
         Bundle args = new Bundle();
-        args.putParcelable(ARG_CURRENT_IMAGE_URI, uri);
-        args.putIntArray(ARG_IMAGE_IDS, images);
-        args.putInt(ARG_CURRENT_IMAGE_ID, currentImageId);
+        args.putParcelable(ARG_CURRENT_IMAGE_URI, currentImageURI);
+        args.putSerializable(ARG_CURRENT_IMAGE, localImageInfo);
+        args.putStringArray(ARG_IMAGE_IDS, images);
         fragment.setArguments(args);
         return fragment;
     }
@@ -79,9 +84,9 @@ public class ImageVisualizationFragment extends Fragment implements Observer {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            imageIds = getArguments().getIntArray(ARG_IMAGE_IDS);
-            uri = getArguments().getParcelable(ARG_CURRENT_IMAGE_URI);
-            currentImageId = getArguments().getInt(ARG_CURRENT_IMAGE_ID);
+            imageIds = getArguments().getStringArray(ARG_IMAGE_IDS);
+            currentImage = (NewsfeedImageInfo) getArguments().getSerializable(ARG_CURRENT_IMAGE);
+            currentImageUri = getArguments().getParcelable(ARG_CURRENT_IMAGE_URI);
         }
 
         /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -153,9 +158,13 @@ public class ImageVisualizationFragment extends Fragment implements Observer {
     public void onStart() {
         super.onStart();
 
-        if(uri != null) {
-            loadImage(uri);
+        if(currentImageUri != null) {
+            loadImage(currentImageUri);
             hideUI();
+        }
+
+        if(currentImage != null) {
+            fillInfoFields(currentImage);
         }
 
         if (imageIds != null) {
@@ -180,12 +189,12 @@ public class ImageVisualizationFragment extends Fragment implements Observer {
 
     @Override
     public void update(Observable observable, Object o) {
-        //TODO: implementare la richiesta di multiple foto con view pager
+        //TODO: implements multiple photo view with ViewPager
         Log.d(TAG, "update: " + o.toString());
 
         boolean handled = true;
 
-        if(NetworkChannel.NEWSFEED_SERVICE_GET_PHOTOS.equals(NetworkChannel.getInstance().getCurrentService())){
+        if(Consts.NEWSFEED_SERVICE_GET_PHOTOS.equals(NetworkChannel.getInstance().getCurrentService())){
             JSONArray a;
             try {
                 String errorMessage = NewsfeedJSONHelper.getErrorMessage(((String) o));
@@ -199,10 +208,10 @@ public class ImageVisualizationFragment extends Fragment implements Observer {
 
                 NewsfeedImageInfo toLoad = null;
 
-                if(currentImageId >= 0) {
-                    toLoad = mImages.get(currentImageId);
+                if(currentImage != null) {
+                    toLoad = mImages.get(currentImage.getId());
                 } else if(mImages.size() > 0){
-                    toLoad = mImages.valueAt(0);
+                    toLoad = null;
                 }
 
                 if(toLoad != null) {
@@ -222,10 +231,10 @@ public class ImageVisualizationFragment extends Fragment implements Observer {
 
 
     private void createImagesMap(List<NewsfeedImageInfo> imageList) {
-        mImages = new SparseArray<>(imageList.size());
+        mImages = new HashMap<>(imageList.size());
 
         for (NewsfeedImageInfo imageInfo : imageList) {
-            mImages.put(imageInfo.getId(), imageInfo);
+            mImages.put(String.valueOf(imageInfo.getId()), imageInfo);
         }
     }
 
@@ -248,21 +257,20 @@ public class ImageVisualizationFragment extends Fragment implements Observer {
     private void loadImage(Uri uri) {
         Glide.with(getContext())
                 .load(uri)
-                .listener(new RequestListener<Uri, GlideDrawable>() {
+                .listener(new RequestListener<Drawable>() {
                     @Override
-                    public boolean onException(Exception e, Uri model, Target<GlideDrawable> target, boolean isFirstResource) {
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                         startPostponedTransition();
                         return false;
                     }
 
                     @Override
-                    public boolean onResourceReady(GlideDrawable resource, Uri model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
                         startPostponedTransition();
                         return false;
                     }
                 })
-                .dontAnimate()
-                .dontTransform()
+                .apply(new RequestOptions().dontAnimate().dontTransform())
                 .into(mImageContainer);
     }
 
