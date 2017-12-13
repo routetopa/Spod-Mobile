@@ -14,12 +14,19 @@ import android.support.annotation.Nullable;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.text.format.DateUtils;
+import android.text.style.ClickableSpan;
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.util.regex.Pattern;
 
+import eu.spod.isislab.spodapp.R;
 import eu.spod.isislab.spodapp.entities.ContextActionMenuItem;
 
 public class NewsfeedUtils {
@@ -84,12 +91,16 @@ public class NewsfeedUtils {
         }
     }
 
-    public static String truncateString(String str, int limit) {
+    public static CharSequence truncateString(CharSequence str, int limit) {
         if(str == null || str.length() <= limit) {
             return str;
         }
 
-        return str.substring(0, limit) + "...";
+        return TextUtils.substring(str, 0, limit) + "...";
+    }
+
+    public static String truncateString(String str, int limit) { //method for backward compatibility
+        return (String) truncateString((CharSequence) str, limit);
     }
 
     public static String timeToString(Context ctx, long time) {
@@ -154,5 +165,53 @@ public class NewsfeedUtils {
         float density = ctx.getResources().getDisplayMetrics().density;
 
         return (int) (px * density);
+    }
+
+    public static void truncateWithViewMore(Context ctx, CharSequence text, int limit, final TextView target) {
+        if(text == null || text.length() <= 1000) {
+            target.setText(text);
+            return;
+        }
+
+        CharSequence truncatedStr = truncateString(text, 1000);
+        String viewMore = NewsfeedUtils.getStringResource(ctx, R.string.newsfeed_view_more);
+        String viewLess = NewsfeedUtils.getStringResource(ctx, R.string.newsfeed_view_less);
+
+        final SpannableString spannableMore = new SpannableString(truncatedStr + " " + viewMore);
+        final SpannableString spannableLess = new SpannableString(text + " " + viewLess);
+
+        spannableLess.setSpan(new ClickableSpan() {
+            @Override
+            public void onClick(View view) {
+                target.setText(spannableMore);
+            }
+        }, text.length() + 1, spannableLess.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        spannableMore.setSpan(new ClickableSpan() {
+            @Override
+            public void onClick(View view) {
+                target.setText(spannableLess);
+            }
+        }, truncatedStr.length() + 1, spannableMore.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        target.setText(spannableMore);
+    }
+
+    public static View viewVisibleIfNotNull(Object value, View v) {
+        if(value instanceof CharSequence) {
+            if(!TextUtils.isEmpty((CharSequence) value)) {
+                v.setVisibility(View.VISIBLE);
+                return v;
+            }
+        }
+
+        if(value != null) {
+            v.setVisibility(View.VISIBLE);
+            return v;
+        }
+
+
+        v.setVisibility(View.GONE);
+        return v;
     }
 }

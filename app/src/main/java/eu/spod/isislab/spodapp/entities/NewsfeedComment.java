@@ -8,6 +8,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import eu.spod.isislab.spodapp.utils.NewsfeedJSONHelper;
+
 public class NewsfeedComment {
     private int id;
     private int commentEntityId;
@@ -95,18 +97,8 @@ public class NewsfeedComment {
         return attachment;
     }
 
-    public void setAttachment(JSONObject attachment) {
-        this.attachment = new HashMap<>(attachment.length());
-        Iterator<String> keys = attachment.keys();
-        while (keys.hasNext()) {
-            String key = keys.next();
-            try {
-                this.attachment.put(key, String.valueOf(attachment.get(key)));
-            } catch (JSONException e) {
-                this.attachment = null;
-                break;
-            }
-        }
+    public void setAttachment(Map<String, String> attachment) {
+        this.attachment = attachment;
     }
 
     public List<ContextActionMenuItem> getContextActionMenu() {
@@ -125,5 +117,31 @@ public class NewsfeedComment {
         }
 
         return null;
+    }
+
+    public boolean hasAttachment() {
+        return attachment != null;
+    }
+
+    public boolean hasLinkImage() {
+        if(!hasAttachment() || !"link".equals(getAttachmentType())) {
+            return false;
+        }
+
+        return attachment.get("thumbnail_url") != null;
+    }
+
+
+    public String getAttachmentType() {
+        //If comment haven't 'type' filed we try an heuristic way to find it
+        if(!attachment.containsKey("type")) {
+            if(attachment.containsKey("thumbnail_url")) {
+                attachment.put("type", "link");
+            } else if(attachment.containsKey("url") && attachment.containsKey("href")) {
+                attachment.put("type", "photo");
+            }
+        }
+
+        return attachment.get("type");
     }
 }

@@ -96,9 +96,14 @@ public class NewsfeedJSONHelper {
     public static final String USER_DISPLAY_NAME          = "userDisplayName";
     public static final String AVATAR_URL                 = "avatarUrl";
 
-    /*OTHER KEYS*/
+    /*ERROR HANDLING KEYS*/
     public static final String RESULT                    = "result";
     public static final String MESSAGE                   = "message";
+    public static final String STATUS                    = "status";
+    public static final String ERROR_MESSAGE             = "error_message";
+    public static final String KO                        = "ko";
+
+    /*OTHER KEYS*/
     public static final String TIMESTAMP                 = "timestamp";
     private static final String ALBUM_NAME               = "albumName";
     private static final String ALBUM_ID                 = "albumId";
@@ -239,7 +244,7 @@ public class NewsfeedJSONHelper {
         NewsfeedComment c = new NewsfeedComment(id, commentEntityId, userName, avatarUrl, userId, time, message);
 
         if(attachmentString != null) {
-            c.setAttachment(new JSONObject(attachmentString));
+            c.setAttachment(convertToMap(new JSONObject(attachmentString)));
         }
 
         JSONArray contextActionMenu = comment.optJSONArray(CONTEXT_ACTION_MENU);
@@ -322,12 +327,13 @@ public class NewsfeedJSONHelper {
         return imageList;
     }
 
-    private static Map<String, String> convertToMap(JSONObject object) throws JSONException {
+    public static Map<String, String> convertToMap(JSONObject object) throws JSONException {
         Map<String, String> toReturn = new HashMap<>(object.length());
         Iterator<String> keys = object.keys();
         while (keys.hasNext()) {
             String key = keys.next();
-            toReturn.put(key, ""+object.get(key));
+            String value = object.isNull(key) ? null : String.valueOf(object.get(key));
+            toReturn.put(key, value);
         }
         return toReturn;
     }
@@ -370,10 +376,20 @@ public class NewsfeedJSONHelper {
     public static String getErrorMessage(String jsonObjectString) {
         try {
             JSONObject object = new JSONObject(jsonObjectString);
-            boolean result = object.getBoolean(RESULT);
+            if(object.has(RESULT)) {
+                boolean result = object.getBoolean(RESULT);
 
-            if(!result) {
-                return object.getString(MESSAGE);
+                if (!result) {
+                    return object.getString(MESSAGE);
+                }
+            }
+
+            if(object.has(STATUS)) {
+                String status = optString(object, STATUS);
+
+                if(KO.equals(status)) {
+                    return optString(object, ERROR_MESSAGE);
+                }
             }
 
             return null;

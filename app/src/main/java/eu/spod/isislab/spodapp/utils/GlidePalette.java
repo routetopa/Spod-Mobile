@@ -117,7 +117,9 @@ public class GlidePalette implements RequestListener<Drawable>{
     private void colorizeViews(Palette palette) {
         for (PaletteTarget<View> target : backgroundTargetViews) {
             Palette.Swatch requestedSwatch = getSwatchByType(palette, target.paletteType);
-            crossFadeBackgroundColor(target.targetView, getColorByType(requestedSwatch, target.colorType));
+            if(requestedSwatch != null) {
+                crossFadeBackgroundColor(target.targetView, getColorByType(requestedSwatch, target.colorType));
+            }
         }
 
         for (PaletteTarget<TextView> target : textTargetViews) {

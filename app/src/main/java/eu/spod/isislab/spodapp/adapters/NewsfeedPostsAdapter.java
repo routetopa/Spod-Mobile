@@ -558,7 +558,7 @@ public class NewsfeedPostsAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     }
 
-    private void spanText(String text, final TextView target) {
+    /*private void truncateWithViewMore(String text, final TextView target) {
         if(text == null || text.length() <= 1000) {
             target.setText(text);
             return;
@@ -588,7 +588,7 @@ public class NewsfeedPostsAdapter extends RecyclerView.Adapter<RecyclerView.View
         target.setText(spannableMore);
     }
 
-    private void spanText(Spanned text, final TextView target) {
+    private void truncateWithViewMore(Spanned text, final TextView target) {
         if(text == null || text.length() <= 1000) {
             target.setText(text);
             return;
@@ -617,13 +617,13 @@ public class NewsfeedPostsAdapter extends RecyclerView.Adapter<RecyclerView.View
         }, truncatedStr.length() + 1, spannableMore.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         target.setText(spannableMore);
-    }
+    }*/
 
     private void bindTextViewHolder(TextPostViewHolder h, int position) {
         Post post = mPosts.get(position);
         //h.statusTextView.setText(htmlToSpannedText(post.getStatus()));
 
-        spanText(htmlToSpannedText(post.getStatus()), h.statusTextView);
+        NewsfeedUtils.truncateWithViewMore(mContext, htmlToSpannedText(post.getStatus()), 1000,  h.statusTextView);
     }
 
     private void bindImageViewHolder(final ImagePostViewHolder h, int position) {
@@ -632,7 +632,7 @@ public class NewsfeedPostsAdapter extends RecyclerView.Adapter<RecyclerView.View
         h.statusTextView.setLinksClickable(true);
         h.statusTextView.setMovementMethod(LinkMovementMethod.getInstance());
         //h.statusTextView.setText(post.getStatus());
-        spanText(post.getStatus(), h.statusTextView);
+        NewsfeedUtils.truncateWithViewMore(mContext, post.getStatus(), 1000, h.statusTextView);
 
         String imageSrc = post.getImagePreviewUrl();
         h.contentImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
@@ -719,7 +719,7 @@ public class NewsfeedPostsAdapter extends RecyclerView.Adapter<RecyclerView.View
         } else {
             h.statusTextView.setVisibility(View.VISIBLE); //Repeated visibility for RecyclerView's reuse
             //h.statusTextView.setText(status);
-            spanText(status, h.statusTextView);
+            NewsfeedUtils.truncateWithViewMore(mContext, status, 1000, h.statusTextView);
         }
 
         if(post.hasImage()) {
@@ -752,7 +752,7 @@ public class NewsfeedPostsAdapter extends RecyclerView.Adapter<RecyclerView.View
         }
 
         String linkTitle = NewsfeedUtils.truncateString(post.getLinkTitle(), 100);
-        String linkDescription = NewsfeedUtils.truncateString(post.getLinkDescription(), 200);
+        String linkDescription =  NewsfeedUtils.truncateString(post.getLinkDescription(), 200);
 
         h.linkTitleTextView.setText(htmlToSpannedText(linkTitle));
 
@@ -794,7 +794,7 @@ public class NewsfeedPostsAdapter extends RecyclerView.Adapter<RecyclerView.View
         final DataletPost p = (DataletPost) mPosts.get(position);
 
         //h.statusTextView.setText(NewsfeedUtils.htmlToSpannedText(p.getStatus()));
-        spanText(p.getStatus(), h.statusTextView);
+        NewsfeedUtils.truncateWithViewMore(mContext, p.getStatus(),1000, h.statusTextView);
 
         h.dataletPreviewImageView.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -103,7 +103,7 @@ public class NetworkChannel extends Observable
     private void makePostRequest(String url, final Map<String, String> params, final boolean splash, final String service)
     {
         final ProgressDialog loading = (splash) ? ProgressDialog.show(mainActivity,"SPOD Mobile",mainActivity.getResources().getString(R.string.wait_network_message),false,false)
-                                                : null;
+                : null;
         StringRequest postRequest = new StringRequest(Request.Method.POST, Consts.SPOD_ENDPOINT + url,
        /* StringRequest postRequest = new StringRequest(Request.Method.POST, ((service != null &&
                 (service.equals(Consts.SERVICE_SAVE_NOTIFICATION) ||
@@ -118,7 +118,7 @@ public class NetworkChannel extends Observable
                 ? "http://172.16.15.77" : Consts.SPOD_ENDPOINT) + url,*/
 
                 /*StringRequest postRequest = new StringRequest(Request.Method.POST,
-                (service != null && service.contains("NEWSFEED")) ? "http://172.16.15.77" + url : Consts.SPOD_ENDPOINT + url,*/ //TODO: remove this
+                (service != null && service.contains("NEWSFEED")) ? "http://172.16.15.137/oxwall" + url : Consts.SPOD_ENDPOINT + url,*/ //TODO: remove this
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -184,16 +184,16 @@ public class NetworkChannel extends Observable
                 : null;
 
         VolleyMultipartRequest multipartRequest = new VolleyMultipartRequest(Request.Method.POST, Consts.SPOD_ENDPOINT + url , new Response.Listener<NetworkResponse>() {
-       /* VolleyMultipartRequest multipartRequest = new VolleyMultipartRequest(Request.Method.POST,  ((service != null &&
-                (service.equals(Consts.SERVICE_SAVE_NOTIFICATION) ||
-                        service.equals(Consts.SERVICE_COCREATION_GET_ROOMS) ||
-                        service.equals(Consts.SERVICE_COCREATION_JOIN_ROOM) ||
-                        service.equals(Consts.SERVICE_COCREATION_GET_ALL_FRIENDS) ||
-                        service.equals(Consts.SERVICE_COCREATION_INVITE_FRIENDS) ||
-                        service.equals(Consts.SERVICE_MEDIAROOM_ADD_NEW_ROW) ||
-                        service.equals(Consts.SERVICE_FIREBASE_REGISTRATION)
-                ))
-                ? "http://172.16.15.77" : Consts.SPOD_ENDPOINT) + url, new Response.Listener<NetworkResponse>() {*/
+            /* VolleyMultipartRequest multipartRequest = new VolleyMultipartRequest(Request.Method.POST,  ((service != null &&
+                     (service.equals(Consts.SERVICE_SAVE_NOTIFICATION) ||
+                             service.equals(Consts.SERVICE_COCREATION_GET_ROOMS) ||
+                             service.equals(Consts.SERVICE_COCREATION_JOIN_ROOM) ||
+                             service.equals(Consts.SERVICE_COCREATION_GET_ALL_FRIENDS) ||
+                             service.equals(Consts.SERVICE_COCREATION_INVITE_FRIENDS) ||
+                             service.equals(Consts.SERVICE_MEDIAROOM_ADD_NEW_ROW) ||
+                             service.equals(Consts.SERVICE_FIREBASE_REGISTRATION)
+                     ))
+                     ? "http://172.16.15.77" : Consts.SPOD_ENDPOINT) + url, new Response.Listener<NetworkResponse>() {*/
        /* VolleyMultipartRequest multipartRequest = new VolleyMultipartRequest(Request.Method.POST,
                 (service != null && service.contains("NEWSFEED")) ? "http://172.16.15.77" + url : Consts.SPOD_ENDPOINT + url,
                 new Response.Listener<NetworkResponse>() {*/
@@ -415,13 +415,6 @@ public class NetworkChannel extends Observable
         Map<String, String> params = new HashMap<>();
         params.put("ft", feedType);
         params.put("fi", feedId);
-
-        //TODO: remove this
-        if(feedId.equals("1")) {
-            params.put("ow_login", "ow_login=b6de8fe38f64d5a8f40dacc4673acb58");
-        } else if(feedId.equals("4")) {
-            params.put("ow_login", "ow_login=865728aa3ba7e334664f7df8a726faf8");
-        }
 
         makePostRequest(Consts.NEWSFEED_GET_AUTHORIZATION, params, true, Consts.NEWSFEED_SERVICE_GET_AUTHORIZATION);
     }
@@ -728,10 +721,10 @@ public class NetworkChannel extends Observable
                         }
                     })
                     .on(Socket.EVENT_DISCONNECT, new Emitter.Listener() {
-                            @Override
-                            public void call(Object... args) {
-                                //Log.e("SOKETIO", "DISCONNECT");
-                            }
+                        @Override
+                        public void call(Object... args) {
+                            //Log.e("SOKETIO", "DISCONNECT");
+                        }
 
                     })
                     .on(Socket.EVENT_CONNECT_ERROR, new Emitter.Listener() {

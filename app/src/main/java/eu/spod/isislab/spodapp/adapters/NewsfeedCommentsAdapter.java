@@ -6,6 +6,8 @@ import android.os.Handler;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spanned;
+import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -156,18 +158,8 @@ public class NewsfeedCommentsAdapter extends RecyclerView.Adapter<NewsfeedCommen
             return COMMENT_NORMAL;
         }
 
-        //If comment haven't 'type' filed we try an heuristic way to find it
-        if(!attachment.containsKey("type")) {
-            if(attachment.containsKey("thumbnail_url")) {
-                attachment.put("type", "link");
-            } else if(attachment.containsKey("url") && attachment.containsKey("href")) {
-                attachment.put("type", "photo");
-            } else {
-                return COMMENT_NORMAL;
-            }
-        }
 
-        switch (attachment.get("type")) {
+        switch (comment.getAttachmentType()) {
             case "photo":
                 return COMMENT_PHOTO;
             case "link":
@@ -232,12 +224,17 @@ public class NewsfeedCommentsAdapter extends RecyclerView.Adapter<NewsfeedCommen
         NewsfeedComment c = mValues.get(position);
 
         Spanned spanned = NewsfeedUtils.htmlToSpannedText(c.getMessage());
-        if (spanned.length() == 0) {
+        holder.commentContentTextView.setMovementMethod(new LinkMovementMethod());
+        NewsfeedUtils.truncateWithViewMore(mContext, spanned, 500, holder.commentContentTextView);
+        /*if (spanned.length() == 0) {
             holder.commentContentTextView.setVisibility(View.GONE);
         } else {
             holder.commentContentTextView.setVisibility(View.VISIBLE);
             holder.commentContentTextView.setText(spanned);
-        }
+        }*/
+        //holder.commentContentTextView.setText(spanned);
+        NewsfeedUtils.viewVisibleIfNotNull(spanned, holder.commentContentTextView);
+
         holder.userNameTextView.setText(c.getUserDisplayName());
         holder.timeTextView.setText(NewsfeedUtils.timeToString(mContext, c.getTimeInMillis()));
 
@@ -293,7 +290,7 @@ public class NewsfeedCommentsAdapter extends RecyclerView.Adapter<NewsfeedCommen
                         .apply(new RequestOptions()
                                 .optionalCircleCrop()
                                 .transform(new RoundedCorners(20))
-                                )
+                        )
                         .transition(new DrawableTransitionOptions()
                                 .crossFade())
                         .into(imageView);
@@ -303,26 +300,35 @@ public class NewsfeedCommentsAdapter extends RecyclerView.Adapter<NewsfeedCommen
                 ImageView image = (ImageView) vi.findViewById(R.id.newsfeed_comment_item_attachment_link_image);
                 TextView title = (TextView) vi.findViewById(R.id.newsfeed_comment_item_attachment_link_title);
                 TextView description = (TextView) vi.findViewById(R.id.newsfeed_comment_item_attachment_link_description);
-                title.setText(attachment.get("title"));
-                String descr = attachment.get("description");
-                if(descr.length() > 200) {
-                    descr = descr.substring(0, 199) + "...";
+
+                String titleString = attachment.get("title");
+                titleString = NewsfeedUtils.truncateString(titleString, 100);
+                title.setText(titleString);
+                NewsfeedUtils.viewVisibleIfNotNull(titleString, title);
+
+
+                String descrString = attachment.get("description");
+                descrString = NewsfeedUtils.truncateString(descrString, 200);
+                description.setText(descrString);
+                NewsfeedUtils.viewVisibleIfNotNull(descrString, description);
+
+                NewsfeedUtils.viewVisibleIfNotNull(attachment.get("thumbnail_url"), image);
+                if(c.hasLinkImage()) {
+                    GlidePalette painter = GlidePalette.painter()
+                            .paintBackground(vi, GlidePalette.PaletteType.VIBRANT_LIGHT)
+                            .paintText(title, GlidePalette.PaletteType.VIBRANT_LIGHT, GlidePalette.ColorType.TITLE)
+                            .paintText(description, GlidePalette.PaletteType.VIBRANT_LIGHT, GlidePalette.ColorType.BODY);
+
+                    Glide.with(mContext)
+                            .load(attachment.get("thumbnail_url"))
+                            .apply(new RequestOptions()
+                                    .placeholder(R.drawable.ic_link_darker_gray)
+                                    .error(R.drawable.ic_link_darker_gray))
+                            .listener(painter)
+                            .transition(new DrawableTransitionOptions().crossFade())
+                            .into(image);
                 }
-                description.setText(descr);
 
-                GlidePalette painter = GlidePalette.painter()
-                        .paintBackground(vi, GlidePalette.PaletteType.VIBRANT_LIGHT)
-                        .paintText(title, GlidePalette.PaletteType.VIBRANT_LIGHT, GlidePalette.ColorType.TITLE)
-                        .paintText(description, GlidePalette.PaletteType.VIBRANT_LIGHT, GlidePalette.ColorType.BODY);
-
-                Glide.with(mContext)
-                        .load(attachment.get("thumbnail_url"))
-                        .apply(new RequestOptions()
-                                .placeholder(R.drawable.ic_link_darker_gray)
-                                .error(R.drawable.ic_link_darker_gray))
-                        .listener(painter)
-                        .transition(new DrawableTransitionOptions().crossFade())
-                        .into(image);
 
                 vi.setOnClickListener(new View.OnClickListener() {
                     @Override
