@@ -131,6 +131,7 @@ public class AgoraRoomFragment extends CommentFragment {
                 try {
                     JSONArray response = new JSONArray((String)arg);
 
+                    comments.clear();
                     for (int i=0; i < response.length(); i++)
                     {
                             JSONObject j = response.getJSONObject(i);
@@ -159,26 +160,26 @@ public class AgoraRoomFragment extends CommentFragment {
                 try {
                     JSONArray response = new JSONArray((String)arg);
 
-                        for (int i = response.length() - 1; i >= 0 ; i--)
-                        {
-                            JSONObject j = response.getJSONObject(i);
-                            comments.add(0, new Comment(
-                                    j.getString("id"),
-                                    j.getString("entityId"),
-                                    j.getString("ownerId"),
-                                    j.getString("comment"),
-                                    j.getString("level"),
-                                    j.getString("sentiment"),
-                                    j.getString("timestamp"),
-                                    j.getString("total_comment"),
-                                    j.getString("username"),
-                                    j.getString("avatar_url"),
-                                    j.getString("datalet_id")));
-                        }
+                    for (int i = response.length() - 1; i >= 0 ; i--)
+                    {
+                        JSONObject j = response.getJSONObject(i);
+                        comments.add(0, new Comment(
+                                j.getString("id"),
+                                j.getString("entityId"),
+                                j.getString("ownerId"),
+                                j.getString("comment"),
+                                j.getString("level"),
+                                j.getString("sentiment"),
+                                j.getString("timestamp"),
+                                j.getString("total_comment"),
+                                j.getString("username"),
+                                j.getString("avatar_url"),
+                                j.getString("datalet_id")));
+                    }
 
-                        adapter.notifyDataSetChanged();
-                        //scrollToLastVisibleItem( (response.length() * 2) + 1 );
-                        scrollMyListViewToItemIndex( (response.length() * 2) + 1 );
+                    adapter.notifyDataSetChanged();
+                    //scrollToLastVisibleItem( (response.length() * 2) + 1 );
+                    scrollMyListViewToItemIndex( (response.length() * 2) + 1 );
                     showLoader(false);
 
                 }catch (JSONException | ClassCastException e) {

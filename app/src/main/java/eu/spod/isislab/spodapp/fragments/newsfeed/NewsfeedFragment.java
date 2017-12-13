@@ -72,6 +72,7 @@ import eu.spod.isislab.spodapp.utils.NewsfeedJSONHelper;
 import eu.spod.isislab.spodapp.utils.NewsfeedPostModel;
 import eu.spod.isislab.spodapp.utils.NewsfeedPostNetworkInterface;
 import eu.spod.isislab.spodapp.utils.NewsfeedUtils;
+import eu.spod.isislab.spodapp.utils.UserManager;
 
 public class NewsfeedFragment extends Fragment implements NewsfeedPostsAdapter.PostsAdapterInteractionListener, NewsfeedPostModel.NewsfeedPostModelListener {
 
@@ -113,7 +114,7 @@ public class NewsfeedFragment extends Fragment implements NewsfeedPostsAdapter.P
         mAddButton = (FloatingActionButton) v.findViewById(R.id.newsfeed_add_post_fab);
         mSwipeToRefresh = (SwipeRefreshLayout) v.findViewById(R.id.newsfeed_post_list_swipe_refresh_layout);
 
-        mPostsAdapter = new NewsfeedPostsAdapter(this.getContext(), this, NewsfeedUtils.FEED_TYPE_MY, ""+4); //TODO: replace 1 with getUser.getID;
+        mPostsAdapter = new NewsfeedPostsAdapter(this.getContext(), this, NewsfeedUtils.FEED_TYPE_SITE, UserManager.getInstance().getId()); //TODO: replace 1 with getUser.getID;
 
         mPostsAdapter.setModelListener(this);
         mNetworkInterface = mPostsAdapter;

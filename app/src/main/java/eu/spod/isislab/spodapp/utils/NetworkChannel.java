@@ -104,7 +104,7 @@ public class NetworkChannel extends Observable
     {
         final ProgressDialog loading = (splash) ? ProgressDialog.show(mainActivity,"SPOD Mobile",mainActivity.getResources().getString(R.string.wait_network_message),false,false)
                                                 : null;
-        //StringRequest postRequest = new StringRequest(Request.Method.POST, Consts.SPOD_ENDPOINT + url,
+        StringRequest postRequest = new StringRequest(Request.Method.POST, Consts.SPOD_ENDPOINT + url,
        /* StringRequest postRequest = new StringRequest(Request.Method.POST, ((service != null &&
                 (service.equals(Consts.SERVICE_SAVE_NOTIFICATION) ||
                  service.equals(Consts.SERVICE_COCREATION_GET_ROOMS) ||
@@ -117,8 +117,8 @@ public class NetworkChannel extends Observable
                 ))
                 ? "http://172.16.15.77" : Consts.SPOD_ENDPOINT) + url,*/
 
-                StringRequest postRequest = new StringRequest(Request.Method.POST,
-                (service != null && service.contains("NEWSFEED")) ? "http://172.16.15.137/oxwall" + url : Consts.SPOD_ENDPOINT + url, //TODO: remove this
+                /*StringRequest postRequest = new StringRequest(Request.Method.POST,
+                (service != null && service.contains("NEWSFEED")) ? "http://172.16.15.77" + url : Consts.SPOD_ENDPOINT + url,*/ //TODO: remove this
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -140,9 +140,9 @@ public class NetworkChannel extends Observable
                 HashMap<String, String> headers = new HashMap<>();
                 headers.put("X-Requested-With", "XMLHttpRequest");
 
-                if(params.containsKey("ow_login")) {
+                /*if(params.containsKey("ow_login")) {
                     headers.put("Cookie", params.get("ow_login")); //TODO: remove this
-                }
+                }*/
                 return headers;
             }
 
@@ -183,7 +183,7 @@ public class NetworkChannel extends Observable
         final ProgressDialog loading = (splash) ? ProgressDialog.show(mainActivity,"SPOD Mobile",mainActivity.getResources().getString(R.string.wait_network_message),false,false)
                 : null;
 
-        //VolleyMultipartRequest multipartRequest = new VolleyMultipartRequest(Request.Method.POST, Consts.SPOD_ENDPOINT + url , new Response.Listener<NetworkResponse>() {
+        VolleyMultipartRequest multipartRequest = new VolleyMultipartRequest(Request.Method.POST, Consts.SPOD_ENDPOINT + url , new Response.Listener<NetworkResponse>() {
        /* VolleyMultipartRequest multipartRequest = new VolleyMultipartRequest(Request.Method.POST,  ((service != null &&
                 (service.equals(Consts.SERVICE_SAVE_NOTIFICATION) ||
                         service.equals(Consts.SERVICE_COCREATION_GET_ROOMS) ||
@@ -194,9 +194,9 @@ public class NetworkChannel extends Observable
                         service.equals(Consts.SERVICE_FIREBASE_REGISTRATION)
                 ))
                 ? "http://172.16.15.77" : Consts.SPOD_ENDPOINT) + url, new Response.Listener<NetworkResponse>() {*/
-        VolleyMultipartRequest multipartRequest = new VolleyMultipartRequest(Request.Method.POST,
-                (service != null && service.contains("NEWSFEED")) ? "http://172.16.15.137/oxwall" + url : Consts.SPOD_ENDPOINT + url,
-                new Response.Listener<NetworkResponse>() {
+       /* VolleyMultipartRequest multipartRequest = new VolleyMultipartRequest(Request.Method.POST,
+                (service != null && service.contains("NEWSFEED")) ? "http://172.16.15.77" + url : Consts.SPOD_ENDPOINT + url,
+                new Response.Listener<NetworkResponse>() {*/
             @Override
             public void onResponse(NetworkResponse response) {
                 String resultResponse = new String(response.data);

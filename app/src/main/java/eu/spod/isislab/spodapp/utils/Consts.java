@@ -92,19 +92,19 @@ public class Consts
     public static final String DATALET_STATIC_IMAGE_URL            = "/ow_plugins/ode/datalet_images/datalet_#.png";
     public static final String DATALET_STATIC_URL                  = "/share_datalet/#";
     //newsfeed
-    public static final String NEWSFEED_GET_AUTHORIZATION       = "/extfeed/api/get-authorization/";
-    public static final String NEWSFEED_GET_POSTS               = "/extfeed/api/get-feed/";
-    public static final String NEWSFEED_POST_GET_ITEM           = "/extfeed/api/get-item/";
-    public static final String NEWSFEED_POST_ADD_STATUS         = "/extfeed/api/status-update/";
-    public static final String NEWSFEED_POST_LIKE               = "/extfeed/api/add-like/";
-    public static final String NEWSFEED_POST_UNLIKE             = "/extfeed/api/remove-like/";
-    public static final String NEWSFEED_GET_COMMENTS            = "/extfeed/api/comments/";
-    public static final String NEWSFEED_POST_ADD_COMMENT        = "/extfeed/api/add-comment/";
-    public static final String NEWSFEED_GET_LIKES_LIST          = "/extfeed/api/likes-list/";
-    public static final String NEWSFEED_GET_PHOTOS              = "/extfeed/api/photos-info/";
-    public static final String NEWSFEED_DELETE_COMMENT          = "/extfeed/api/delete-comment/";
-    public static final String NEWSFEED_DELETE_POST             = "/extfeed/api/delete-post/";
-    public static final String NEWSFEED_FLAG_CONTENT            = "/extfeed/api/flag-content/";
+    public static final String NEWSFEED_GET_AUTHORIZATION       = "/spod_extfeed/api/get-authorization/";
+    public static final String NEWSFEED_GET_POSTS               = "/spod_extfeed/api/get-feed/";
+    public static final String NEWSFEED_POST_GET_ITEM           = "/spod_extfeed/api/get-item/";
+    public static final String NEWSFEED_POST_ADD_STATUS         = "/spod_extfeed/api/status-update/";
+    public static final String NEWSFEED_POST_LIKE               = "/spod_extfeed/api/add-like/";
+    public static final String NEWSFEED_POST_UNLIKE             = "/spod_extfeed/api/remove-like/";
+    public static final String NEWSFEED_GET_COMMENTS            = "/spod_extfeed/api/comments/";
+    public static final String NEWSFEED_POST_ADD_COMMENT        = "/spod_extfeed/api/add-comment/";
+    public static final String NEWSFEED_GET_LIKES_LIST          = "/spod_extfeed/api/likes-list/";
+    public static final String NEWSFEED_GET_PHOTOS              = "/spod_extfeed/api/photos-info/";
+    public static final String NEWSFEED_DELETE_COMMENT          = "/spod_extfeed/api/delete-comment/";
+    public static final String NEWSFEED_DELETE_POST             = "/spod_extfeed/api/delete-post/";
+    public static final String NEWSFEED_FLAG_CONTENT            = "/spod_extfeed/api/flag-content/";
     //Sync notification
     public static final String SYNC_NOTIFICATION_ENDPOINT             = "/realtime_notification";
     public static final String COCREATION_SYNC_NOTIFICATION_ENDPOINT  = "/ethersheet/#/pubsub/";

@@ -195,8 +195,8 @@ public class NewsfeedPostModel implements Observer, NewsfeedPostNetworkInterface
                         mModelListener.onError(currentService, "You cannot write on this feed. Reason: " + reason);
                     }
 
-                    String login = res.getString("login"); //TODO: remove this
-                    mModelListener.onError(currentService, login);
+                    /*String login = res.getString("login"); //TODO: remove this
+                    mModelListener.onError(currentService, login);*/
 
                     mModelListener.onAuthorizationResult(mCurrentUserCanView, mCurrentUserCanWrite);
                 } catch (JSONException e) {
