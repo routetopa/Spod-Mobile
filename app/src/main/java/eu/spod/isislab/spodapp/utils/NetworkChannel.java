@@ -214,6 +214,7 @@ public class NetworkChannel extends Observable
         }) {
             @Override
             protected Map<String, String> getParams() {
+                stringParams.put("jwt", AuthorizationService.getInstance().getAccessToken());
                 return stringParams;
             }
 
