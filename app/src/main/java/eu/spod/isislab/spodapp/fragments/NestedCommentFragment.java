@@ -102,6 +102,7 @@ public class NestedCommentFragment extends CommentFragment {
                             etComment.getText().toString(),
                             "" + (Integer.parseInt(comment.getLevel()) + 1),
                             "0");
+                    comment.setTotal_comment("" + (Integer.parseInt(comment.getTotal_comment()) + 1));
                 }else{
                     Snackbar.make(getActivity().findViewById(R.id.container), getString(R.string.comment_add_empty_comment_warning), Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
