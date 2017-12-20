@@ -7,9 +7,10 @@ android {
         applicationId "eu.spod.isislab.spodapp"
         minSdkVersion 16
         targetSdkVersion 25
-        versionCode 9
+        versionCode 10
         versionName "1.3.0"
     }
+
     buildTypes {
         release {
             minifyEnabled true
