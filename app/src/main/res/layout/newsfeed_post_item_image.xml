@@ -37,6 +37,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minHeight="250dp"
+            android:maxHeight="800dp"
             android:visibility="visible"
             android:paddingTop="@dimen/newsfeed_post_content_padding_small"/>
 

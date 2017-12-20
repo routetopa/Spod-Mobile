@@ -6,7 +6,6 @@ import android.os.Handler;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spanned;
-import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -189,7 +188,7 @@ public class NewsfeedCommentsAdapter extends RecyclerView.Adapter<NewsfeedCommen
                 viewHolder.attachmentContainer.addView(imageView);
                 break;
             case COMMENT_LINK:
-                View v = LayoutInflater.from(mContext).inflate(R.layout.newsfeed_comment_item_attachment_link, viewHolder.attachmentContainer, false);
+                View v = LayoutInflater.from(mContext).inflate(R.layout.newsfeed_attachment_link_view, viewHolder.attachmentContainer, false);
                 viewHolder.attachmentContainer.addView(v);
                 break;
             case COMMENT_DATALET:
@@ -297,9 +296,9 @@ public class NewsfeedCommentsAdapter extends RecyclerView.Adapter<NewsfeedCommen
                 break;
             case "link":
                 View vi = holder.attachmentContainer.getChildAt(0);
-                ImageView image = (ImageView) vi.findViewById(R.id.newsfeed_comment_item_attachment_link_image);
-                TextView title = (TextView) vi.findViewById(R.id.newsfeed_comment_item_attachment_link_title);
-                TextView description = (TextView) vi.findViewById(R.id.newsfeed_comment_item_attachment_link_description);
+                ImageView image = (ImageView) vi.findViewById(R.id.newsfeed_attachment_link_view_image);
+                TextView title = (TextView) vi.findViewById(R.id.newsfeed_attachment_link_view_title);
+                TextView description = (TextView) vi.findViewById(R.id.newsfeed_attachment_link_view_description);
 
                 String titleString = attachment.get("title");
                 titleString = NewsfeedUtils.truncateString(titleString, 100);

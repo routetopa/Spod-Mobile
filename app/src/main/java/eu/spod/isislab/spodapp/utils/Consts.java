@@ -58,16 +58,17 @@ public class Consts
     public static final String NEWSFEED_SERVICE_DELETE_POST         = "NEWSFEED_SERVICE_DELETE_POST";
     public static final String NEWSFEED_SERVICE_DELETE_COMMENT      = "NEWSFEED_SERVICE_DELETE_COMMENT";
     public static final String NEWSFEED_SERVICE_FLAG_CONTENT        = "NEWSFEED_SERVICE_FLAG_CONTENT";
-    public static final String NEWSFEED_SERVICE_GET_LIKES_LIST      = "NEWSFEED_SERVICE_GET_LIKES_LIST";
+    public static final String NEWSFEED_SERVICE_GET_LINK_CONTENT    = "NEWSFEED_SERVICE_GET_LINK_CONTENT";
 
+    public static final String NEWSFEED_SERVICE_GET_LIKES_LIST      = "NEWSFEED_SERVICE_GET_LIKES_LIST";
     public static final String RESET_PASSWORD_URL                   = "/oauth2/password/reset";
     public static final String CREATE_ACCOUNT_URL                   = "/oauth2/register";
     public static final String LOGOUT_URL                           = "/login";
     public static final String COCREATION_DATASET_ENDPOINT          = "/ethersheet/s/";
     public static final String COCREATION_DOCUMENT_ENDPOINT         = "/etherpad/p/";
     public static final String DEEP_ENDPOINT                        = "http://deep.routetopa.eu/deep_1_20";
-
     public static String SPOD_ENDPOINT                             = "";
+
     //private static final String POST_LOGIN_HANDLER                  = "/base/user/ajax-sign-in/";//"/openid/ajax.php";;
     //Coreation
     public static final String GET_USER_INFO                       = "/cocreation/ajax/get-user-info/";
@@ -105,6 +106,8 @@ public class Consts
     public static final String NEWSFEED_DELETE_COMMENT          = "/spod_extfeed/api/delete-comment/";
     public static final String NEWSFEED_DELETE_POST             = "/spod_extfeed/api/delete-post/";
     public static final String NEWSFEED_FLAG_CONTENT            = "/spod_extfeed/api/flag-content/";
+    public static final String NEWSFEED_GET_LINK_CONTENT        = "/spod_extfeed/api/get-link-content";
+
     //Sync notification
     public static final String SYNC_NOTIFICATION_ENDPOINT             = "/realtime_notification";
     public static final String COCREATION_SYNC_NOTIFICATION_ENDPOINT  = "/ethersheet/#/pubsub/";

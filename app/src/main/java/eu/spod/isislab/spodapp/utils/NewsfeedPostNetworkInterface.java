@@ -11,6 +11,8 @@ public interface NewsfeedPostNetworkInterface {
 
     void nSendPost(String message, byte[] attachment, String filename);
 
+    void nSendPost(String message, String attachment);
+
     void nLikeUnlikePost(int position);
 
     void nDeletePost(int position);

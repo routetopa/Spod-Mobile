@@ -112,7 +112,10 @@
     <string name="newsfeed_illegal">Illegale</string>
     <string name="newsfeed_view_not_authorized">Non puoi vedere questo feed</string>
     <string name="newsfeed_write_not_authorized">Non puoi scrivere su questo feed</string>
-
+    <string name="newsfeed_link">Link</string>
+    <string name="newsfeed_text_image">Testo e immagini</string>
+    <string name="newsfeed_insert_link">Inserisci link</string>
+    <string name="newsfeed_no_camera_app">Nessuna app fotocamera trovata</string>
     <string-array name="newsfeed_flag_reason">
         <item>spam</item>
         <item>offence</item>
@@ -143,6 +146,8 @@
     <!--Global strings-->
     <string name="yes">Si</string>
     <string name="no">No</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Annulla</string>
 
     <string-array name="spod_endpoints_array">
         <item>spod.routetopa.eu</item>

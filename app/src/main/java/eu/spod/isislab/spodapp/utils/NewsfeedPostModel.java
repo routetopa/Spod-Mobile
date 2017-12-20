@@ -394,6 +394,17 @@ public class NewsfeedPostModel implements Observer, NewsfeedPostNetworkInterface
     }
 
     @Override
+    public void nSendPost(String message, String attachment) {
+        if(!mCurrentUserCanWrite) {
+            mModelListener.onError(R.string.newsfeed_write_not_authorized);
+            return;
+        }
+
+        NetworkChannel.getInstance().sendStatus(mCurrentFeedType, mCurrentFeedId, message, attachment);
+        NetworkChannel.getInstance().addObserver(this);
+    }
+
+    @Override
     public void nLikeUnlikePost(int position){
         if(mIsLoading) {
             nStopPendingRequest();

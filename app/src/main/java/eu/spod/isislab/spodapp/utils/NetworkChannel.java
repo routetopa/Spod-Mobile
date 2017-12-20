@@ -118,7 +118,7 @@ public class NetworkChannel extends Observable
                 ? "http://172.16.15.77" : Consts.SPOD_ENDPOINT) + url,*/
 
                 /*StringRequest postRequest = new StringRequest(Request.Method.POST,
-                (service != null && service.contains("NEWSFEED")) ? "http://172.16.15.137/oxwall" + url : Consts.SPOD_ENDPOINT + url,*/ //TODO: remove this
+                (service != null && service.contains("NEWSFEED")) ? "http://172.16.15.137/oxwall" + url : Consts.SPOD_ENDPOINT + url, //TODO: remove this*/
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -139,10 +139,6 @@ public class NetworkChannel extends Observable
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> headers = new HashMap<>();
                 headers.put("X-Requested-With", "XMLHttpRequest");
-
-                /*if(params.containsKey("ow_login")) {
-                    headers.put("Cookie", params.get("ow_login")); //TODO: remove this
-                }*/
                 return headers;
             }
 
@@ -195,7 +191,7 @@ public class NetworkChannel extends Observable
                      ))
                      ? "http://172.16.15.77" : Consts.SPOD_ENDPOINT) + url, new Response.Listener<NetworkResponse>() {*/
        /* VolleyMultipartRequest multipartRequest = new VolleyMultipartRequest(Request.Method.POST,
-                (service != null && service.contains("NEWSFEED")) ? "http://172.16.15.77" + url : Consts.SPOD_ENDPOINT + url,
+                (service != null && service.contains("NEWSFEED")) ? "http://172.16.15.137/oxwall" + url : Consts.SPOD_ENDPOINT + url,
                 new Response.Listener<NetworkResponse>() {*/
             @Override
             public void onResponse(NetworkResponse response) {
@@ -466,6 +462,29 @@ public class NetworkChannel extends Observable
         makeMultipartRequest(Consts.NEWSFEED_POST_ADD_STATUS, params, partParams, true, Consts.NEWSFEED_SERVICE_ADD_NEW_STATUS);
     }
 
+    public void sendStatus(String feedType, String feedId, String message, String attachment) {
+        String send = null;
+        try {
+            send = new String(message.getBytes(), "ISO-8859-1");  //Charset conversion
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        switch (feedType) {
+            case "site": case "my":
+                feedType = "user";
+                break;
+        }
+
+        Map<String, String> params = new HashMap<>();
+        params.put("ftype", feedType);
+        params.put("fid", feedId);
+        params.put("message", send);
+        params.put("attachment", attachment);
+
+        makePostRequest(Consts.NEWSFEED_POST_ADD_STATUS, params, true, Consts.NEWSFEED_SERVICE_ADD_NEW_STATUS);
+    }
+
     public void getLikesList(String entityType, String entityId) {
         final HashMap<String, String> params = new HashMap<>(3);
         params.put("etype", entityType);
@@ -546,6 +565,13 @@ public class NetworkChannel extends Observable
         params.put("reason", reason);
 
         makePostRequest(Consts.NEWSFEED_FLAG_CONTENT, params, true, Consts.NEWSFEED_SERVICE_FLAG_CONTENT);
+    }
+
+    public void getLinkContent(String link) {
+        Map<String, String> params = new HashMap<>();
+        params.put("url", link);
+
+        makePostRequest(Consts.NEWSFEED_GET_LINK_CONTENT, params, false, Consts.NEWSFEED_SERVICE_GET_LINK_CONTENT);
     }
 
     //FIREBASE NOTIFICATION

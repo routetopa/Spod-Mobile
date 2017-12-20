@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:background="@android:color/holo_blue_light"
+        android:background="@color/colorPrimary"
         android:padding="@dimen/newsfeed_post_content_padding_default"
         android:elevation="5dp">
 
@@ -47,8 +47,8 @@
                 android:hint="@string/newsfeed_insert_text"
                 android:inputType="textMultiLine" />
 
-                <ImageView
-                    android:id="@+id/newsfeed_add_post_add_attachment_imageview"
+                <FrameLayout
+                    android:id="@+id/newsfeed_add_post_add_attachment_container"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:visibility="visible"
@@ -67,5 +67,5 @@
         android:minWidth="0dp"
         android:layout_gravity="center_vertical|fill_vertical"
         android:layout_alignParentBottom="true"
-        android:visibility="visible"/>
+        android:visibility="gone"/>
 </RelativeLayout>

@@ -36,6 +36,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.Target;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -217,6 +218,11 @@ public class NewsfeedPostsAdapter extends RecyclerView.Adapter<RecyclerView.View
 
         Log.d(TAG, "NewsfeedPostsAdapter: firstRun="+mFirstRun);
     }
+
+    public void isFirstRun(boolean b) {
+        mFirstRun = b;
+    }
+
     public void setData(ArrayList<Post> posts){
         mPosts.setData(posts);
     }
@@ -635,14 +641,17 @@ public class NewsfeedPostsAdapter extends RecyclerView.Adapter<RecyclerView.View
         NewsfeedUtils.truncateWithViewMore(mContext, post.getStatus(), 1000, h.statusTextView);
 
         String imageSrc = post.getImagePreviewUrl();
-        h.contentImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        //h.contentImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
 
 
         //int w =  NewsfeedUtils.pxToDp(mContext, post.getImagePreviewWidth());
         //int he = NewsfeedUtils.pxToDp(mContext, post.getImagePreviewHeight());
+        int[] dimensions = post.getImage().getPreviewDimensions();
 
-        int w = post.getImagePreviewWidth();
-        int he = post.getImagePreviewHeight();
+        int[] relativeDimensions = NewsfeedUtils.getRelativeDimensions(mContext, dimensions);
+
+        int w = relativeDimensions[0];
+        int he = relativeDimensions[1];
 
         GradientDrawable placeholder = new GradientDrawable();
         placeholder.setSize(w,he);
@@ -651,8 +660,9 @@ public class NewsfeedPostsAdapter extends RecyclerView.Adapter<RecyclerView.View
         Glide.with(mContext)
                 .load(imageSrc)
                 .apply(new RequestOptions()
+                        .fitCenter()
                         .placeholder(placeholder)
-                        .fitCenter())
+                )
                 .transition(new DrawableTransitionOptions()
                         .crossFade())
                 .into(h.contentImageView);
@@ -736,6 +746,8 @@ public class NewsfeedPostsAdapter extends RecyclerView.Adapter<RecyclerView.View
                     .listener(painter)
                     .error(Glide.with(mContext)
                             .load(R.drawable.ic_link_darker_gray)
+                            .apply(new RequestOptions()
+                            .fitCenter())
                             .listener(painter))
                     .transition(new DrawableTransitionOptions()
                             .crossFade())
@@ -861,6 +873,11 @@ public class NewsfeedPostsAdapter extends RecyclerView.Adapter<RecyclerView.View
     @Override
     public void nSendPost(String message, byte[] attachment, String filename) {
         mNetworkCommunication.nSendPost(message, attachment, filename);
+    }
+
+    @Override
+    public void nSendPost(String message, String attachment) {
+        mNetworkCommunication.nSendPost(message, attachment);
     }
 
     @Override

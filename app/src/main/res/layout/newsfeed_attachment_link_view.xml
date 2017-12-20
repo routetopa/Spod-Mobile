@@ -5,10 +5,11 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:padding="@dimen/newsfeed_post_content_padding_small">
 
         <ImageView
-            android:id="@+id/newsfeed_comment_item_attachment_link_image"
+            android:id="@+id/newsfeed_attachment_link_view_image"
             android:layout_width="64dp"
             android:layout_height="64dp"
             android:src="@drawable/ic_link_darker_gray"
@@ -17,13 +18,13 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/newsfeed_comment_item_attachment_link_image"
-            android:layout_toRightOf="@id/newsfeed_comment_item_attachment_link_image"
+            android:layout_toEndOf="@id/newsfeed_attachment_link_view_image"
+            android:layout_toRightOf="@id/newsfeed_attachment_link_view_image"
             android:orientation="vertical"
             android:layout_centerVertical="true">
 
             <TextView
-                android:id="@+id/newsfeed_comment_item_attachment_link_title"
+                android:id="@+id/newsfeed_attachment_link_view_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/newsfeed_post_status_text_default"
@@ -31,7 +32,7 @@
                 android:paddingStart="@dimen/newsfeed_post_content_padding_small"
                 android:paddingRight="@dimen/newsfeed_post_content_padding_small" />
             <TextView
-                android:id="@+id/newsfeed_comment_item_attachment_link_description"
+                android:id="@+id/newsfeed_attachment_link_view_description"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/newsfeed_post_status_text_smallest"

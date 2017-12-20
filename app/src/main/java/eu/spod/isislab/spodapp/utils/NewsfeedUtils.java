@@ -17,7 +17,9 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.text.style.ClickableSpan;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.TextView;
 
@@ -31,7 +33,6 @@ import eu.spod.isislab.spodapp.entities.ContextActionMenuItem;
 
 public class NewsfeedUtils {
 
-    public static final int GET_POST_LIMIT_NUMBER = 20;
     public static final int DEFAULT_ITEM_PER_PAGE_COUNT = 10;
 
     public static final String FEED_TYPE_MY = "my";
@@ -213,5 +214,20 @@ public class NewsfeedUtils {
 
         v.setVisibility(View.GONE);
         return v;
+    }
+
+    public static int[] getRelativeDimensions(Context ctx, int[] dimens) {
+        DisplayMetrics metrics = ctx.getResources().getDisplayMetrics();
+        int width = dimens[0];
+        int height = dimens[1];
+
+        if(width == 0) {
+            return new int[] {width, height};
+        }
+
+        int relativeWidth = width > metrics.widthPixels ? metrics.widthPixels : width;
+        int relativeHeight = (height * relativeWidth) / width;
+
+        return new int[]{relativeWidth, relativeHeight};
     }
 }

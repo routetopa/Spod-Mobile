@@ -2,6 +2,7 @@ package eu.spod.isislab.spodapp.fragments.newsfeed;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -500,7 +501,11 @@ public class PostCommentsFragment extends Fragment implements Observer, PopupMen
                     Intent captureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                     currentAttachedImageUri = Uri.fromFile(tmpPhoto);
                     captureIntent.putExtra(MediaStore.EXTRA_OUTPUT, currentAttachedImageUri);
-                    startActivityForResult(captureIntent, ACTIVITY_REQUEST_PHOTO_TAKEN);
+                    try {
+                        startActivityForResult(captureIntent, ACTIVITY_REQUEST_PHOTO_TAKEN);
+                    }catch (ActivityNotFoundException e) {
+                        Toast.makeText(mContext, R.string.newsfeed_no_camera_app, Toast.LENGTH_LONG).show();
+                    }
                     return true;
                 } catch (IOException e) {
                     e.printStackTrace();

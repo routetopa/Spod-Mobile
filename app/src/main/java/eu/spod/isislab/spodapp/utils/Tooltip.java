@@ -29,6 +29,7 @@ public class Tooltip {
     private ImageView downArrow;
     private View tooltipLayout;
 
+    private View mRootView;
 
     public static Tooltip create(Context context) {
         return new Tooltip(context);
@@ -41,6 +42,11 @@ public class Tooltip {
 
     public Tooltip on(View anchor) {
         mAnchor = anchor;
+        return this;
+    }
+
+    public Tooltip rootView(View root) {
+        mRootView = root;
         return this;
     }
 
@@ -153,7 +159,8 @@ public class Tooltip {
             mTooltip.setAnimationStyle(R.style.BottomTooltipAnimation);
         }
 
-        mTooltip.showAtLocation(mAnchor, Gravity.NO_GRAVITY, xPos, yPos);
+        View root = mRootView == null ? mAnchor : mRootView;
+        mTooltip.showAtLocation(root, Gravity.NO_GRAVITY, xPos, yPos);
         mTooltip.update();
     }
 }

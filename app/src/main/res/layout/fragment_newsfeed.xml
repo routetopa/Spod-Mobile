@@ -20,18 +20,48 @@
 
     </android.support.v4.widget.SwipeRefreshLayout>
 
-    <android.support.design.widget.FloatingActionButton
+    <!--<android.support.design.widget.FloatingActionButton-->
+        <!--android:id="@+id/newsfeed_add_post_fab"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="bottom|end"-->
+        <!--android:src="@drawable/ic_add_black_24dp"-->
+        <!--android:tint="@android:color/white"-->
+        <!--android:layout_margin="@dimen/fab_margin"-->
+        <!--app:layout_behavior="eu.spod.isislab.spodapp.utils.FABHideOnScroll"-->
+        <!--android:clickable="true"-->
+        <!--android:focusable="true"/>-->
+
+    <!-- app:srcCompat="@drawable/ic_add_black_24dp" -->
+
+    <com.github.clans.fab.FloatingActionMenu
         android:id="@+id/newsfeed_add_post_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:src="@drawable/ic_add_black_24dp"
-        android:tint="@android:color/white"
-        android:layout_margin="@dimen/fab_margin"
-        app:layout_behavior="eu.spod.isislab.spodapp.utils.FABHideOnScroll"
-        android:clickable="true"
-        android:focusable="true"/>
+        app:menu_colorNormal="@color/colorAccent"
+        app:menu_colorPressed="@color/colorPrimaryDark">
 
-    <!-- app:srcCompat="@drawable/ic_add_black_24dp" -->
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/newsfeed_add_link_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fab_size="mini"
+            android:src="@drawable/ic_link_white_rotate_24dp"
+            app:fab_colorNormal="@color/colorAccent"
+            app:fab_colorPressed="@color/colorPrimaryDark"
+            app:fab_label="@string/newsfeed_link"/>
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/newsfeed_add_text_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fab_size="mini"
+            android:src="@drawable/ic_text_image_white_24dp"
+            app:fab_colorNormal="@color/colorAccent"
+            app:fab_colorPressed="@color/colorPrimaryDark"
+            app:fab_label="@string/newsfeed_text_image"/>
+
+    </com.github.clans.fab.FloatingActionMenu>
 
 </android.support.design.widget.CoordinatorLayout>

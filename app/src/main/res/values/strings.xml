@@ -84,7 +84,7 @@
     <string name="agora_comment_add_hint">Add a comment</string>
     <string name="comment_add_empty_comment_warning">The comment cannot be empty</string>
 
-    <!--Newfeed-->
+    <!--Newsfeed-->
     <string name="newsfeed_title">Newsfeed</string>
     <string name="newsfeed_base_post_comments_string">Comments</string>
     <string name="newsfeed_image_transition_name">image_transition</string>
@@ -112,6 +112,10 @@
     <string name="newsfeed_illegal">Illegal</string>
     <string name="newsfeed_view_not_authorized">You cannot see this feed</string>
     <string name="newsfeed_write_not_authorized">You cannot write on this feed</string>
+    <string name="newsfeed_link">Link</string>
+    <string name="newsfeed_text_image">Text and images</string>
+    <string name="newsfeed_insert_link">Insert link</string>
+    <string name="newsfeed_no_camera_app">No camera app found</string>
     <string-array name="newsfeed_flag_reason">
         <item>spam</item>
         <item>offence</item>
@@ -142,6 +146,8 @@
     <!--Global strings-->
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
 
     <string-array name="spod_endpoints_array">
         <item>spod.routetopa.eu</item>

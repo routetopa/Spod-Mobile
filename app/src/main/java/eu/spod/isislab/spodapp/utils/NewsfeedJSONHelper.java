@@ -25,94 +25,103 @@ public class NewsfeedJSONHelper {
 
     /*POST KEYS*/
     //Base keys
-    public static final String ID                          = "id";
-    public static final String ENTITY_ID                   = "entityId";
-    public static final String ENTITY_TYPE                 = "entityType";
-    public static final String PLUGIN_KEY                  = "pluginKey";
-    public static final String TIME                        = "time";
-    public static final String FORMAT                      = "format";
-    public static final String CONTENT                     = "content";
-    public static final String CONTEXT_ACTION_MENU         = "contextActionMenu";
-    public static final String STRING                      = "string";
-    public static final String LINE                        = "line";
-    public static final String DATA_EXTRAS                 = "dataExtras";
-    public static final String LAST_ACTIVITY_RESPOND       = "lastActivityRespond";
-    public static final String USERS_INFO                  = "usersInfo";
-    public static final String CONTEXT                     = "context";
+    public static final String ID                           = "id";
+    public static final String ENTITY_ID                    = "entityId";
+    public static final String ENTITY_TYPE                  = "entityType";
+    public static final String PLUGIN_KEY                   = "pluginKey";
+    public static final String TIME                         = "time";
+    public static final String FORMAT                       = "format";
+    public static final String CONTENT                      = "content";
+    public static final String CONTEXT_ACTION_MENU          = "contextActionMenu";
+    public static final String STRING                       = "string";
+    public static final String LINE                         = "line";
+    public static final String DATA_EXTRAS                  = "dataExtras";
+    public static final String LAST_ACTIVITY_RESPOND        = "lastActivityRespond";
+    public static final String USERS_INFO                   = "usersInfo";
+    public static final String CONTEXT                      = "context";
 
     //common keys
-    public static final String SRC                         = "src";
-    public static final String LABEL                       = "label";
-    public static final String URL                         = "url";
-    public static final String ROUTE_NAME                  = "routeName";
-    public static final String VARS                        = "vars";
-    public static final String CONTENT_STATUS              = "status";
+    public static final String SRC                          = "src";
+    public static final String LABEL                        = "label";
+    public static final String URL                          = "url";
+    public static final String ROUTE_NAME                   = "routeName";
+    public static final String VARS                         = "vars";
+    public static final String CONTENT_STATUS               = "status";
 
     //User keys
-    public static final String USER_ID                     = "userId";
-    public static final String USER_IDS                    = "userIds";
-    public static final String LABEL_COLOR                 = "labelColor";
+    public static final String USER_ID                      = "userId";
+    public static final String USER_IDS                     = "userIds";
+    public static final String LABEL_COLOR                  = "labelColor";
 
     //format 'image_content' keys
-    public static final String IMAGE                       = "image";
-    public static final String THUMBNAIL                   = "thumbnail";
-    public static final String TITLE                       = "title";
-    public static final String DESCRIPTION                 = "description";
-    public static final String URL_ENCODED                 = "urlEncoded";
+    public static final String IMAGE                        = "image";
+    public static final String THUMBNAIL                    = "thumbnail";
+    public static final String TITLE                        = "title";
+    public static final String DESCRIPTION                  = "description";
+    public static final String URL_ENCODED                  = "urlEncoded";
 
     //format 'image' and 'image_list' keys
-    public static final String PHOTO_ID                    = "photoId";
-    public static final String PHOTO_DESCRIPTION           = "photoDescription";
-    public static final String PHOTO_PREVIEW_DOMENSIONS    = "photoPreviewDimensions";
-    public static final String PHOTO_URL                   = "photoUrl";
-    public static final String PHOTO_PREVIEW_URL           = "photoPreviewUrl";
-    private static final String PHOTO_LIST                 = "list";
-    private static final String ID_LIST                    = "idList";
+    public static final String PHOTO_ID                     = "photoId";
+    public static final String PHOTO_DESCRIPTION            = "photoDescription";
+    public static final String PHOTO_PREVIEW_DOMENSIONS     = "photoPreviewDimensions";
+    public static final String PHOTO_URL                    = "photoUrl";
+    public static final String PHOTO_PREVIEW_URL            = "photoPreviewUrl";
+    private static final String PHOTO_LIST                  = "list";
+    private static final String ID_LIST                     = "idList";
 
     //format 'datalet' keys
-    private static final String DATALET_ID               = "dataletId";
-    private static final String PREVIEW_IMAGE            = "previewImage";
+    private static final String DATALET_ID                  = "dataletId";
+    private static final String PREVIEW_IMAGE               = "previewImage";
 
     //features keys
-    public static final String FEATURES                    = "features";
-    public static final String COMMENTS                    = "comments";
-    public static final String LIKES                       = "likes";
-    public static final String ALLOW                       = "allow";
-    public static final String COUNT                       = "count";
-    public static final String SELF_LIKE                   = "selfLike";
+    public static final String FEATURES                     = "features";
+    public static final String COMMENTS                     = "comments";
+    public static final String LIKES                        = "likes";
+    public static final String ALLOW                        = "allow";
+    public static final String COUNT                        = "count";
+    public static final String SELF_LIKE                    = "selfLike";
 
     //Like/Unlike response keys
-    public static final String LIKE_COUNT                  = "likeCount";
+    public static final String LIKE_COUNT                   = "likeCount";
 
 
     //ActionMenu keys
-    public static final String ACTION_TYPE                = "actionType";
-    public static final String PARAMS                     = "params";
+    public static final String ACTION_TYPE                  = "actionType";
+    public static final String PARAMS                       = "params";
 
     /*COMMENT KEYS*/
-    public static final String COMMENT_ENTITY_ID          = "commentEntityId";
-    public static final String CREATESTAMP                = "createStamp";
-    public static final java.lang.String ATTACHMENT       = "attachment";
-    public static final String USER_DISPLAY_NAME          = "userDisplayName";
-    public static final String AVATAR_URL                 = "avatarUrl";
+    public static final String COMMENT_ENTITY_ID            = "commentEntityId";
+    public static final String CREATESTAMP                  = "createStamp";
+    public static final java.lang.String ATTACHMENT         = "attachment";
+    public static final String USER_DISPLAY_NAME            = "userDisplayName";
+    public static final String AVATAR_URL                   = "avatarUrl";
 
     /*ERROR HANDLING KEYS*/
-    public static final String RESULT                    = "result";
-    public static final String MESSAGE                   = "message";
-    public static final String STATUS                    = "status";
-    public static final String ERROR_MESSAGE             = "error_message";
-    public static final String KO                        = "ko";
+    public static final String RESULT                       = "result";
+    public static final String MESSAGE                      = "message";
+    public static final String STATUS                       = "status";
+    public static final String ERROR_MESSAGE                = "error_message";
+    public static final String KO                           = "ko";
 
     /*OTHER KEYS*/
-    public static final String TIMESTAMP                 = "timestamp";
-    private static final String ALBUM_NAME               = "albumName";
-    private static final String ALBUM_ID                 = "albumId";
+    public static final String TIMESTAMP                    = "timestamp";
+    private static final String ALBUM_NAME                  = "albumName";
+    private static final String ALBUM_ID                    = "albumId";
 
     /*AUTHORIZATION KEYS*/
-    public static final String WRITE                = "write";
-    public static final String VIEW                 = "view";
+    public static final String WRITE                        = "write";
+    public static final String VIEW                         = "view";
+
+    /*CONTENT LINK KEYS*/
+    public static final String TYPE                         = "type";
+    public static final String PHOTO                        = "photo";
+    public static final String HREF                         = "href";
+    public static final String LINK                         = "link" ;
+    public static final String THUMBNAIL_URL                = "thumbnail_url";
+    public static final String ALL_IMAGES                   = "allImages" ;
 
     public static class Formats {
+
         public static final String FORMAT_EMPTY = "empty";
         public static final String FORMAT_TEXT = "text";
         public static final String FORMAT_CONTENT = "content";
@@ -121,7 +130,6 @@ public class NewsfeedJSONHelper {
         public static final String FORMAT_IMAGE_LIST = "image_list";
         public static final String FORMAT_DATALET = "datalet";
     }
-
     public static Post createPost(JSONObject jsonPost) throws JSONException {
         int id = jsonPost.getInt(ID);
         int entityId = jsonPost.getInt(ENTITY_ID);
@@ -255,7 +263,6 @@ public class NewsfeedJSONHelper {
         return c;
     }
 
-
     private static List<ContextActionMenuItem> generateContextActionMenu(JSONArray contextActionMenu) throws JSONException {
         List<ContextActionMenuItem> items = new ArrayList<>(contextActionMenu.length());
 
@@ -271,6 +278,7 @@ public class NewsfeedJSONHelper {
 
         return items;
     }
+
 
     public static ArrayList<NewsfeedComment> createCommentsList(JSONArray comments) throws JSONException {
         int length = comments.length();
@@ -348,11 +356,12 @@ public class NewsfeedJSONHelper {
         return toReturn;
     }
 
-    public static JSONObject[] convertToJsonObjectArray(JSONArray array) throws JSONException {
-        JSONObject[] toReturn = new JSONObject[array.length()];
+
+    public static String[] convertToStringArray(JSONArray array) throws JSONException {
+        String[] toReturn = new String[array.length()];
 
         for(int i = 0; i<array.length(); i++) {
-            toReturn[i] = array.getJSONObject(i);
+            toReturn[i] = array.getString(i);
         }
 
         return toReturn;

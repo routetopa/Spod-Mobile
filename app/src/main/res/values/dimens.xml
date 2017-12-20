@@ -13,4 +13,6 @@
     <dimen name="newsfeed_post_status_text_big">20sp</dimen>
     <dimen name="newsfeed_post_content_image_height">300dp</dimen>
     <dimen name="newsfeed_post_status_text_smallest">12sp</dimen>
+    <dimen name="list_item_spacing">16dp</dimen>
+    <dimen name="list_item_spacing_half">8dp</dimen>
 </resources>

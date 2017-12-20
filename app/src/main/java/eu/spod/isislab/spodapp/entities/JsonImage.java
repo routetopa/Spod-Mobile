@@ -34,4 +34,8 @@ public class JsonImage implements Serializable {
     public String getPreviewUrl() {
         return previewUrl;
     }
+
+    public int[] getPreviewDimensions() {
+        return previewDimensions;
+    }
 }

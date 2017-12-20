@@ -13,7 +13,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.DialogFragment;
@@ -22,39 +21,30 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.transition.TransitionInflater;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.PopupWindow;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import org.json.JSONArray;
-import org.json.JSONException;
+import com.github.clans.fab.FloatingActionMenu;
+
 import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.CookieHandler;
-import java.net.CookieManager;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
+import java.util.HashMap;
 
 import eu.spod.isislab.spodapp.MainActivity;
 import eu.spod.isislab.spodapp.R;
 import eu.spod.isislab.spodapp.activities.FullscreenActivity;
-import eu.spod.isislab.spodapp.adapters.NewsfeedLikesListAdapter;
 import eu.spod.isislab.spodapp.adapters.NewsfeedPostsAdapter;
 import eu.spod.isislab.spodapp.entities.ContentPost;
 import eu.spod.isislab.spodapp.entities.ContextActionMenuItem;
@@ -63,11 +53,9 @@ import eu.spod.isislab.spodapp.entities.ImageListPost;
 import eu.spod.isislab.spodapp.entities.ImagePost;
 import eu.spod.isislab.spodapp.entities.JsonImage;
 import eu.spod.isislab.spodapp.entities.NewsfeedImageInfo;
-import eu.spod.isislab.spodapp.entities.NewsfeedLike;
 import eu.spod.isislab.spodapp.entities.Post;
 import eu.spod.isislab.spodapp.utils.CompressBitmapTask;
 import eu.spod.isislab.spodapp.utils.Consts;
-import eu.spod.isislab.spodapp.utils.NetworkChannel;
 import eu.spod.isislab.spodapp.utils.NewsfeedJSONHelper;
 import eu.spod.isislab.spodapp.utils.NewsfeedPostModel;
 import eu.spod.isislab.spodapp.utils.NewsfeedPostNetworkInterface;
@@ -88,15 +76,10 @@ public class NewsfeedFragment extends Fragment implements NewsfeedPostsAdapter.P
     private NewsfeedPostNetworkInterface mNetworkInterface;
 
     private NewsfeedPostsAdapter mPostsAdapter;
-    private FloatingActionButton mAddButton;
+    private FloatingActionMenu mAddButton;
     private SwipeRefreshLayout mSwipeToRefresh;
 
     private boolean isLoadingPosts;
-
-    private PopupWindow mLikesWindow;
-
-    private String mFeedType = NewsfeedUtils.FEED_TYPE_MY;
-    private String mFeedId = ""+2; //TODO: replace with getUser().getId();
 
     public NewsfeedFragment() {}
 
@@ -104,20 +87,26 @@ public class NewsfeedFragment extends Fragment implements NewsfeedPostsAdapter.P
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        //TODO: remove t
-        CookieManager manager = new CookieManager();
-        CookieHandler.setDefault(manager);
-
         View v = inflater.inflate(R.layout.fragment_newsfeed, container, false);
 
         mPostsList = (RecyclerView) v.findViewById(R.id.newsfeed_post_container);
-        mAddButton = (FloatingActionButton) v.findViewById(R.id.newsfeed_add_post_fab);
+        mAddButton = (FloatingActionMenu) v.findViewById(R.id.newsfeed_add_post_fab);
+
         mSwipeToRefresh = (SwipeRefreshLayout) v.findViewById(R.id.newsfeed_post_list_swipe_refresh_layout);
 
-        mPostsAdapter = new NewsfeedPostsAdapter(this.getContext(), this, NewsfeedUtils.FEED_TYPE_SITE, UserManager.getInstance().getId()); //TODO: replace 1 with getUser.getID;
+        //mPostsAdapter = new NewsfeedPostsAdapter(this.getContext(), this, NewsfeedUtils.FEED_TYPE_SITE, "1"); //TODO: replace 1 with getUser.getID;
+        mPostsAdapter = new NewsfeedPostsAdapter(this.getContext(), this, NewsfeedUtils.FEED_TYPE_SITE, UserManager.getInstance().getId());
 
         mPostsAdapter.setModelListener(this);
         mNetworkInterface = mPostsAdapter;
+
+        mSharedPref = getContext().getSharedPreferences(Consts.SPOD_MOBILE_PREFERENCES, Context.MODE_PRIVATE);
+
+        if(mSharedPref.getBoolean(NEWSFEED_SHARED_PREF_FIRST_RUN, true)) {
+            mPostsAdapter.isFirstRun(true);
+            mSharedPref.edit().putBoolean(NEWSFEED_SHARED_PREF_FIRST_RUN, false).apply();
+            mFirstRun = true;
+        }
 
         final LinearLayoutManager layout = new LinearLayoutManager(this.getContext());
         mPostsList.setLayoutManager(layout);
@@ -129,6 +118,12 @@ public class NewsfeedFragment extends Fragment implements NewsfeedPostsAdapter.P
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 if(dy == 0) {
                     return;
+                }
+
+                if(dy > 0) {
+                    mAddButton.hideMenuButton(true);
+                } else {
+                    mAddButton.showMenuButton(true);
                 }
 
                 int lastVisibleItemPosition = layout.findLastCompletelyVisibleItemPosition();
@@ -146,16 +141,54 @@ public class NewsfeedFragment extends Fragment implements NewsfeedPostsAdapter.P
         });
 
 
-        mAddButton.setOnClickListener(new View.OnClickListener() {
+/*        mAddButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DialogFragment addPostFragment = new AddPostFragment();
+                //DialogFragment addPostFragment = AddPostFragment.getInstance(AddPostFragment.ARGUMENT_TYPE_FILE);
+                DialogFragment addPostFragment = AddPostFragment.getLinkInstance("https://www.domaillerealestate.com/2017/01/27/the-colors-of-2017/");
+                addPostFragment.setTargetFragment(NewsfeedFragment.this, 0);
+                addPostFragment.show(getActivity().getSupportFragmentManager(), "AddPostDialogFragment");
+            }
+        });*/
+
+        mAddButton.findViewById(R.id.newsfeed_add_link_fab).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mAddButton.close(true);
+                final EditText editText = new EditText(getContext());
+                editText.setInputType(InputType.TYPE_CLASS_TEXT);
+
+                DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if(which == DialogInterface.BUTTON_POSITIVE) {
+                            String link = editText.getText().toString();
+                            DialogFragment addPostFragment = AddPostFragment.getLinkInstance(link);
+                            addPostFragment.setTargetFragment(NewsfeedFragment.this, 0);
+                            addPostFragment.show(getActivity().getSupportFragmentManager(), "AddPostDialogFragment");
+                        }
+                        dialog.dismiss();
+                    }
+                };
+
+                AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
+                dialog.setTitle(R.string.newsfeed_insert_link)
+                        .setView(editText)
+                        .setPositiveButton(R.string.ok, listener)
+                        .setNegativeButton(R.string.cancel, listener)
+                        .show();
+            }
+        });
+
+        mAddButton.findViewById(R.id.newsfeed_add_text_fab).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mAddButton.close(true);
+                DialogFragment addPostFragment = AddPostFragment.getTextInstance();
                 addPostFragment.setTargetFragment(NewsfeedFragment.this, 0);
                 addPostFragment.show(getActivity().getSupportFragmentManager(), "AddPostDialogFragment");
             }
         });
-
-
         mSwipeToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -172,12 +205,7 @@ public class NewsfeedFragment extends Fragment implements NewsfeedPostsAdapter.P
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         Log.d(TAG, "onActivityCreated: ");
         ((MainActivity)getActivity()).setToolbarTitle(getString(R.string.newsfeed_title));
-        if(mFirstRun) {
-            mSharedPref.edit().putBoolean(NEWSFEED_SHARED_PREF_FIRST_RUN, false).apply();
-        }
-
         mPostsAdapter.nRequestAuthorization();
-
         super.onActivityCreated(savedInstanceState);
     }
 
@@ -186,7 +214,7 @@ public class NewsfeedFragment extends Fragment implements NewsfeedPostsAdapter.P
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == AddPostFragment.ADD_POST_REQUEST_CODE && resultCode == Activity.RESULT_OK){
+        if(requestCode == AddPostFragment.ADD_POST_FILE_REQUEST_CODE && resultCode == Activity.RESULT_OK){
             final String message = data.getStringExtra(AddPostFragment.EXTRA_DATA_POST_MESSAGE);
             Uri attachmentUri = data.getParcelableExtra(AddPostFragment.EXTRA_DATA_POST_ATTACHMENT_URI);
 
@@ -228,6 +256,13 @@ public class NewsfeedFragment extends Fragment implements NewsfeedPostsAdapter.P
             } else {
                 mNetworkInterface.nSendPost(message, null, null);
             }
+        } else if(requestCode == AddPostFragment.ADD_POST_LINK_REQUEST_CODE && resultCode == Activity.RESULT_OK){
+            @SuppressWarnings("unchecked")
+            HashMap<String, String> attachment = (HashMap<String, String>) data.getSerializableExtra(AddPostFragment.EXTRA_DATA_POST_LINK_CONTENT);
+            final String message = data.getStringExtra(AddPostFragment.EXTRA_DATA_POST_MESSAGE);
+            attachment.remove(NewsfeedJSONHelper.ALL_IMAGES);
+            JSONObject obj = new JSONObject(attachment);
+            mNetworkInterface.nSendPost(message, obj.toString());
         }
     }
 
@@ -241,11 +276,6 @@ public class NewsfeedFragment extends Fragment implements NewsfeedPostsAdapter.P
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         Log.d(TAG, "onCreate: ");
-        mSharedPref = getContext().getSharedPreferences(Consts.SPOD_MOBILE_PREFERENCES, Context.MODE_PRIVATE);
-        if(!mSharedPref.contains(NEWSFEED_SHARED_PREF_FIRST_RUN)) {
-            mSharedPref.edit().putBoolean(NEWSFEED_SHARED_PREF_FIRST_RUN, true).apply();
-            mFirstRun = true;
-        }
         super.onCreate(savedInstanceState);
     }
 
@@ -253,6 +283,14 @@ public class NewsfeedFragment extends Fragment implements NewsfeedPostsAdapter.P
     public void onDestroy() {
         Log.d(TAG, "onDestroy: ");
         super.onDestroy();
+    }
+
+
+    @Override
+    public void onDetach() {
+        Log.d(TAG, "onDetach: ");
+        mPostsAdapter.nStopPendingRequest();
+        super.onDetach();
     }
 
     @Override
@@ -441,7 +479,8 @@ public class NewsfeedFragment extends Fragment implements NewsfeedPostsAdapter.P
     public void onContentLoadingStarted(boolean resetList) {
         if (resetList && !mSwipeToRefresh.isRefreshing()) {
             mSwipeToRefresh.setRefreshing(true);
-            mAddButton.hide();
+            mAddButton.close(true);
+            mAddButton.hideMenuButton(true);
         }
 
         isLoadingPosts = true;
@@ -472,7 +511,7 @@ public class NewsfeedFragment extends Fragment implements NewsfeedPostsAdapter.P
 
         if (mSwipeToRefresh.isRefreshing()) {
             mSwipeToRefresh.setRefreshing(false);
-            mAddButton.show();
+            mAddButton.showMenuButton(true);
         }
 
         if(scrollOnTop) {
@@ -516,5 +555,4 @@ public class NewsfeedFragment extends Fragment implements NewsfeedPostsAdapter.P
                     }
                 }).show();
     }
-
 }
