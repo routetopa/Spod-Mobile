@@ -29,9 +29,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionMenu;
@@ -60,6 +62,7 @@ import eu.spod.isislab.spodapp.utils.NewsfeedJSONHelper;
 import eu.spod.isislab.spodapp.utils.NewsfeedPostModel;
 import eu.spod.isislab.spodapp.utils.NewsfeedPostNetworkInterface;
 import eu.spod.isislab.spodapp.utils.NewsfeedUtils;
+import eu.spod.isislab.spodapp.utils.Tooltip;
 import eu.spod.isislab.spodapp.utils.UserManager;
 
 public class NewsfeedFragment extends Fragment implements NewsfeedPostsAdapter.PostsAdapterInteractionListener, NewsfeedPostModel.NewsfeedPostModelListener {
@@ -101,12 +104,6 @@ public class NewsfeedFragment extends Fragment implements NewsfeedPostsAdapter.P
         mNetworkInterface = mPostsAdapter;
 
         mSharedPref = getContext().getSharedPreferences(Consts.SPOD_MOBILE_PREFERENCES, Context.MODE_PRIVATE);
-
-        if(mSharedPref.getBoolean(NEWSFEED_SHARED_PREF_FIRST_RUN, true)) {
-            mPostsAdapter.isFirstRun(true);
-            mSharedPref.edit().putBoolean(NEWSFEED_SHARED_PREF_FIRST_RUN, false).apply();
-            mFirstRun = true;
-        }
 
         final LinearLayoutManager layout = new LinearLayoutManager(this.getContext());
         mPostsList.setLayoutManager(layout);
@@ -316,6 +313,30 @@ public class NewsfeedFragment extends Fragment implements NewsfeedPostsAdapter.P
         mPostsAdapter.nRefreshPost(entityType, entityId, updateType);
     }
 
+    private void showLikeButtonTip() {
+        mPostsList.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                View firstView = mPostsList.getLayoutManager().findViewByPosition(0);
+                if(firstView != null) {
+                    View likeButton = firstView.findViewById(R.id.newsfeed_post_base_like_button);
+                    Tooltip.create(getContext())
+                            .rootView(getView())
+                            .tip(R.string.newsfeed_like_button_tip)
+                            .on(likeButton)
+                            .onDismiss(new PopupWindow.OnDismissListener() {
+                                @Override
+                                public void onDismiss() {
+                                    mSharedPref.edit().putBoolean(NEWSFEED_SHARED_PREF_FIRST_RUN, false).apply();
+                                }
+                            })
+                            .show();
+                }
+                mPostsList.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+            }
+        });
+    }
+
     private void showLikesWindow(String entityType, String entityId) {
         DisplayMetrics dm = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
@@ -517,6 +538,11 @@ public class NewsfeedFragment extends Fragment implements NewsfeedPostsAdapter.P
         if(scrollOnTop) {
             mPostsList.scrollToPosition(0);
         }
+
+        if(mSharedPref.getBoolean(NEWSFEED_SHARED_PREF_FIRST_RUN, true)) {
+            showLikeButtonTip();
+        }
+
     }
 
     @Override

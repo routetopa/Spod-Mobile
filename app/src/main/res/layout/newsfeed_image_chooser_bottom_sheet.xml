@@ -17,11 +17,5 @@
     <GridView
         android:id="@+id/newsfeed_image_chooser_grid"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:numColumns="5"/>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="fgaessehaawet"/>
+        android:layout_height="wrap_content" />
 </LinearLayout>

@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
@@ -92,20 +93,25 @@ public class Tooltip {
     }
 
     public void show() {
+        if(mAnchor == null){
+            return;
+        }
+
+        mAnchor.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                createView();
+                mAnchor.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+            }
+        });
+    }
+
+    private void createView() {
         if(mAnchor == null) {
             return;
         }
         setupWindow();
-        tooltipLayout.measure(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
-
-        int tooltipWidth = tooltipLayout.getMeasuredWidth();
-        int tooltipHeight = tooltipLayout.getMeasuredHeight();
-
-        WindowManager mWindowManager = (WindowManager) mContext
-                .getSystemService(Context.WINDOW_SERVICE);
-
-        DisplayMetrics dm = new DisplayMetrics();
-        mWindowManager.getDefaultDisplay().getMetrics(dm);
+        DisplayMetrics dm = mContext.getResources().getDisplayMetrics();
 
         int screenHeight = dm.heightPixels;
         int screenWidth = dm.widthPixels;
@@ -119,8 +125,12 @@ public class Tooltip {
 
         View arrow = onTop ? downArrow : upArrow;
         View hideArrow = onTop ? upArrow : downArrow;
+        hideArrow.setVisibility(View.GONE);
 
-        hideArrow.setVisibility(View.INVISIBLE);
+        tooltipLayout.measure(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT);
+
+        int tooltipWidth = tooltipLayout.getMeasuredWidth();
+        int tooltipHeight = tooltipLayout.getMeasuredHeight();
         int arrowWidth = arrow.getMeasuredWidth();
 
         int yPos;
@@ -144,7 +154,7 @@ public class Tooltip {
             xPos = screenWidth - tooltipWidth;
         }
 
-        int leftMargin = anchorCenterX - xPos - (arrowWidth / 2);
+        int leftMargin = 10 + anchorCenterX - xPos - (arrowWidth / 2);
         layoutParams.setMargins(leftMargin,0,0,0);
         arrow.setLayoutParams(layoutParams);
 

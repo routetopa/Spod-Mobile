@@ -37,6 +37,9 @@ public class NewsfeedImageChooserFragment extends BottomSheetDialogFragment{
         mAdapter.setOnItemClickListener(mListener);
         imagesGrid.setAdapter(mAdapter);
 
+        int widthPixels = getContext().getResources().getDisplayMetrics().widthPixels;
+        int columnNumber = widthPixels / 100; //100 is the dimension of an image viewù
+        imagesGrid.setNumColumns(columnNumber);
         dialog.setContentView(view);
     }
 

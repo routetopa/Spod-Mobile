@@ -522,7 +522,7 @@ public class NewsfeedPostsAdapter extends RecyclerView.Adapter<RecyclerView.View
             });
 
             if(mFirstRun && position == 0) {
-                showTooltip(holder.likeButton);
+                //showTooltip(holder.likeButton);
             }
 
             holder.likeButton.setOnLongClickListener(new View.OnLongClickListener() {
@@ -544,25 +544,19 @@ public class NewsfeedPostsAdapter extends RecyclerView.Adapter<RecyclerView.View
                 .into(holder.userImageView);
     }
 
-    private void showTooltip(final View anchor) {
-        anchor.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                Tooltip.create(mContext)
-                        .on(anchor)
-                        .tip(R.string.newsfeed_like_button_tip)
-                        .onDismiss(new PopupWindow.OnDismissListener() {
-                            @Override
-                            public void onDismiss() {
-                                mFirstRun = false;
-                            }
-                        })
-                        .show();
-                anchor.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-            }
-        });
+    /*private void showTooltip(final View anchor) {
 
-    }
+        Tooltip.create(mContext)
+                .on(anchor)
+                .tip(R.string.newsfeed_like_button_tip)
+                .onDismiss(new PopupWindow.OnDismissListener() {
+                    @Override
+                    public void onDismiss() {
+                        mFirstRun = false;
+                    }
+                })
+                .show();
+    }*/
 
     /*private void truncateWithViewMore(String text, final TextView target) {
         if(text == null || text.length() <= 1000) {
@@ -747,7 +741,7 @@ public class NewsfeedPostsAdapter extends RecyclerView.Adapter<RecyclerView.View
                     .error(Glide.with(mContext)
                             .load(R.drawable.ic_link_darker_gray)
                             .apply(new RequestOptions()
-                            .fitCenter())
+                                    .fitCenter())
                             .listener(painter))
                     .transition(new DrawableTransitionOptions()
                             .crossFade())

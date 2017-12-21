@@ -313,13 +313,20 @@ public class AddPostFragment extends DialogFragment implements PopupMenu.OnMenuI
 
                     Glide.with(this)
                             .load(thumbnail)
+                            .apply(new RequestOptions()
+                            .placeholder(R.drawable.ic_link_darker_gray_24dp))
                             .into(linkImage);
 
                     NewsfeedUtils.viewVisibleIfNotNull(title, linkTitle);
                     NewsfeedUtils.viewVisibleIfNotNull(description, linkDescription);
-                    NewsfeedUtils.viewVisibleIfNotNull(thumbnail, linkImage);
+                    //NewsfeedUtils.viewVisibleIfNotNull(thumbnail, linkImage);
 
                     String allImages = mCurrentAttachmentMap.get(NewsfeedJSONHelper.ALL_IMAGES);
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        mAttachmentLink.setElevation(5f);
+                    }
+                    mAttachmentContainer.addView(mAttachmentLink);
 
                     if(allImages != null) {
                         final String[] strings = NewsfeedJSONHelper.convertToStringArray(new JSONArray(allImages));
@@ -342,17 +349,11 @@ public class AddPostFragment extends DialogFragment implements PopupMenu.OnMenuI
                         });
 
                         Tooltip.create(getContext())
-                                .rootView(getView())
+                                .rootView(getDialog().getWindow().getDecorView())
                                 .tip("Click here to choose an image")
                                 .on(linkImage)
                                 .show();
                     }
-
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        mAttachmentLink.setElevation(5f);
-                    }
-
-                    mAttachmentContainer.addView(mAttachmentLink);
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
