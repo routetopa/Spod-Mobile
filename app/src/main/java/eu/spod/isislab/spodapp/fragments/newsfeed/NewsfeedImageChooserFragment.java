@@ -1,10 +1,15 @@
 package eu.spod.isislab.spodapp.fragments.newsfeed;
 
 import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.BottomSheetDialogFragment;
+import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.GridView;
 
 import eu.spod.isislab.spodapp.R;
@@ -30,7 +35,6 @@ public class NewsfeedImageChooserFragment extends BottomSheetDialogFragment{
     public void setupDialog(Dialog dialog, int style) {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.newsfeed_image_chooser_bottom_sheet, null);
         GridView imagesGrid = (GridView) view.findViewById(R.id.newsfeed_image_chooser_grid);
-
         String[] links = getArguments().getStringArray("LINKS");
 
         mAdapter = new NewsfeedImageChooserAdapter(getContext(), links);
@@ -38,7 +42,7 @@ public class NewsfeedImageChooserFragment extends BottomSheetDialogFragment{
         imagesGrid.setAdapter(mAdapter);
 
         int widthPixels = getContext().getResources().getDisplayMetrics().widthPixels;
-        int columnNumber = widthPixels / 100; //100 is the dimension of an image viewù
+        int columnNumber = widthPixels / 150; //150 is the dimension of an image view
         imagesGrid.setNumColumns(columnNumber);
         dialog.setContentView(view);
     }

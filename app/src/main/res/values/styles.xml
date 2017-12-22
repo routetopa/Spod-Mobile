@@ -41,10 +41,6 @@
         <item name="android:textSize">@dimen/abc_text_size_subhead_material</item>
     </style>
 
-    <style name="CircularProgress" parent="Widget.AppCompat.ProgressBar">
-        <item name="colorAccent">@color/indigo</item>
-    </style>
-
     <style name="LikesToolbar" parent="@style/Widget.AppCompat.Toolbar">
         <item name="contentInsetStart">0dp</item>
         <item name="android:paddingLeft">0dp</item>

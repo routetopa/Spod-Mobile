@@ -49,6 +49,7 @@ import eu.spod.isislab.spodapp.utils.NetworkChannel;
 import eu.spod.isislab.spodapp.utils.NewsfeedJSONHelper;
 import eu.spod.isislab.spodapp.utils.NewsfeedUtils;
 import eu.spod.isislab.spodapp.R;
+import eu.spod.isislab.spodapp.utils.TextDrawable;
 import eu.spod.isislab.spodapp.utils.Tooltip;
 import eu.spod.isislab.spodapp.utils.UserManager;
 
@@ -149,14 +150,17 @@ public class AddPostFragment extends DialogFragment implements PopupMenu.OnMenuI
             mAttachmentContainer.addView(mAttachmentImageView);
         }
 
-        Glide.with(getContext())
-                .load(UserManager.getInstance().getAvatarImage())
-                .apply(new RequestOptions()
-                        .placeholder(R.drawable.user_placeholder)
-                        .circleCrop())
-                .transition(new DrawableTransitionOptions().crossFade())
-                .into(mUserImageView);
-
+        if(NewsfeedUtils.isDefaultAvatar(UserManager.getInstance().getAvatarImage())) {
+            mUserImageView.setImageDrawable(NewsfeedUtils.getTextDrawableForUser(getContext(), Integer.parseInt(UserManager.getInstance().getId()), UserManager.getInstance().getName()));
+        } else {
+            Glide.with(getContext())
+                    .load(UserManager.getInstance().getAvatarImage())
+                    .apply(new RequestOptions()
+                            .placeholder(NewsfeedUtils.getTextDrawableForUser(getContext(), Integer.parseInt(UserManager.getInstance().getId()), UserManager.getInstance().getName()))
+                            .circleCrop())
+                    .transition(new DrawableTransitionOptions().crossFade())
+                    .into(mUserImageView);
+        }
 
         mUserNameTextView.setText(UserManager.getInstance().getUsername());
 
@@ -350,7 +354,7 @@ public class AddPostFragment extends DialogFragment implements PopupMenu.OnMenuI
 
                         Tooltip.create(getContext())
                                 .rootView(getDialog().getWindow().getDecorView())
-                                .tip("Click here to choose an image")
+                                .tip(R.string.newsfeed_choose_image)
                                 .on(linkImage)
                                 .show();
                     }

@@ -3,6 +3,8 @@ package eu.spod.isislab.spodapp.fragments.newsfeed;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.ClipDescription;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -31,7 +33,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.Toast;
@@ -87,7 +91,7 @@ public class NewsfeedFragment extends Fragment implements NewsfeedPostsAdapter.P
     public NewsfeedFragment() {}
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
 
         View v = inflater.inflate(R.layout.fragment_newsfeed, container, false);
@@ -151,9 +155,23 @@ public class NewsfeedFragment extends Fragment implements NewsfeedPostsAdapter.P
         mAddButton.findViewById(R.id.newsfeed_add_link_fab).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                final ClipboardManager clipboard = (ClipboardManager) getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+
                 mAddButton.close(true);
-                final EditText editText = new EditText(getContext());
-                editText.setInputType(InputType.TYPE_CLASS_TEXT);
+                View content = LayoutInflater.from(getContext()).inflate(R.layout.newsfeed_paste_link_dialog, null);
+                final EditText editText = (EditText) content.findViewById(R.id.newsfeed_paste_link_edit_text);
+                ImageButton pasteButton = (ImageButton) content.findViewById(R.id.newsfeed_paste_link_paste_button);
+                pasteButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        editText.setText(clipboard.getPrimaryClip().getItemAt(0).getText());
+                    }
+                });
+
+                if(clipboard == null || !clipboard.hasPrimaryClip() || !clipboard.getPrimaryClipDescription().hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN)) {
+                    pasteButton.setEnabled(false);
+                }
 
                 DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
                     @Override
@@ -170,7 +188,7 @@ public class NewsfeedFragment extends Fragment implements NewsfeedPostsAdapter.P
 
                 AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
                 dialog.setTitle(R.string.newsfeed_insert_link)
-                        .setView(editText)
+                        .setView(content)
                         .setPositiveButton(R.string.ok, listener)
                         .setNegativeButton(R.string.cancel, listener)
                         .show();
@@ -194,7 +212,7 @@ public class NewsfeedFragment extends Fragment implements NewsfeedPostsAdapter.P
             }
         });
 
-        mSwipeToRefresh.setColorSchemeResources(R.color.colorPrimary, R.color.colorPrimaryDark, R.color.indigo);
+        mSwipeToRefresh.setColorSchemeResources(R.color.colorPrimary, R.color.colorPrimaryDark);
         return v;
     }
 

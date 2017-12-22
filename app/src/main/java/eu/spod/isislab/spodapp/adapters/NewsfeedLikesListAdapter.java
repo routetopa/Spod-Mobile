@@ -18,6 +18,8 @@ import java.util.List;
 
 import eu.spod.isislab.spodapp.entities.NewsfeedLike;
 import eu.spod.isislab.spodapp.R;
+import eu.spod.isislab.spodapp.utils.NewsfeedUtils;
+import eu.spod.isislab.spodapp.utils.UserManager;
 
 public class NewsfeedLikesListAdapter extends ArrayAdapter<NewsfeedLike> {
 
@@ -41,13 +43,16 @@ public class NewsfeedLikesListAdapter extends ArrayAdapter<NewsfeedLike> {
         ImageView avatarImage = (ImageView) convertView.findViewById(R.id.newsfeed_likes_list_item_icon);
         TextView userDisplay = (TextView) convertView.findViewById(R.id.newsfeed_likes_list_item_text);
 
-        Glide.with(getContext())
-                .load(like.getAvatarUrl())
-                .apply(new RequestOptions()
-                        .placeholder(R.drawable.user_placeholder)
-                        .circleCrop())
-                .into(avatarImage);
-
+        if(NewsfeedUtils.isDefaultAvatar(like.getAvatarUrl())) {
+            avatarImage.setImageDrawable(NewsfeedUtils.getTextDrawableForUser(getContext(), like.getUserId(), like.getDisplayUserName()));
+        } else {
+            Glide.with(getContext())
+                    .load(like.getAvatarUrl())
+                    .apply(new RequestOptions()
+                            .placeholder(NewsfeedUtils.getTextDrawableForUser(getContext(), like.getUserId(), like.getDisplayUserName()))
+                            .circleCrop())
+                    .into(avatarImage);
+        }
         userDisplay.setText(like.getDisplayUserName());
 
         return convertView;

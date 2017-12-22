@@ -4,5 +4,18 @@
     <color name="colorPrimaryDark">#154c5c</color>
     <color name="colorAccent">#185263</color>
     <color name="black_overlay">#66000000</color>
-    <color name="indigo">#4B0082</color>
+
+
+    <string-array name="userColors">
+        <item>#EF5350</item>
+        <item>#EC407A</item>
+        <item>#AB47BC</item>
+        <item>#7E57C2</item>
+        <item>#5C6BC0</item>
+        <item>#42A5F5</item>
+        <item>#26A69A</item>
+        <item>#66BB6A</item>
+        <item>#FF7043</item>
+        <item>#FFA726</item>
+    </string-array>
 </resources>

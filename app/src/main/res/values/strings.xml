@@ -116,6 +116,8 @@
     <string name="newsfeed_text_image">Text and images</string>
     <string name="newsfeed_insert_link">Insert link</string>
     <string name="newsfeed_no_camera_app">No camera app found</string>
+    <string name="newsfeed_paste">Paste</string>
+    <string name="newsfeed_link_select_image">Click here to choose an image</string>
     <string-array name="newsfeed_flag_reason">
         <item>spam</item>
         <item>offence</item>

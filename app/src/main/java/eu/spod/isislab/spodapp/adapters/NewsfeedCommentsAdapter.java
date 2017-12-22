@@ -251,13 +251,16 @@ public class NewsfeedCommentsAdapter extends RecyclerView.Adapter<NewsfeedCommen
             holder.contextMenuButton.setVisibility(View.GONE);
         }
 
-        Glide.with(mContext)
-                .load(c.getAvatarUrl())
-                .apply(new RequestOptions()
-                        .placeholder(R.drawable.user_placeholder)
-                        .circleCrop())
-                .into(holder.userAvatarImageView);
-
+        if(NewsfeedUtils.isDefaultAvatar(c.getAvatarUrl())) {
+            holder.userAvatarImageView.setImageDrawable(NewsfeedUtils.getTextDrawableForUser(mContext,c.getUserId(), c.getUserDisplayName()));
+        } else {
+            Glide.with(mContext)
+                    .load(c.getAvatarUrl())
+                    .apply(new RequestOptions()
+                            .placeholder(NewsfeedUtils.getTextDrawableForUser(mContext, c.getUserId(), c.getUserDisplayName()))
+                            .circleCrop())
+                    .into(holder.userAvatarImageView);
+        }
         int type = getItemViewType(position);
 
 

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <EditText
+        android:id="@+id/newsfeed_paste_link_edit_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        style="@style/FullWidthEditText"
+        android:elevation="5dp"
+        android:inputType="textUri|textMultiLine"
+        android:layout_weight="9"/>
+
+    <ImageButton
+        android:id="@+id/newsfeed_paste_link_paste_button"
+        android:contentDescription="@string/newsfeed_paste"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:src="@drawable/ic_content_paste_grey_24dp"
+        style="@android:style/Widget.Holo.Button.Borderless"/>
+</LinearLayout>

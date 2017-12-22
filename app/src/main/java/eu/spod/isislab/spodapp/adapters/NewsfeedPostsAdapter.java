@@ -536,12 +536,16 @@ public class NewsfeedPostsAdapter extends RecyclerView.Adapter<RecyclerView.View
             holder.likeButton.setVisibility(View.GONE);
         }
 
-        Glide.with(mContext)
-                .load(owner.getAvatarUrl())
-                .apply(new RequestOptions()
-                        .placeholder(R.drawable.user_placeholder)
-                        .circleCrop())
-                .into(holder.userImageView);
+        if(NewsfeedUtils.isDefaultAvatar(owner.getAvatarUrl())) {
+            holder.userImageView.setImageDrawable(NewsfeedUtils.getTextDrawableForUser(mContext, owner.getUserId(), owner.getName()));
+        } else {
+            Glide.with(mContext)
+                    .load(owner.getAvatarUrl())
+                    .apply(new RequestOptions()
+                            .placeholder(NewsfeedUtils.getTextDrawableForUser(mContext, owner.getUserId(), owner.getName()))
+                            .circleCrop())
+                    .into(holder.userImageView);
+        }
     }
 
     /*private void showTooltip(final View anchor) {

@@ -171,20 +171,23 @@ public class PostCommentsFragment extends Fragment implements Observer, PopupMen
 
         initCommentEditor();
 
-        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorPrimaryDark, R.color.indigo);
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary, R.color.colorPrimaryDark);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 loadComments(mCurrentEntityType, mCurrentEntityId, true);
             }
         });
-        Glide.with(mContext)
-                .load(UserManager.getInstance().getAvatarImage())
-                .apply(new RequestOptions()
-                        .placeholder(R.drawable.user_placeholder)
-                        .circleCrop())
-                .into(userImageView);
-
+        if(NewsfeedUtils.isDefaultAvatar(UserManager.getInstance().getAvatarImage())) {
+            userImageView.setImageDrawable(NewsfeedUtils.getTextDrawableForUser(mContext, Integer.parseInt(UserManager.getInstance().getId()), UserManager.getInstance().getName()));
+        } else {
+            Glide.with(mContext)
+                    .load(UserManager.getInstance().getAvatarImage())
+                    .apply(new RequestOptions()
+                            .placeholder(NewsfeedUtils.getTextDrawableForUser(mContext, Integer.parseInt(UserManager.getInstance().getId()), UserManager.getInstance().getName()))
+                            .circleCrop())
+                    .into(userImageView);
+        }
         return contentView;
     }
 

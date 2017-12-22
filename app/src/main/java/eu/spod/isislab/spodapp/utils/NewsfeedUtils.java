@@ -7,7 +7,10 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.shapes.OvalShape;
 import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.Nullable;
@@ -26,6 +29,7 @@ import android.widget.TextView;
 import org.w3c.dom.Text;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 import eu.spod.isislab.spodapp.R;
@@ -73,6 +77,31 @@ public class NewsfeedUtils {
         return getDrawableResource(ctx, id, null);
 
     }
+
+    public static TextDrawable getTextDrawableForUser(Context ctx, int userId, String userName) {
+        String colors[] = ctx.getResources().getStringArray(R.array.userColors);
+        String text;
+        userName = userName.toUpperCase();
+        String[] names = userName.split(" ");
+        if(names.length == 2) {
+            text = names[0].substring(0,1) + names[1].substring(0,1);
+        } else {
+            text = names[0].substring(0,1);
+        }
+
+        String color = colors[userId % colors.length];
+
+        TextDrawable.Builder builder = new TextDrawable.Builder(text)
+                //.setFont(Typeface.create("sans-serif-light", Typeface.NORMAL))
+                .setBackgroundColor(Color.parseColor(color))
+                .setTextColor(Color.WHITE)
+                .setShape(new OvalShape())
+                .setBold(true)
+                .setSmallText(true);
+
+        return builder.create();
+    }
+
     public static Spanned htmlToSpannedText(String html) {
 
         if(html == null) {
@@ -229,5 +258,9 @@ public class NewsfeedUtils {
         int relativeHeight = (height * relativeWidth) / width;
 
         return new int[]{relativeWidth, relativeHeight};
+    }
+
+    public static boolean isDefaultAvatar(String avatarUrl) {
+        return avatarUrl.contains("no-avatar");
     }
 }
