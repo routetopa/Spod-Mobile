@@ -73,8 +73,8 @@ public class MainActivity extends AppCompatActivity
 
     public void handleNotificationIntent(){
 
-        String fragment_tag = AgoraRoomsListFragment.TAG;
-        Fragment fragment   = new AgoraRoomsListFragment();
+        String fragment_tag = NewsfeedFragment.FRAGMENT_NAME;//AgoraRoomsListFragment.TAG;
+        Fragment fragment   = new NewsfeedFragment();//new AgoraRoomsListFragment();
 
         if (getIntent().getExtras() != null) {
             for (String key : getIntent().getExtras().keySet()) {

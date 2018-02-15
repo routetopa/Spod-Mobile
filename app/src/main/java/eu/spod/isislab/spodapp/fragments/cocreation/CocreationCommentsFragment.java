@@ -82,7 +82,8 @@ public class CocreationCommentsFragment extends CommentFragment {
     @Override
     public void onResume() {
         super.onResume();
-        NetworkChannel.getInstance().addObserver(this);
+        //NetworkChannel.getInstance().addObserver(this);
+        init();
     }
 
     @Override
