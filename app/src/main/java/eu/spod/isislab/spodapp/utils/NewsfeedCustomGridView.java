@@ -7,19 +7,19 @@ import android.view.ViewConfiguration;
 import android.widget.AbsListView;
 import android.widget.GridView;
 
-public class CustomGridView extends GridView {
+public class NewsfeedCustomGridView extends GridView {
 
     private long mStartClickTime = 0;
 
-    public CustomGridView(Context context) {
+    public NewsfeedCustomGridView(Context context) {
         super(context);
     }
 
-    public CustomGridView(Context context, AttributeSet attrs) {
+    public NewsfeedCustomGridView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public CustomGridView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public NewsfeedCustomGridView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 

@@ -86,8 +86,9 @@
 
     <!--Newsfeed-->
     <string name="newsfeed_title">Newsfeed</string>
-    <string name="newsfeed_base_post_comments_string">Comments</string>
     <string name="newsfeed_image_transition_name">image_transition</string>
+    <string name="newsfeed_show_friends_activities">Show only my friends\' activities</string>
+    <string name="newsfeed_base_post_comments_string">Comments</string>
     <string name="newsfeed_base_post_likes_string">Likes</string>
     <string name="newsfeed_send_text">SEND</string>
     <string name="newsfeed_empty_field">This field cannot be empty</string>
@@ -118,6 +119,12 @@
     <string name="newsfeed_no_camera_app">No camera app found</string>
     <string name="newsfeed_paste">Paste</string>
     <string name="newsfeed_link_select_image">Click here to choose an image</string>
+    <string name="newsfeed_user_info_feed_tab">Feed</string>
+    <string name="newsfeed_user_info_info_tab">Info</string>
+    <string name="newsfeed_user_info_page_basic">Basic</string>
+    <string name="newsfeed_user_info_page_username">Username</string>
+    <string name="newsfeed_user_info_page_gender">Gender</string>
+    <string name="newsfeed_user_info_page_join">Join Date</string>
     <string-array name="newsfeed_flag_reason">
         <item>spam</item>
         <item>offence</item>
@@ -190,5 +197,8 @@
         <item>Not invited</item>
         <item>Selected</item>
     </string-array>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

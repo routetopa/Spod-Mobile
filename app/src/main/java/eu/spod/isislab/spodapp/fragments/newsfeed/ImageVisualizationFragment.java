@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
@@ -89,9 +90,6 @@ public class ImageVisualizationFragment extends Fragment implements Observer {
             currentImageUri = getArguments().getParcelable(ARG_CURRENT_IMAGE_URI);
         }
 
-        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            setSharedElementEnterTransition(TransitionInflater.from(getContext()).inflateTransition(android.R.transition.move));
-        }*/
     }
 
     @Override
@@ -112,7 +110,7 @@ public class ImageVisualizationFragment extends Fragment implements Observer {
             @Override
             public void onClick(View view) {
                 if(mUiVisible) {
-                    hideUI();
+                    hideUI(true);
                 } else {
                     showUI();
                 }
@@ -137,10 +135,12 @@ public class ImageVisualizationFragment extends Fragment implements Observer {
         mUiVisible = true;
     }
 
-    private void hideUI() {
+    private void hideUI(boolean immersive) {
         mDescriptionContainer.setVisibility(View.GONE);
         mUpperContainer.setVisibility(View.GONE);
-        getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
+        if(immersive) {
+            getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE);
+        }
         mUiVisible = false;
     }
 
@@ -160,11 +160,17 @@ public class ImageVisualizationFragment extends Fragment implements Observer {
 
         if(currentImageUri != null) {
             loadImage(currentImageUri);
-            hideUI();
+            hideUI(false);
         }
 
         if(currentImage != null) {
             fillInfoFields(currentImage);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    showUI();
+                }
+            }, 300);
         }
 
         if (imageIds != null) {
@@ -189,7 +195,6 @@ public class ImageVisualizationFragment extends Fragment implements Observer {
 
     @Override
     public void update(Observable observable, Object o) {
-        //TODO: implements multiple photo view with ViewPager
         Log.d(TAG, "update: " + o.toString());
 
         boolean handled = true;
@@ -217,6 +222,7 @@ public class ImageVisualizationFragment extends Fragment implements Observer {
                 if(toLoad != null) {
                     loadImage(Uri.parse(toLoad.getUrl()));
                     fillInfoFields(toLoad);
+                    showUI();
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -250,8 +256,7 @@ public class ImageVisualizationFragment extends Fragment implements Observer {
             mAlbumNameText.setVisibility(View.GONE);
         }
 
-        mDescriptionText.setText(image.getDescription());
-        showUI();
+        mDescriptionText.setText(NewsfeedUtils.htmlToSpannedText(image.getDescription()));
     }
 
     private void loadImage(Uri uri) {
@@ -275,16 +280,6 @@ public class ImageVisualizationFragment extends Fragment implements Observer {
     }
 
     private void startPostponedTransition() {
-        /*mImageContainer.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-            @Override
-            public boolean onPreDraw() {
-                mImageContainer.getViewTreeObserver().removeOnPreDrawListener(this);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    getActivity().startPostponedEnterTransition();
-                }
-                return true;
-            }
-        });*/
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getActivity().startPostponedEnterTransition();
         }

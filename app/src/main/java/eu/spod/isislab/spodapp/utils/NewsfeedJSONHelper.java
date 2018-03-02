@@ -103,11 +103,6 @@ public class NewsfeedJSONHelper {
     public static final String ERROR_MESSAGE                = "error_message";
     public static final String KO                           = "ko";
 
-    /*OTHER KEYS*/
-    public static final String TIMESTAMP                    = "timestamp";
-    private static final String ALBUM_NAME                  = "albumName";
-    private static final String ALBUM_ID                    = "albumId";
-
     /*AUTHORIZATION KEYS*/
     public static final String WRITE                        = "write";
     public static final String VIEW                         = "view";
@@ -120,8 +115,17 @@ public class NewsfeedJSONHelper {
     public static final String THUMBNAIL_URL                = "thumbnail_url";
     public static final String ALL_IMAGES                   = "allImages" ;
 
-    public static class Formats {
+    /*USER INFO KEYS*/
+    public static final String USERNAME                     = "username";
+    public static final String JOIN_STAMP                   = "joinStamp";
+    public static final String SEX                          = "sex";
 
+    /*OTHER KEYS*/
+    public static final String TIMESTAMP                    = "timestamp";
+    private static final String ALBUM_NAME                  = "albumName";
+    private static final String ALBUM_ID                    = "albumId";
+
+    public static class Formats {
         public static final String FORMAT_EMPTY = "empty";
         public static final String FORMAT_TEXT = "text";
         public static final String FORMAT_CONTENT = "content";
@@ -130,6 +134,7 @@ public class NewsfeedJSONHelper {
         public static final String FORMAT_IMAGE_LIST = "image_list";
         public static final String FORMAT_DATALET = "datalet";
     }
+
     public static Post createPost(JSONObject jsonPost) throws JSONException {
         int id = jsonPost.getInt(ID);
         int entityId = jsonPost.getInt(ENTITY_ID);
@@ -152,9 +157,8 @@ public class NewsfeedJSONHelper {
         String string = optString(jsonPost, STRING);
         String line = optString(jsonPost, LINE);
         JSONObject extras = jsonPost.optJSONObject(DATA_EXTRAS);
-
-
         JSONObject content = jsonPost.optJSONObject(CONTENT);
+
         Post p;
 
         switch (format) {
@@ -368,13 +372,13 @@ public class NewsfeedJSONHelper {
     }
 
     /** Return the value mapped by the given key, or {@code null} if not present or null. */
-    private static String optString(JSONObject json, String key)
-    {
+    private static String optString(JSONObject json, String key) {
         // http://code.google.com/p/android/issues/detail?id=13830
-        if (json.isNull(key))
+        if (json.isNull(key)) {
             return null;
-        else
+        }else {
             return json.optString(key, null);
+        }
     }
 
     /**

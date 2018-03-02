@@ -37,11 +37,11 @@ public class NewsfeedPostModel implements Observer, NewsfeedPostNetworkInterface
     private boolean mCurrentUserCanView = false;
     private boolean mCurrentUserCanWrite = false;
 
-    private int mCurrentPage = -1;
     private int mPostPageCount = NewsfeedUtils.DEFAULT_ITEM_PER_PAGE_COUNT;
 
     private boolean mIsLoading = false;
-    private int mRequestTryCount = 0;
+    private boolean mIsFeedEnded = false;
+
     private CountDownTimer mRequestTimer = new CountDownTimer(30 * 1000, 1000) {
 
         @Override
@@ -54,15 +54,11 @@ public class NewsfeedPostModel implements Observer, NewsfeedPostNetworkInterface
             NetworkChannel.getInstance().stopRequest(Consts.NEWSFEED_GET_POSTS);
             NetworkChannel.getInstance().deleteObserver(NewsfeedPostModel.this);
 
-            mCurrentPage = mCurrentPage - 1; //current page not loaded, so we return to previous page
             if (/*mRequestTryCount < 3 ||*/ mPostPageCount > 3) {
-                mRequestTryCount++;
                 mPostPageCount = Math.round(mPostPageCount / 2f);
-                //mCurrentPage = mCurrentPage - 1; //We have to retry to load last page
                 Log.d(TAG, "Loading timeout. Trying with "  + mPostPageCount + " posts");
                 nLoadFeedPage(false);
             } else {
-                //mCurrentPage = mCurrentPage - 1; //current page not loaded, so we return to previous page
                 if (mModelListener != null) {
                     mModelListener.onFeedLoadingTimeout();
                 }
@@ -178,7 +174,9 @@ public class NewsfeedPostModel implements Observer, NewsfeedPostNetworkInterface
                     /* Code for check user's authorization to view/write on current feed.*/
                     String errorMessage = NewsfeedJSONHelper.getErrorMessage((String) o);
                     if(errorMessage != null) {
-                        mModelListener.onError(NetworkChannel.getInstance().getCurrentService(), errorMessage);
+                        if (mModelListener != null) {
+                            mModelListener.onError(NetworkChannel.getInstance().getCurrentService(), errorMessage);
+                        }
                         break;
                     }
 
@@ -187,18 +185,21 @@ public class NewsfeedPostModel implements Observer, NewsfeedPostNetworkInterface
 
                     if(!mCurrentUserCanView) {
                         String reason = NewsfeedJSONHelper.getErrorMessage(res.getJSONObject(NewsfeedJSONHelper.VIEW).toString());
-                        mModelListener.onError(currentService, "You cannot see this feed. Reason: " + reason);
+                        if (mModelListener != null) {
+                            mModelListener.onError(currentService, "You cannot see this feed. Reason: " + reason);
+                        }
                     }
 
                     if(!mCurrentUserCanWrite) {
                         String reason = NewsfeedJSONHelper.getErrorMessage(res.getJSONObject(NewsfeedJSONHelper.WRITE).toString());
-                        mModelListener.onError(currentService, "You cannot write on this feed. Reason: " + reason);
+                        if (mModelListener != null) {
+                            mModelListener.onError(currentService, "You cannot write on this feed. Reason: " + reason);
+                        }
                     }
 
-                    /*String login = res.getString("login"); //TODO: remove this
-                    mModelListener.onError(currentService, login);*/
-
-                    mModelListener.onAuthorizationResult(mCurrentUserCanView, mCurrentUserCanWrite);
+                    if (mModelListener != null) {
+                        mModelListener.onAuthorizationResult(mCurrentUserCanView, mCurrentUserCanWrite);
+                    }
                 } catch (JSONException e) {
                     handled = false;
                     e.printStackTrace();
@@ -213,7 +214,9 @@ public class NewsfeedPostModel implements Observer, NewsfeedPostNetworkInterface
 
                     if(errorMessage != null) {
                         mRequestTimer.cancel();
-                        mModelListener.onError(currentService, errorMessage);
+                        if (mModelListener != null) {
+                            mModelListener.onError(currentService, errorMessage);
+                        }
                     } else {
                         handled = false;
                         Log.e(TAG, "Failed post loading", e);
@@ -245,6 +248,7 @@ public class NewsfeedPostModel implements Observer, NewsfeedPostNetworkInterface
                 if (posts.size() > 0) {
                     appendData(posts);
                 } else {
+                    mIsFeedEnded = true;
                     mAdapter.setHasFooter(false);
                     mAdapter.notifyDataSetChanged();
                 }
@@ -253,7 +257,9 @@ public class NewsfeedPostModel implements Observer, NewsfeedPostNetworkInterface
                 try {
                     String errorMessage = NewsfeedJSONHelper.getErrorMessage(response);
                     if(errorMessage != null) {
-                        mModelListener.onError(currentService, errorMessage);
+                        if (mModelListener != null) {
+                            mModelListener.onError(currentService, errorMessage);
+                        }
                         break;
                     }
 
@@ -273,7 +279,9 @@ public class NewsfeedPostModel implements Observer, NewsfeedPostNetworkInterface
             case Consts.NEWSFEED_SERVICE_ADD_NEW_STATUS:
                 String errorMessage = NewsfeedJSONHelper.getErrorMessage(response);
                 if(errorMessage != null) {
-                    mModelListener.onError(currentService, errorMessage);
+                    if (mModelListener != null) {
+                        mModelListener.onError(currentService, errorMessage);
+                    }
                     break;
                 }
 
@@ -319,14 +327,15 @@ public class NewsfeedPostModel implements Observer, NewsfeedPostNetworkInterface
         }
 
         if (handled) {
-            mModelListener.onContentLoaded(scrollOnTop);
+            if (mModelListener != null) {
+                mModelListener.onContentLoaded(scrollOnTop);
+            }
             NetworkChannel.getInstance().deleteObserver(this);
         }
     }
 
 
     private void updatePostAtPosition(final int position, final Post post, final NewsfeedPostsAdapter.AdapterUpdateType updateType) {
-
         replaceAtPosition(post, position, updateType);
 
         lastPostUpdated = null;
@@ -345,24 +354,30 @@ public class NewsfeedPostModel implements Observer, NewsfeedPostNetworkInterface
 
     @Override
     public void nLoadFeedPage(boolean resetList) {
-        if(!mCurrentUserCanView) {
-            mModelListener.onError(R.string.newsfeed_view_not_authorized);
+        if(mIsFeedEnded) {
+            if(mModelListener != null) {
+                mModelListener.onError("nLoadFeedPage", "Feed end reached");
+            }
             return;
         }
 
-        mRequestTryCount++;
-        mModelListener.onContentLoadingStarted(resetList);
+        if(!mCurrentUserCanView) {
+            if (mModelListener != null) {
+                mModelListener.onError("LoadFeedPage", "User not authorized to see this feed. Maybe you forgot to request authorization?");
+                mModelListener.onError(R.string.newsfeed_view_not_authorized);
+            }
+            return;
+        }
+
+        if (mModelListener != null) {
+            mModelListener.onContentLoadingStarted(resetList);
+        }
 
         if (resetList) {
             clearList();
-
-            mCurrentPage = -1;
-            mRequestTryCount = -1;
         }
 
-        mCurrentPage++;
-        int offset = mCurrentPage * mPostPageCount;
-
+        int offset = mPosts.size();
         NetworkChannel.getInstance().addObserver(this);
         NetworkChannel.getInstance().loadNextPosts(mCurrentFeedType, mCurrentFeedId, offset, mPostPageCount);
 
@@ -385,7 +400,10 @@ public class NewsfeedPostModel implements Observer, NewsfeedPostNetworkInterface
     @Override
     public void nSendPost(String message, byte[] attachment, String filename) {
         if(!mCurrentUserCanWrite) {
-            mModelListener.onError(R.string.newsfeed_write_not_authorized);
+            if (mModelListener != null) {
+                mModelListener.onError("SendPost", "User not authorized to write on this feed. Maybe you forgot to request authorization?");
+                mModelListener.onError(R.string.newsfeed_write_not_authorized);
+            }
             return;
         }
 
@@ -396,7 +414,10 @@ public class NewsfeedPostModel implements Observer, NewsfeedPostNetworkInterface
     @Override
     public void nSendPost(String message, String attachment) {
         if(!mCurrentUserCanWrite) {
-            mModelListener.onError(R.string.newsfeed_write_not_authorized);
+            if (mModelListener != null) {
+                mModelListener.onError("SendPost", "User not authorized to write on this feed. Maybe you forgot to request authorization?");
+                mModelListener.onError(R.string.newsfeed_write_not_authorized);
+            }
             return;
         }
 
@@ -457,11 +478,13 @@ public class NewsfeedPostModel implements Observer, NewsfeedPostNetworkInterface
     @Override
     public void nStopPendingRequest() {
         if(mIsLoading) {
-            mCurrentPage = mCurrentPage - 1;
+            //mCurrentPage = mCurrentPage - 1;
             NetworkChannel.getInstance().stopRequest(Consts.NEWSFEED_GET_POSTS);
             mRequestTimer.cancel();
-            mModelListener.onContentLoadStopped();
             mIsLoading = false;
+            if (mModelListener != null) {
+                mModelListener.onContentLoadStopped();
+            }
         }
     }
 
@@ -471,7 +494,7 @@ public class NewsfeedPostModel implements Observer, NewsfeedPostNetworkInterface
         void onContentLoadingStarted(boolean resetList);
         void onContentLoaded(boolean scrollOnTop);
         void onContentLoadStopped();
-        void onError(String service, String message);
+        void onError(String tag, String message);
         void onError(int resource);
         void onFeedLoadingTimeout();
     }

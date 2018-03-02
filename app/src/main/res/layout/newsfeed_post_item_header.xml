@@ -46,7 +46,9 @@
                 android:textSize="@dimen/newsfeed_post_status_text_default"
                 android:paddingStart="@dimen/newsfeed_post_content_padding_default"
                 android:paddingLeft="@dimen/newsfeed_post_content_padding_default"
-                android:paddingRight="@dimen/newsfeed_post_content_padding_default"/>
+                android:paddingRight="@dimen/newsfeed_post_content_padding_default"
+                android:clickable="true"
+                android:focusable="true" />
 
             <TextView
                 android:id="@+id/newsfeed_post_base_time_text"

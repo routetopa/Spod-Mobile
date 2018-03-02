@@ -7,6 +7,8 @@
 
 
     <string-array name="userColors">
+        <item>#FF9800</item>
+        <item>#FF7043</item>
         <item>#EF5350</item>
         <item>#EC407A</item>
         <item>#AB47BC</item>
@@ -15,7 +17,5 @@
         <item>#42A5F5</item>
         <item>#26A69A</item>
         <item>#66BB6A</item>
-        <item>#FF7043</item>
-        <item>#FFA726</item>
     </string-array>
 </resources>

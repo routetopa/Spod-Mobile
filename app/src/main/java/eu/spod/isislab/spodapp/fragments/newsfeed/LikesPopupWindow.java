@@ -1,12 +1,17 @@
 package eu.spod.isislab.spodapp.fragments.newsfeed;
 
 import android.content.Context;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.ShapeDrawable;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
@@ -33,11 +38,15 @@ public class LikesPopupWindow extends PopupWindow implements Observer{
     private Context mContext;
     private View mParent;
 
-    private Toolbar mToolbar;
+    private NewsfeedLikesListAdapter mAdapter;
+    private LikesWindowInteractionListener mListener;
+
+    private LinearLayout mToolbar;
     private ListView mList;
     private ProgressBar mProgressBar;
+    private int mPrimaryColor;
 
-    public LikesPopupWindow(Context ctx, View parent, int widthPixels, int heightPixels) {
+    public LikesPopupWindow(Context ctx, @NonNull View parent, int widthPixels, int heightPixels) {
         super(widthPixels, heightPixels);
         mContext = ctx;
         mParent = parent;
@@ -45,21 +54,11 @@ public class LikesPopupWindow extends PopupWindow implements Observer{
         View view = LayoutInflater.from(mContext).inflate(R.layout.newsfeed_likes_window, null);
         setContentView(view);
 
-        mToolbar = (Toolbar) view.findViewById(R.id.toolbar2);
+        mPrimaryColor = NewsfeedUtils.getColorResource(mContext, R.color.colorPrimary);
+
+        mToolbar = (LinearLayout) view.findViewById(R.id.toolbar2);
         mList = (ListView) view.findViewById(R.id.newsfeed_likes_window_list_view);
         mProgressBar = (ProgressBar) view.findViewById(R.id.newsfeed_likes_window_progress_bar);
-
-        mToolbar.setNavigationIcon(R.drawable.ic_arrow_back_24dp);
-
-        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dismiss();
-            }
-        });
-        mToolbar.setSubtitle(NewsfeedUtils.getStringResource(mContext, R.string.newsfeed_base_post_likes_string));
-        mToolbar.setSubtitleTextColor(NewsfeedUtils.getColorResource(mContext, android.R.color.white));
-
         setWindowAttributes();
     }
 
@@ -76,11 +75,17 @@ public class LikesPopupWindow extends PopupWindow implements Observer{
     }
 
     public void show(String entityType, String entityId) {
+        Drawable barBg = NewsfeedUtils.getDrawableResource(mContext, R.drawable.bar_bg);
+
+        barBg.setColorFilter(mPrimaryColor, PorterDuff.Mode.SRC_ATOP);
+
+        mToolbar.setBackground(barBg);
+
         mList.setVisibility(View.GONE);
         mProgressBar.setVisibility(View.VISIBLE);
 
         showAtLocation(mParent, Gravity.CENTER, 0, 0);
-        update();
+        super.update();
 
         NetworkChannel.getInstance().addObserver(this);
         NetworkChannel.getInstance().getLikesList(entityType, entityId);
@@ -90,10 +95,23 @@ public class LikesPopupWindow extends PopupWindow implements Observer{
     private void populateLikesWindow(List<NewsfeedLike> likes) {
         mList.setVisibility(View.VISIBLE);
         mProgressBar.setVisibility(View.GONE);
-        NewsfeedLikesListAdapter adapter = new NewsfeedLikesListAdapter(mContext, 0, likes);
-        mList.setAdapter(adapter);
+        mAdapter = new NewsfeedLikesListAdapter(mContext, 0, likes);
 
-        update();
+        if(mListener != null) {
+            mAdapter.setLikesWindowInteractionListener(new LikesWindowInteractionListener() {
+                @Override
+                public void onUserClicked(int id, String name, String avatarUrl) {
+                    LikesPopupWindow.this.dismiss();
+                    if(mListener != null) {
+                        mListener.onUserClicked(id, name, avatarUrl);
+                    }
+                }
+            });
+        }
+
+        mList.setAdapter(mAdapter);
+
+        super.update();
     }
 
     @Override
@@ -127,5 +145,17 @@ public class LikesPopupWindow extends PopupWindow implements Observer{
         if(handled) {
             NetworkChannel.getInstance().deleteObserver(this);
         }
+    }
+
+    public void setLikesWindowInteractionListener(LikesPopupWindow.LikesWindowInteractionListener listener) {
+        mListener = listener;
+    }
+
+    public void setPrimaryColor(int primaryColor) {
+        this.mPrimaryColor = primaryColor;
+    }
+
+    public interface LikesWindowInteractionListener {
+        void onUserClicked(int id, String name, String avatarUrl);
     }
 }

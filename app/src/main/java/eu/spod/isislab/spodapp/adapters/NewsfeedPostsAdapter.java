@@ -1,20 +1,23 @@
 package eu.spod.isislab.spodapp.adapters;
 
 import android.content.Context;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.TransitionDrawable;
+import android.graphics.drawable.VectorDrawable;
 import android.os.Handler;
+import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
-import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,20 +26,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
-import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.target.Target;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,27 +55,31 @@ import eu.spod.isislab.spodapp.utils.NewsfeedPostNetworkInterface;
 import eu.spod.isislab.spodapp.utils.NewsfeedUtils;
 import eu.spod.isislab.spodapp.entities.Post;
 import eu.spod.isislab.spodapp.R;
-import eu.spod.isislab.spodapp.utils.Tooltip;
 import eu.spod.isislab.spodapp.fragments.newsfeed.NewsfeedFragment;
 
 
+import static eu.spod.isislab.spodapp.utils.NewsfeedUtils.FEED_TYPE_MY;
+import static eu.spod.isislab.spodapp.utils.NewsfeedUtils.FEED_TYPE_USER;
 import static eu.spod.isislab.spodapp.utils.NewsfeedUtils.htmlToSpannedText;
 
 
 public class NewsfeedPostsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements NewsfeedPostNetworkInterface {
     private boolean mFirstRun = false;
+    private int mPrimaryColor;
+    private int mFeedId;
+    private String mFeedType;
 
-    private NewsfeedPostModel mPosts;
+    private NewsfeedPostModel mNewsfeedPostModel;
+
     private NewsfeedPostNetworkInterface mNetworkCommunication;
-
     private Context mContext;
-    private PostsAdapterInteractionListener mListener;
 
+    private PostsAdapterInteractionListener mListener;
     private boolean mHasFooter;
+
     private FooterType mFooterType = FooterType.LOADING;
 
     private static final String TAG = "NewsfeedPostsAdapter";
-
     private static final int LAYOUT_LOADING = 0;
     private static final int LAYOUT_EMPTY_POST = 1;
     private static final int LAYOUT_TEXT_POST = 2;
@@ -209,9 +213,14 @@ public class NewsfeedPostsAdapter extends RecyclerView.Adapter<RecyclerView.View
     public NewsfeedPostsAdapter(Context context, PostsAdapterInteractionListener listener, String feedType, String feedId) {
         mContext = context;
         mListener = listener;
-        mPosts = new NewsfeedPostModel(this, feedType, feedId);
-        mNetworkCommunication = mPosts;
+        mFeedId = Integer.parseInt(feedId);
+        mFeedType = feedType;
+
+        mNewsfeedPostModel = new NewsfeedPostModel(this, feedType, feedId);
+        mNetworkCommunication = mNewsfeedPostModel;
         mHasFooter = false;
+
+        mPrimaryColor = NewsfeedUtils.getColorResource(mContext, R.color.colorAccent);
 
         mFirstRun = mContext.getSharedPreferences(Consts.SPOD_MOBILE_PREFERENCES, Context.MODE_PRIVATE)
                 .getBoolean(NewsfeedFragment.NEWSFEED_SHARED_PREF_FIRST_RUN, false);
@@ -219,16 +228,16 @@ public class NewsfeedPostsAdapter extends RecyclerView.Adapter<RecyclerView.View
         Log.d(TAG, "NewsfeedPostsAdapter: firstRun="+mFirstRun);
     }
 
-    public void isFirstRun(boolean b) {
-        mFirstRun = b;
+    public void setPrimaryColor(int color) {
+        this.mPrimaryColor = color;
     }
 
     public void setData(ArrayList<Post> posts){
-        mPosts.setData(posts);
+        mNewsfeedPostModel.setData(posts);
     }
 
     public Post getItemAtPosition(int position){
-        return mPosts.getItemAtPosition(position);
+        return mNewsfeedPostModel.getItemAtPosition(position);
     }
 
 
@@ -261,14 +270,14 @@ public class NewsfeedPostsAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     @Override
     public int getItemCount() {
-        if(mPosts == null)
+        if(mNewsfeedPostModel == null)
             return 0;
 
-        return mHasFooter ? mPosts.size() + 1 : mPosts.size();
+        return mHasFooter ? mNewsfeedPostModel.size() + 1 : mNewsfeedPostModel.size();
     }
 
     private boolean isLastPosition(int position){
-        /*int lastPostPosition = mPosts.size() - 1;
+        /*int lastPostPosition = mNewsfeedPostModel.size() - 1;
         if(mHasFooter) {
             lastPostPosition = lastPostPosition + 1; //if list has footer then it have another position after last post's position
         }*/
@@ -282,7 +291,7 @@ public class NewsfeedPostsAdapter extends RecyclerView.Adapter<RecyclerView.View
             return LAYOUT_LOADING;
         }
 
-        Post p = mPosts.get(position);
+        Post p = mNewsfeedPostModel.get(position);
         switch (p.getFormat()) {
             case NewsfeedJSONHelper.Formats.FORMAT_TEXT:
                 return LAYOUT_TEXT_POST;
@@ -372,7 +381,7 @@ public class NewsfeedPostsAdapter extends RecyclerView.Adapter<RecyclerView.View
     }
 
     private void updateViewHolder(RecyclerView.ViewHolder h, int position, List<Object> payloads) {
-        Post p = mPosts.get(position);
+        Post p = mNewsfeedPostModel.get(position);
         for (Object payload : payloads) {
             AdapterUpdateType type = (AdapterUpdateType) payload;
             switch (type) {
@@ -411,7 +420,7 @@ public class NewsfeedPostsAdapter extends RecyclerView.Adapter<RecyclerView.View
     private void bindBaseViewHolder(final RecyclerView.ViewHolder h, final int position) {
         final BasePostViewHolder holder = (BasePostViewHolder) h;
 
-        final Post p = mPosts.get(position);
+        final Post p = mNewsfeedPostModel.get(position);
 
         if(holder.contextActionMenuButton == null) {
             holder.contextActionMenuButton = new ImageButton(mContext, null, R.style.ButtonBorderless);
@@ -442,17 +451,50 @@ public class NewsfeedPostsAdapter extends RecyclerView.Adapter<RecyclerView.View
         }
 
         if(p.hasActivityRespond()){
+            final Post.User activityUser = p.getUserInfo(p.getActivityUserId());
+
+            String activityUserName = activityUser.getName();
+            Spanned activitySpannedText = htmlToSpannedText(p.getActivityString());
+
+            String activityText = activityUserName + " " + activitySpannedText;
+
+            ClickableSpan activityUserSpan = new ClickableSpan() {
+                @Override
+                public void updateDrawState(TextPaint ds) {
+                    super.updateDrawState(ds);
+                    if(FEED_TYPE_USER.equals(mFeedType) && activityUser.getUserId() == mFeedId) {
+                        ds.setColor(holder.activityString.getCurrentTextColor());
+                    } else {
+                        ds.setColor(mPrimaryColor);
+                    }
+                    ds.setUnderlineText(false);
+                }
+
+                @Override
+                public void onClick(View widget) {
+                    if(mListener != null) {
+                        mListener.onOpenUserProfile(activityUser);
+                    }
+                }
+            };
+
+            SpannableString activityRespondText = new SpannableString(activityText);
+            activityRespondText.setSpan(activityUserSpan, 0, activityUserName.length(), 0);
+
             holder.upperActivityContainer.setVisibility(View.VISIBLE);
-            String activityRespondText = p.getUserInfo(p.getActivityUserId()).getName() + " " + htmlToSpannedText(p.getActivityString());
+            //String activityRespondText = p.getUserInfo(p.getActivityUserId()).getName() + " " + htmlToSpannedText(p.getActivityString());
+
+
             holder.activityString.setText(activityRespondText);
+            holder.activityString.setMovementMethod(new LinkMovementMethod());
             holder.upperActivityContainer.addView(holder.contextActionMenuButton);
         }else{
             holder.upperActivityContainer.setVisibility(View.GONE);
             holder.userInfoContainer.addView(holder.contextActionMenuButton);
         }
 
-        Post.User owner = p.getUserInfo(p.getUserId());
-        String ownerName = owner.getName();
+        final Post.User owner = p.getUserInfo(p.getUserId());
+        final String ownerName = owner.getName();
         String actionString = p.getString() != null
                 ? " "+ htmlToSpannedText(p.getString())
                 : "";
@@ -462,18 +504,41 @@ public class NewsfeedPostsAdapter extends RecyclerView.Adapter<RecyclerView.View
         }
 
         String text = ownerName + actionString;
+
+        ClickableSpan clickableSpan = new ClickableSpan() {
+            @Override
+            public void updateDrawState(TextPaint ds) {
+                ds.setColor(NewsfeedUtils.getColorResource(mContext, android.R.color.black));
+                ds.setUnderlineText(false);
+            }
+
+            @Override
+            public void onClick(View textView) {
+                if(mListener != null) {
+                    mListener.onOpenUserProfile(owner);
+                }
+            }
+        };
+
         SpannableString spannableString = new SpannableString(text);
         spannableString.setSpan(new RelativeSizeSpan(1.1f), 0, ownerName.length(), 0);
-        spannableString.setSpan(new ForegroundColorSpan(NewsfeedUtils.getColorResource(mContext, android.R.color.black)), 0, ownerName.length(), 0);
+        spannableString.setSpan(clickableSpan, 0, ownerName.length(), 0);
         holder.userNameActionTextView.setText(spannableString);
+        holder.userNameActionTextView.setMovementMethod(new LinkMovementMethod());
 
         long timestamp = p.getTimestampInMillis();
         String time = NewsfeedUtils.timeToString(mContext, timestamp);
         holder.timeTextView.setText(time);
 
         if(p.hasCommentsFeature()) {
-            String commentsButtonText = p.getCommentCount() + " " + mContext.getText(R.string.newsfeed_base_post_comments_string);
+            String commentsButtonText = mContext.getResources().getQuantityString(R.plurals.newsfeed_comments, p.getCommentCount(), p.getCommentCount());
             holder.commentsButton.setText(commentsButtonText);
+
+            if(p.getCommentCount() > 0) {
+                holder.commentsButton.setTextColor(mPrimaryColor);
+            } else {
+                holder.commentsButton.setTextColor(NewsfeedUtils.getColorResource(mContext, android.R.color.darker_gray));
+            }
 
             holder.commentsButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -488,12 +553,12 @@ public class NewsfeedPostsAdapter extends RecyclerView.Adapter<RecyclerView.View
         }
 
         if(p.hasLikeFeature()) {
-            String likesButtonText = p.getLikesCount() + " " + mContext.getText(R.string.newsfeed_base_post_likes_string);
+            String likesButtonText = mContext.getResources().getQuantityString(R.plurals.newsfeed_likes, p.getLikesCount(), p.getLikesCount());
             holder.likeButton.setText(likesButtonText);
 
             Drawable coloredLikeDrawable = NewsfeedUtils.getDrawableResource(mContext, R.drawable.ic_post_heart_colored_24dp);
             Drawable likeDrawable =  NewsfeedUtils.getDrawableResource(mContext, R.drawable.ic_post_heart_outline_24dp);
-            final int likedColor = NewsfeedUtils.getColorResource(mContext, R.color.colorAccent);
+            final int likedColor = mPrimaryColor;
             final int notLikedColor = NewsfeedUtils.getColorResource(mContext, android.R.color.darker_gray);
 
             holder.likeButton.setTextColor(notLikedColor);
@@ -516,14 +581,9 @@ public class NewsfeedPostsAdapter extends RecyclerView.Adapter<RecyclerView.View
                         holder.likeButton.setTextColor(notLikedColor);
                         transitionDrawable.reverseTransition(300);
                     }
-                    //mListener.onLikeButtonClicked(p, position);
-                    mPosts.nLikeUnlikePost(position);
+                    mNewsfeedPostModel.nLikeUnlikePost(position);
                 }
             });
-
-            if(mFirstRun && position == 0) {
-                //showTooltip(holder.likeButton);
-            }
 
             holder.likeButton.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
@@ -546,104 +606,31 @@ public class NewsfeedPostsAdapter extends RecyclerView.Adapter<RecyclerView.View
                             .circleCrop())
                     .into(holder.userImageView);
         }
+
+        holder.userImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.onOpenUserProfile(owner);
+            }
+        });
     }
-
-    /*private void showTooltip(final View anchor) {
-
-        Tooltip.create(mContext)
-                .on(anchor)
-                .tip(R.string.newsfeed_like_button_tip)
-                .onDismiss(new PopupWindow.OnDismissListener() {
-                    @Override
-                    public void onDismiss() {
-                        mFirstRun = false;
-                    }
-                })
-                .show();
-    }*/
-
-    /*private void truncateWithViewMore(String text, final TextView target) {
-        if(text == null || text.length() <= 1000) {
-            target.setText(text);
-            return;
-        }
-
-        String truncatedStr = NewsfeedUtils.truncateString(text, 1000);
-        String viewMore = NewsfeedUtils.getStringResource(mContext, R.string.newsfeed_view_more);
-        String viewLess = NewsfeedUtils.getStringResource(mContext, R.string.newsfeed_view_less);
-
-        final SpannableString spannableMore = new SpannableString(truncatedStr + " " + viewMore);
-        final SpannableString spannableLess = new SpannableString(text + " " + viewLess);
-
-        spannableLess.setSpan(new ClickableSpan() {
-            @Override
-            public void onClick(View view) {
-                target.setText(spannableMore);
-            }
-        }, text.length() + 1, spannableLess.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-        spannableMore.setSpan(new ClickableSpan() {
-            @Override
-            public void onClick(View view) {
-                target.setText(spannableLess);
-            }
-        }, truncatedStr.length() + 1, spannableMore.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-        target.setText(spannableMore);
-    }
-
-    private void truncateWithViewMore(Spanned text, final TextView target) {
-        if(text == null || text.length() <= 1000) {
-            target.setText(text);
-            return;
-        }
-
-        String truncatedStr = NewsfeedUtils.truncateString(text.toString(), 1000);
-        String viewMore = NewsfeedUtils.getStringResource(mContext, R.string.newsfeed_view_more);
-        String viewLess = NewsfeedUtils.getStringResource(mContext, R.string.newsfeed_view_less);
-
-        final SpannableString spannableMore = new SpannableString(truncatedStr + " " + viewMore);
-        final SpannableString spannableLess = new SpannableString(text + " " + viewLess);
-
-        spannableLess.setSpan(new ClickableSpan() {
-            @Override
-            public void onClick(View view) {
-                target.setText(spannableMore);
-            }
-        }, text.length() + 1, spannableLess.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-        spannableMore.setSpan(new ClickableSpan() {
-            @Override
-            public void onClick(View view) {
-                Log.d(TAG, "onClick: ");
-                target.setText(spannableLess);
-            }
-        }, truncatedStr.length() + 1, spannableMore.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-        target.setText(spannableMore);
-    }*/
 
     private void bindTextViewHolder(TextPostViewHolder h, int position) {
-        Post post = mPosts.get(position);
-        //h.statusTextView.setText(htmlToSpannedText(post.getStatus()));
-
+        Post post = mNewsfeedPostModel.get(position);
         NewsfeedUtils.truncateWithViewMore(mContext, htmlToSpannedText(post.getStatus()), 1000,  h.statusTextView);
+        h.statusTextView.setLinkTextColor(mPrimaryColor);
     }
 
     private void bindImageViewHolder(final ImagePostViewHolder h, int position) {
-        final ImagePost post = (ImagePost) mPosts.get(position); //At this point we should be sure we can do this cast safely
+        final ImagePost post = (ImagePost) mNewsfeedPostModel.get(position); //At this point we should be sure we can do this cast safely
 
         h.statusTextView.setLinksClickable(true);
+        h.statusTextView.setLinkTextColor(mPrimaryColor);
         h.statusTextView.setMovementMethod(LinkMovementMethod.getInstance());
-        //h.statusTextView.setText(post.getStatus());
-        NewsfeedUtils.truncateWithViewMore(mContext, post.getStatus(), 1000, h.statusTextView);
+        NewsfeedUtils.truncateWithViewMore(mContext, htmlToSpannedText(post.getStatus()), 1000, h.statusTextView);
+        NewsfeedUtils.viewVisibleIfNotNull(post.getStatus(), h.statusTextView);
 
         String imageSrc = post.getImagePreviewUrl();
-        //h.contentImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-
-
-        //int w =  NewsfeedUtils.pxToDp(mContext, post.getImagePreviewWidth());
-        //int he = NewsfeedUtils.pxToDp(mContext, post.getImagePreviewHeight());
         int[] dimensions = post.getImage().getPreviewDimensions();
 
         int[] relativeDimensions = NewsfeedUtils.getRelativeDimensions(mContext, dimensions);
@@ -675,7 +662,7 @@ public class NewsfeedPostsAdapter extends RecyclerView.Adapter<RecyclerView.View
 
 
     private void bindImageListViewHolder(ImageListPostViewHolder h, int position) {
-        final ImageListPost post = (ImageListPost) mPosts.get(position);
+        final ImageListPost post = (ImageListPost) mNewsfeedPostModel.get(position);
 
         h.imagesScrollView.setHorizontalScrollBarEnabled(false);
 
@@ -687,7 +674,6 @@ public class NewsfeedPostsAdapter extends RecyclerView.Adapter<RecyclerView.View
         for (final JsonImage image : images) {
             final ImageView content = new ImageView(mContext);
             content.setLayoutParams((new LinearLayout.LayoutParams(size, size)));
-            //content.setScaleType(ImageView.ScaleType.CENTER_CROP);
             content.setPadding(0,0,5,0);
             ViewCompat.setTransitionName(content, NewsfeedUtils.getStringResource(mContext, R.string.newsfeed_image_transition_name));
             content.setOnClickListener(new View.OnClickListener() {
@@ -719,16 +705,13 @@ public class NewsfeedPostsAdapter extends RecyclerView.Adapter<RecyclerView.View
     }
 
     private void bindImageContentViewHolder(final ContentImageViewHolder h, final int position) {
-        final ContentPost post = (ContentPost) mPosts.get(position);
+        final ContentPost post = (ContentPost) mNewsfeedPostModel.get(position);
 
         Spanned status = htmlToSpannedText(post.getStatus());
-        if (TextUtils.isEmpty(status.toString())) {
-            h.statusTextView.setVisibility(View.GONE);
-        } else {
-            h.statusTextView.setVisibility(View.VISIBLE); //Repeated visibility for RecyclerView's reuse
-            //h.statusTextView.setText(status);
-            NewsfeedUtils.truncateWithViewMore(mContext, status, 1000, h.statusTextView);
-        }
+
+        NewsfeedUtils.viewVisibleIfNotNull(status.toString(), h.statusTextView);
+        NewsfeedUtils.truncateWithViewMore(mContext, status, 1000, h.statusTextView);
+        h.statusTextView.setLinkTextColor(mPrimaryColor);
 
         if(post.hasImage()) {
             String url = post.getPreferredPreviewImageUrl();
@@ -801,11 +784,13 @@ public class NewsfeedPostsAdapter extends RecyclerView.Adapter<RecyclerView.View
     }
 
     private void bindDataletViewHolder(DataletPostViewHolder h, final int position){
-        final DataletPost p = (DataletPost) mPosts.get(position);
+        final DataletPost p = (DataletPost) mNewsfeedPostModel.get(position);
 
-        //h.statusTextView.setText(NewsfeedUtils.htmlToSpannedText(p.getStatus()));
-        NewsfeedUtils.truncateWithViewMore(mContext, p.getStatus(),1000, h.statusTextView);
+        Spanned status = NewsfeedUtils.htmlToSpannedText(p.getStatus());
+        NewsfeedUtils.truncateWithViewMore(mContext, status,1000, h.statusTextView);
+        h.statusTextView.setLinkTextColor(mPrimaryColor);
 
+        h.statusTextView.setLinkTextColor(mPrimaryColor);
         h.dataletPreviewImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -826,7 +811,7 @@ public class NewsfeedPostsAdapter extends RecyclerView.Adapter<RecyclerView.View
     }
 
     private PopupMenu inflateContextPopupMenu(View anchor, final int selectedItemPosition) {
-        final Post p = mPosts.get(selectedItemPosition);
+        final Post p = mNewsfeedPostModel.get(selectedItemPosition);
         final PopupMenu menu = new PopupMenu(mContext, anchor);
         List<ContextActionMenuItem> contextActionMenu = p.getContextActionMenu();
 
@@ -848,7 +833,7 @@ public class NewsfeedPostsAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     //MODEL LISTENER BRIDGE
     public void setModelListener(NewsfeedPostModel.NewsfeedPostModelListener listener) {
-        mPosts.setModelListener(listener);
+        mNewsfeedPostModel.setModelListener(listener);
     }
 
     //MODEL NETWORK COMMUNICATIONS BRIDGE
@@ -909,5 +894,7 @@ public class NewsfeedPostsAdapter extends RecyclerView.Adapter<RecyclerView.View
         void onContextActionMenuItemClicked(int position, ContextActionMenuItem.ContextActionType actionType);
 
         void onContentLinkClicked(ContentPost post);
+
+        void onOpenUserProfile(Post.User user);
     }
 }

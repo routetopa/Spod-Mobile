@@ -85,6 +85,7 @@
     <string name="comment_add_empty_comment_warning">Il commento non può essere vuoto</string>
 
     <!--Newfeed-->
+    <string name="newsfeed_show_friends_activities">Mostra solo le attività dei miei amici</string>
     <string name="newsfeed_image_transition_name">image_transition</string>
     <string name="newsfeed_base_post_comments_string">Commenti</string>
     <string name="newsfeed_base_post_likes_string">Likes</string>
@@ -103,7 +104,7 @@
     <string name="newsfeed_slow_connection">Problemi di connessione</string>
     <string name="newsfeed_retry">Riprova</string>
     <string name="newsfeed_load_more">Mostra altri</string>
-    <string name="newsfeed_like_button_tip">Tip: Clicca sul pulsante Like per mettere un Like, o tieni premuto per vedere a chi piace</string>
+    <string name="newsfeed_like_button_tip">Tip: Clicca sul pulsante LIKE per mettere un \'mi piace\', o tieni premuto per vedere a chi piace</string>
     <string name="newsfeed_title">Newsfeed</string>
     <string name="newsfeed_view_more">Altro</string>
     <string name="newsfeed_view_less">Mostra meno</string>
@@ -118,6 +119,12 @@
     <string name="newsfeed_no_camera_app">Nessuna app fotocamera trovata</string>
     <string name="newsfeed_paste">Paste</string>
     <string name="newsfeed_link_select_image">Clicca qui per scegliere una immagine</string>
+    <string name="newsfeed_user_info_feed_tab">Feed</string>
+    <string name="newsfeed_user_info_info_tab">Info</string>
+    <string name="newsfeed_user_info_page_basic">Base</string>
+    <string name="newsfeed_user_info_page_username">Username</string>
+    <string name="newsfeed_user_info_page_gender">Sono</string>
+    <string name="newsfeed_user_info_page_join">Data registrazione</string>
     <string-array name="newsfeed_flag_reason">
         <item>spam</item>
         <item>offence</item>

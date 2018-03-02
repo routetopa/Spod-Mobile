@@ -6,12 +6,10 @@
     android:background="@android:color/background_light">
 
    <FrameLayout
-        android:id="@+id/activity_image_visualization_fragment_container"
+        android:id="@+id/activity_fullscreen_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
-    <!-- This FrameLayout insets its children based on system windows using
-         android:fitsSystemWindows. -->
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"

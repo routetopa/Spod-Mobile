@@ -9,30 +9,27 @@
         android:id="@+id/newsfeed_post_list_swipe_refresh_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/newsfeed_post_container"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:listitem="@layout/newsfeed_post_item_empty">
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/newsfeed_post_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    tools:listitem="@layout/newsfeed_post_item_empty">
+                </android.support.v7.widget.RecyclerView>
 
-        </android.support.v7.widget.RecyclerView>
-
+                <Switch
+                    android:id="@+id/newsfeed_show_friends_activities_switch"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/newsfeed_show_friends_activities"
+                    android:padding="@dimen/newsfeed_post_content_padding_small"
+                    android:textColor="@android:color/white"/>
+            </FrameLayout>
     </android.support.v4.widget.SwipeRefreshLayout>
-
-    <!--<android.support.design.widget.FloatingActionButton-->
-        <!--android:id="@+id/newsfeed_add_post_fab"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_gravity="bottom|end"-->
-        <!--android:src="@drawable/ic_add_black_24dp"-->
-        <!--android:tint="@android:color/white"-->
-        <!--android:layout_margin="@dimen/fab_margin"-->
-        <!--app:layout_behavior="eu.spod.isislab.spodapp.utils.FABHideOnScroll"-->
-        <!--android:clickable="true"-->
-        <!--android:focusable="true"/>-->
-
-    <!-- app:srcCompat="@drawable/ic_add_black_24dp" -->
 
     <com.github.clans.fab.FloatingActionMenu
         android:id="@+id/newsfeed_add_post_fab"

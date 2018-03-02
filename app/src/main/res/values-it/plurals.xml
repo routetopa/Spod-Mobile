@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="newsfeed_likes">
+        <item quantity="one">%d like</item>
+        <item quantity="other">%d likes</item>
+    </plurals>
+
+    <plurals name="newsfeed_comments">
+        <item quantity="one">%d commento</item>
+        <item quantity="other">%d commenti</item>
+    </plurals>
+</resources>

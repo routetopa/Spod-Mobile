@@ -64,8 +64,8 @@ public class AddPostFragment extends DialogFragment implements PopupMenu.OnMenuI
     public static final String ARGUMENT_TYPE = "eu.spod.isislab.spodapp.fragments.AddPostFragment.ARGUMENT_TYPE";
 
     public static final String ARGUMENT_INPUT_LINK = "eu.spod.isislab.spodapp.fragments.AddPostFragment.ARGUMENT_INPUT_LINK";
-    public static final String ARGUMENT_TYPE_FILE = "eu.spod.isislab.spodapp.fragments.AddPostFragment.ARGUMENT_TYPE_FILE";
 
+    public static final String ARGUMENT_TYPE_FILE = "eu.spod.isislab.spodapp.fragments.AddPostFragment.ARGUMENT_TYPE_FILE";
     public static final String ARGUMENT_TYPE_LINK = "eu.spod.isislab.spodapp.fragments.AddPostFragment.ARGUMENT_TYPE_LINK";
 
     public static final int ADD_POST_FILE_REQUEST_CODE = 999;
@@ -84,15 +84,15 @@ public class AddPostFragment extends DialogFragment implements PopupMenu.OnMenuI
     private ImageView mUserImageView;
     private TextView mUserNameTextView;
 
-    //FRAGMENT TYPE PHOTO
+    //FRAGMENT TYPE: PHOTO
     private Uri mCurrentAttachmentUri = null;
 
-    //FRAGMENT TYPE LINK
+    //FRAGMENT TYPE: LINK
     private HashMap<String, String> mCurrentAttachmentMap;
 
     private String mFragmentType;
-    public AddPostFragment() {
-    }
+
+    public AddPostFragment() {}
 
     public static AddPostFragment getTextInstance() {
         AddPostFragment fragment = new AddPostFragment();
@@ -110,6 +110,7 @@ public class AddPostFragment extends DialogFragment implements PopupMenu.OnMenuI
         fragment.setArguments(arguments);
         return fragment;
     }
+
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -162,17 +163,17 @@ public class AddPostFragment extends DialogFragment implements PopupMenu.OnMenuI
                     .into(mUserImageView);
         }
 
-        mUserNameTextView.setText(UserManager.getInstance().getUsername());
+        mUserNameTextView.setText(UserManager.getInstance().getName());
 
         dialogBuilder.setView(v)
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                .setPositiveButton(getContext().getString(R.string.ok), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         sendResult();
                         dialogInterface.dismiss();
                     }
                 })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                .setNegativeButton(getContext().getString(R.string.cancel), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         AddPostFragment.this.getDialog().cancel();
@@ -182,19 +183,6 @@ public class AddPostFragment extends DialogFragment implements PopupMenu.OnMenuI
         mMessageEditText.requestFocus();
 
         return dialogBuilder.create();
-    }
-
-    private void sendResult() {
-        Intent intent = new Intent();
-        if(ARGUMENT_TYPE_FILE.equals(mFragmentType)) {
-            intent.putExtra(EXTRA_DATA_POST_ATTACHMENT_URI, mCurrentAttachmentUri);
-            intent.putExtra(EXTRA_DATA_POST_MESSAGE, mMessageEditText.getText().toString());
-            getTargetFragment().onActivityResult(ADD_POST_FILE_REQUEST_CODE, Activity.RESULT_OK, intent);
-        } else if(ARGUMENT_TYPE_LINK.equals(mFragmentType)) {
-            intent.putExtra(EXTRA_DATA_POST_MESSAGE, mMessageEditText.getText().toString());
-            intent.putExtra(EXTRA_DATA_POST_LINK_CONTENT, mCurrentAttachmentMap);
-            getTargetFragment().onActivityResult(ADD_POST_LINK_REQUEST_CODE, Activity.RESULT_OK, intent);
-        }
     }
 
     @Override
@@ -241,6 +229,19 @@ public class AddPostFragment extends DialogFragment implements PopupMenu.OnMenuI
                 }
         }
         return false;
+    }
+
+    private void sendResult() {
+        Intent intent = new Intent();
+        if(ARGUMENT_TYPE_FILE.equals(mFragmentType)) {
+            intent.putExtra(EXTRA_DATA_POST_ATTACHMENT_URI, mCurrentAttachmentUri);
+            intent.putExtra(EXTRA_DATA_POST_MESSAGE, mMessageEditText.getText().toString());
+            getTargetFragment().onActivityResult(ADD_POST_FILE_REQUEST_CODE, Activity.RESULT_OK, intent);
+        } else if(ARGUMENT_TYPE_LINK.equals(mFragmentType)) {
+            intent.putExtra(EXTRA_DATA_POST_MESSAGE, mMessageEditText.getText().toString());
+            intent.putExtra(EXTRA_DATA_POST_LINK_CONTENT, mCurrentAttachmentMap);
+            getTargetFragment().onActivityResult(ADD_POST_LINK_REQUEST_CODE, Activity.RESULT_OK, intent);
+        }
     }
 
     @Override
@@ -323,7 +324,6 @@ public class AddPostFragment extends DialogFragment implements PopupMenu.OnMenuI
 
                     NewsfeedUtils.viewVisibleIfNotNull(title, linkTitle);
                     NewsfeedUtils.viewVisibleIfNotNull(description, linkDescription);
-                    //NewsfeedUtils.viewVisibleIfNotNull(thumbnail, linkImage);
 
                     String allImages = mCurrentAttachmentMap.get(NewsfeedJSONHelper.ALL_IMAGES);
 

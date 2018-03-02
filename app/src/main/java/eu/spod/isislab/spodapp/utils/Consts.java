@@ -59,6 +59,7 @@ public class Consts
     public static final String NEWSFEED_SERVICE_DELETE_COMMENT      = "NEWSFEED_SERVICE_DELETE_COMMENT";
     public static final String NEWSFEED_SERVICE_FLAG_CONTENT        = "NEWSFEED_SERVICE_FLAG_CONTENT";
     public static final String NEWSFEED_SERVICE_GET_LINK_CONTENT    = "NEWSFEED_SERVICE_GET_LINK_CONTENT";
+    public static final String NEWSFEED_SERVICE_GET_USER_INFO       = "NEWSFEED_SERVICE_GET_USER_INFO";
 
     public static final String NEWSFEED_SERVICE_GET_LIKES_LIST      = "NEWSFEED_SERVICE_GET_LIKES_LIST";
     public static final String RESET_PASSWORD_URL                   = "/oauth2/password/reset";
@@ -106,7 +107,8 @@ public class Consts
     public static final String NEWSFEED_DELETE_COMMENT          = "/spod_extfeed/api/delete-comment/";
     public static final String NEWSFEED_DELETE_POST             = "/spod_extfeed/api/delete-post/";
     public static final String NEWSFEED_FLAG_CONTENT            = "/spod_extfeed/api/flag-content/";
-    public static final String NEWSFEED_GET_LINK_CONTENT        = "/spod_extfeed/api/get-link-content";
+    public static final String NEWSFEED_GET_LINK_CONTENT        = "/spod_extfeed/api/get-link-content/";
+    public static final String NEWSFEED_GET_USER_INFO           = "/spod_extfeed/api/get-user-profile-info/";
 
     //Sync notification
     public static final String SYNC_NOTIFICATION_ENDPOINT             = "/realtime_notification";

@@ -15,7 +15,6 @@ import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
@@ -46,9 +45,7 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -58,6 +55,7 @@ import eu.spod.isislab.spodapp.activities.FullscreenActivity;
 import eu.spod.isislab.spodapp.entities.NewsfeedComment;
 import eu.spod.isislab.spodapp.utils.Consts;
 import eu.spod.isislab.spodapp.utils.NewsfeedJSONHelper;
+import eu.spod.isislab.spodapp.utils.NewsfeedPostRefreshable;
 import eu.spod.isislab.spodapp.utils.NewsfeedUtils;
 import eu.spod.isislab.spodapp.R;
 import eu.spod.isislab.spodapp.adapters.NewsfeedCommentsAdapter;
@@ -94,7 +92,7 @@ public class PostCommentsFragment extends Fragment implements Observer, PopupMen
     private Uri currentAttachedImageUri = null;
 
     private int mCurrentPage = -1;
-    private int mPageItemCount = NewsfeedUtils.DEFAULT_ITEM_PER_PAGE_COUNT;
+    private int mPageItemCount = NewsfeedUtils.DEFAULT_COMMENTS_PER_PAGE_COUNT;
     private boolean isLoadingPosts = false;
 
     private static final String ARG_ENTITY_TYPE = "eu.spod.isislab.spodapp.PostCommentFragment.ARGUMENT_ENTITY_TYPE";
@@ -189,6 +187,34 @@ public class PostCommentsFragment extends Fragment implements Observer, PopupMen
                     .into(userImageView);
         }
         return contentView;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        loadComments(mCurrentEntityType, mCurrentEntityId, true);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+    }
+
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
     }
 
     private void initCommentEditor() {
@@ -361,32 +387,26 @@ public class PostCommentsFragment extends Fragment implements Observer, PopupMen
         resetCommentEditor();
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    private void updateNewsfeedFragments(String entityType, int entityId) {
+        List<Fragment> fragments = getActivity()
+                .getSupportFragmentManager()
+                .getFragments();
 
+        for(Fragment fragment : fragments) {
+            if (fragment instanceof NewsfeedPostRefreshable) {
+                ((NewsfeedPostRefreshable) fragment).refreshPost(entityType, entityId, NewsfeedPostsAdapter.AdapterUpdateType.COMMENTS);
+            }
+        }
     }
 
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        loadComments(mCurrentEntityType, mCurrentEntityId, true);
-    }
+    private void openImageVisualizator(Uri uri, ImageView view) {
+        Intent intent = new Intent(mContext, FullscreenActivity.class);
+        intent.putExtra(FullscreenActivity.URI_ARGUMENT, uri);
+        intent.putExtra(FullscreenActivity.FRAGMENT_TYPE_ARGUMENT, FullscreenActivity.FRAGMENT_TYPE_IMAGE);
+        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), view, NewsfeedUtils.getStringResource(getActivity(), R.string.newsfeed_image_transition_name));
 
-    @Override
-    public void onStart() {
-        super.onStart();
-    }
-
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
+        startActivity(intent, options.toBundle());
+        getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
     @Override
@@ -452,14 +472,14 @@ public class PostCommentsFragment extends Fragment implements Observer, PopupMen
                     }
                     mNewsfeedCommentsAdapter.addBottom(comment);
                     mCommentsList.scrollToPosition(mCommentsList.getAdapter().getItemCount() - 1);
-                    updateNewsfeedFragment(mCurrentEntityType, mCurrentEntityId);
+                    updateNewsfeedFragments(mCurrentEntityType, mCurrentEntityId);
                 } catch (JSONException e) {
                     Log.e(TAG, "Error on response parsing", e);
                 }
                 handled = true;
                 break;
             case Consts.NEWSFEED_SERVICE_DELETE_COMMENT:
-                updateNewsfeedFragment(mCurrentEntityType, mCurrentEntityId);
+                updateNewsfeedFragments(mCurrentEntityType, mCurrentEntityId);
                 break;
         }
         if (handled) {
@@ -467,23 +487,7 @@ public class PostCommentsFragment extends Fragment implements Observer, PopupMen
         }
     }
 
-    private void updateNewsfeedFragment(String entityType, int entityId) {
-        ((NewsfeedFragment) getActivity()
-                .getSupportFragmentManager()
-                .findFragmentByTag(NewsfeedFragment.FRAGMENT_NAME))
-                .refreshPost(entityType, entityId, NewsfeedPostsAdapter.AdapterUpdateType.COMMENTS);
-    }
-
-    private void openImageVisualizator(Uri uri, ImageView view) {
-        Intent intent = new Intent(mContext, FullscreenActivity.class);
-        intent.putExtra(FullscreenActivity.URI_ARGUMENT, uri);
-        intent.putExtra(FullscreenActivity.FRAGMENT_TYPE_ARGUMENT, FullscreenActivity.FRAGMENT_TYPE_IMAGE);
-        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), view, NewsfeedUtils.getStringResource(getActivity(), R.string.newsfeed_image_transition_name));
-
-        startActivity(intent, options.toBundle());
-        getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-    }
-
+    //ADAPTER INTERACTION LISTENERS
     @Override
     public boolean onMenuItemClick(MenuItem item) {
         switch (item.getItemId()) {
@@ -518,7 +522,6 @@ public class PostCommentsFragment extends Fragment implements Observer, PopupMen
     }
 
 
-    //ADAPTER INTERACTION LISTENER
     @Override
     public void onImageClicked(NewsfeedComment c, ImageView view) {
         String url = c.getAttachment().get(NewsfeedJSONHelper.URL);
@@ -600,6 +603,18 @@ public class PostCommentsFragment extends Fragment implements Observer, PopupMen
     public void onLinkClicked(String href) {
         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(href));
         startActivity(browserIntent);
+    }
+
+    @Override
+    public void onOpenUserProfile(int userId, String userName, String userAvatar) {
+        ProfileViewFragment profileViewFragment = ProfileViewFragment.newInstance(userId, userName, userAvatar);
+
+        getFragmentManager()
+                .beginTransaction()
+                .hide(this)
+                .add(R.id.container, profileViewFragment)
+                .addToBackStack(ProfileViewFragment.FRAGMENT_NAME)
+                .commit();
     }
 
 }

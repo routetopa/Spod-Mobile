@@ -14,6 +14,7 @@ import eu.spod.isislab.spodapp.R;
 import eu.spod.isislab.spodapp.entities.NewsfeedImageInfo;
 import eu.spod.isislab.spodapp.fragments.newsfeed.DataletVisualizationFragment;
 import eu.spod.isislab.spodapp.fragments.newsfeed.ImageVisualizationFragment;
+import eu.spod.isislab.spodapp.fragments.newsfeed.ProfileViewFragment;
 
 public class FullscreenActivity extends AppCompatActivity {
 
@@ -106,7 +107,7 @@ public class FullscreenActivity extends AppCompatActivity {
 
         mVisible = true;
         mControlsView = findViewById(R.id.fullscreen_content_controls);
-        mContentView = findViewById(R.id.activity_image_visualization_fragment_container);
+        mContentView = findViewById(R.id.activity_fullscreen_container);
 
         mContentView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -114,10 +115,6 @@ public class FullscreenActivity extends AppCompatActivity {
                 toggle();
             }
         });
-
-        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            postponeEnterTransition();
-        }*/
 
         supportPostponeEnterTransition();
 
@@ -144,7 +141,7 @@ public class FullscreenActivity extends AppCompatActivity {
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.activity_image_visualization_fragment_container, fragment, backstackString)
+                .add(R.id.activity_fullscreen_container, fragment, backstackString)
                 .commit();
     }
 

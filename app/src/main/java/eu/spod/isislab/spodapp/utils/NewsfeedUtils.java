@@ -15,6 +15,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.Nullable;
 import android.text.Html;
+import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -38,9 +39,10 @@ import eu.spod.isislab.spodapp.entities.ContextActionMenuItem;
 public class NewsfeedUtils {
 
     public static final int DEFAULT_ITEM_PER_PAGE_COUNT = 10;
-
+    public static final int DEFAULT_COMMENTS_PER_PAGE_COUNT = 10;
     public static final String FEED_TYPE_MY = "my";
     public static final String FEED_TYPE_SITE = "site";
+    public static final String FEED_TYPE_USER = "user";
 
     private static Pattern mHtmlPattern = Pattern.compile("<(\"[^\"]*\"|'[^']*'|[^'\">])*>"); //for check if a string is a html string
 
@@ -73,13 +75,33 @@ public class NewsfeedUtils {
                 ? ctx.getResources().getDrawable(id, theme)
                 : ctx.getResources().getDrawable(id); //AppCompatResources.getDrawable(ctx, id);
     }
+
     public static Drawable getDrawableResource(Context ctx, int id) {
         return getDrawableResource(ctx, id, null);
+    }
 
+    /**
+     *
+     * @param color The color to make darker
+     * @param factor How much color have to be darker. Note must be between 0.0 and 1.0
+     * @return The darker color
+     */
+    public static int makeColorDarker(int color, float factor) {
+        int alpha = Color.alpha(color);
+        int red = Math.round(Color.red(color) * factor);
+        int green = Math.round(Color.green(color) * factor);
+        int blue = Math.round(Color.blue(color) * factor);
+
+        return Color.argb(alpha, red, green, blue);
+    }
+
+    public static int getUserColor(Context ctx, int userId) {
+        String colors[] = ctx.getResources().getStringArray(R.array.userColors);
+        String color = colors[userId % colors.length];
+        return Color.parseColor(color);
     }
 
     public static TextDrawable getTextDrawableForUser(Context ctx, int userId, String userName) {
-        String colors[] = ctx.getResources().getStringArray(R.array.userColors);
         String text;
         userName = userName.toUpperCase();
         String[] names = userName.split(" ");
@@ -89,17 +111,15 @@ public class NewsfeedUtils {
             text = names[0].substring(0,1);
         }
 
-        String color = colors[userId % colors.length];
 
-        TextDrawable.Builder builder = new TextDrawable.Builder(text)
-                //.setFont(Typeface.create("sans-serif-light", Typeface.NORMAL))
-                .setBackgroundColor(Color.parseColor(color))
-                .setTextColor(Color.WHITE)
-                .setShape(new OvalShape())
-                .setBold(true)
-                .setSmallText(true);
+        TextDrawable drawable = new TextDrawable(new OvalShape());
+        drawable.setBackgroundColor(getUserColor(ctx, userId));
+        drawable.setTextColor(Color.WHITE);
+        drawable.setBold(false);
+        drawable.setSmallText(true);
 
-        return builder.create();
+        drawable.setText(text);
+        return drawable;
     }
 
     public static Spanned htmlToSpannedText(String html) {
@@ -148,7 +168,7 @@ public class NewsfeedUtils {
 
     public static String uriToPath(Context ctx, Uri uri) throws IOException {
         if (uri == null) {
-           return null;
+            return null;
         }
 
         if ("file".equals(uri.getScheme())) {
@@ -193,7 +213,6 @@ public class NewsfeedUtils {
 
     public static int pxToDp(Context ctx, int px) {
         float density = ctx.getResources().getDisplayMetrics().density;
-
         return (int) (px * density);
     }
 
@@ -203,12 +222,13 @@ public class NewsfeedUtils {
             return;
         }
 
-        CharSequence truncatedStr = truncateString(text, 1000);
+        CharSequence truncatedStr = truncateString(text, limit);
+
         String viewMore = NewsfeedUtils.getStringResource(ctx, R.string.newsfeed_view_more);
         String viewLess = NewsfeedUtils.getStringResource(ctx, R.string.newsfeed_view_less);
 
-        final SpannableString spannableMore = new SpannableString(truncatedStr + " " + viewMore);
-        final SpannableString spannableLess = new SpannableString(text + " " + viewLess);
+        final Spannable spannableMore = new SpannableString(truncatedStr + " " + viewMore);
+        final Spannable spannableLess = new SpannableString(text + " " + viewLess);
 
         spannableLess.setSpan(new ClickableSpan() {
             @Override
@@ -232,6 +252,9 @@ public class NewsfeedUtils {
             if(!TextUtils.isEmpty((CharSequence) value)) {
                 v.setVisibility(View.VISIBLE);
                 return v;
+            } else {
+                v.setVisibility(View.GONE);
+                return v;
             }
         }
 
@@ -239,7 +262,6 @@ public class NewsfeedUtils {
             v.setVisibility(View.VISIBLE);
             return v;
         }
-
 
         v.setVisibility(View.GONE);
         return v;

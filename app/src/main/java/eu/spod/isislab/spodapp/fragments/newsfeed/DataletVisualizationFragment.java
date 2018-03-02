@@ -78,14 +78,6 @@ public class DataletVisualizationFragment extends Fragment {
         String newUA= "SPODua";
 
         dataletVebView.getSettings().setUserAgentString(newUA);
-        //dataletVebView.getSettings().setUseWideViewPort(true);
-        //dataletVebView.getSettings().setLoadWithOverviewMode(true);
-        //dataletVebView.getSettings().setSupportZoom(true);
-        //dataletVebView.getSettings().setBuiltInZoomControls(true);
-        //dataletVebView.getSettings().setJavaScriptEnabled(true);
-        //dataletVebView.getSettings().setGeolocationEnabled(false);
-        //dataletVebView.getSettings().setLoadsImagesAutomatically(true);
-
         dataletVebView.getSettings().setUserAgentString("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.79 Safari/537.36");
         dataletVebView.getSettings().setJavaScriptEnabled(true);
         dataletVebView.getSettings().setLoadWithOverviewMode(true);
@@ -97,21 +89,6 @@ public class DataletVisualizationFragment extends Fragment {
 
         dataletVebView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
         dataletVebView.setScrollbarFadingEnabled(false);
-
-        /*dataletVebView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                webViewHeight = dataletVebView.getHeight();
-
-                Log.d(TAG, "onGlobalLayout: height="+webViewHeight);
-                Log.d(TAG, "onGlobalLayout: h="+h + " d="+d + " den="+den);
-                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN){
-                    dataletVebView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                }else {
-                    dataletVebView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                }
-            }
-        });*/
 
 
         dataletVebView.setWebViewClient(new WebViewClient(){
@@ -138,15 +115,6 @@ public class DataletVisualizationFragment extends Fragment {
             }
         });
 
-        /*dataletVebView.setWebChromeClient(new WebChromeClient(){
-            @Override
-            public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
-
-                Log.d(TAG, "onConsoleMessage: " + consoleMessage.message());
-                return super.onConsoleMessage(consoleMessage);
-            }
-
-        });*/
         return view;
     }
 
@@ -156,12 +124,9 @@ public class DataletVisualizationFragment extends Fragment {
 
         int h = dm.heightPixels;
         int dpi = dm.densityDpi;
-        float den = dm.density;
 
-        int heightDensityRatio = Math.round(h/den);
         Log.d(TAG, "doDataletLayout: " + h + " " + dpi);
 
-        //int dataletHeight = Math.round((heightDensityRatio * 640)/677);
         float dataletHeight =(h * 150)/dpi;
         String css = String.format("(function(){var a = document.getElementById('datalet_container'); a.style.height='%spx';})()", dataletHeight);
 
@@ -179,7 +144,5 @@ public class DataletVisualizationFragment extends Fragment {
         super.onResume();
 
         dataletVebView.loadUrl(dataletSrc);
-
-        // Log.d(TAG, "onResume: "+ dataletVebView.getUrl());
     }
 }

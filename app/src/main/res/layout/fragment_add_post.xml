@@ -25,7 +25,8 @@
             android:textSize="@dimen/newsfeed_post_status_text_big"
             android:paddingLeft="@dimen/newsfeed_post_content_padding_default"
             android:paddingRight="@dimen/newsfeed_post_content_padding_default"
-            android:gravity="center_vertical" />
+            android:gravity="center_vertical"
+            android:textColor="@android:color/white"/>
 
     </LinearLayout>
 

@@ -145,7 +145,7 @@ public class NetworkChannel extends Observable
             @Override
             protected Map<String, String> getParams() {
                 params.put("jwt", AuthorizationService.getInstance().getAccessToken());
-                params.put("loginId", "1");
+                //params.put("loginId", "1");
                 return params;
             }
         };
@@ -574,6 +574,13 @@ public class NetworkChannel extends Observable
         params.put("url", link);
 
         makePostRequest(Consts.NEWSFEED_GET_LINK_CONTENT, params, false, Consts.NEWSFEED_SERVICE_GET_LINK_CONTENT);
+    }
+
+    public void getUserInfo(int userId) {
+        Map<String, String> params = new HashMap<>();
+        params.put("userId", ""+userId);
+
+        makePostRequest(Consts.NEWSFEED_GET_USER_INFO, params, false, Consts.NEWSFEED_SERVICE_GET_USER_INFO);
     }
 
     //FIREBASE NOTIFICATION

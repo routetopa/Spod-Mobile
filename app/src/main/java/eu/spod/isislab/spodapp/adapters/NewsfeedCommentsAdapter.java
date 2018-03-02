@@ -220,7 +220,7 @@ public class NewsfeedCommentsAdapter extends RecyclerView.Adapter<NewsfeedCommen
             return;
         }
 
-        NewsfeedComment c = mValues.get(position);
+        final NewsfeedComment c = mValues.get(position);
 
         Spanned spanned = NewsfeedUtils.htmlToSpannedText(c.getMessage());
         holder.commentContentTextView.setMovementMethod(new LinkMovementMethod());
@@ -263,6 +263,17 @@ public class NewsfeedCommentsAdapter extends RecyclerView.Adapter<NewsfeedCommen
         }
         int type = getItemViewType(position);
 
+        View.OnClickListener userClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mListener != null) {
+                    mListener.onOpenUserProfile(c.getUserId(), c.getUserDisplayName(), c.getAvatarUrl());
+                }
+            }
+        };
+
+        holder.userAvatarImageView.setOnClickListener(userClickListener);
+        holder.userNameTextView.setOnClickListener(userClickListener);
 
         if (type != COMMENT_NORMAL) {
             generateAttachmentView(holder, c);
@@ -415,5 +426,7 @@ public class NewsfeedCommentsAdapter extends RecyclerView.Adapter<NewsfeedCommen
         void onDataletClicked(NewsfeedComment c);
 
         void onLinkClicked(String href);
+
+        void onOpenUserProfile(int userId, String userName, String userAvatar);
     }
 }
